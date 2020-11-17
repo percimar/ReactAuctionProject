@@ -51,8 +51,10 @@ class DB {
         return doc.exists ? this.reformat(doc) : undefined
     }
 
-    listenOne = (set, id) =>
-        db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
+    listenOne = (set, id) => {
+        return db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
+    }
+        
 
     // item has no id
     create = ({ id, ...rest }) =>
@@ -76,7 +78,7 @@ class Auctions extends DB {
     }
 
     reformat(doc) {
-        return { ...super.reformat(doc), start: new Date(doc.start), finish: new Date(doc.finish) }
+        return { ...super.reformat(doc), start: doc.data().start.toDate(), finish: doc.data().finish.toDate()}
     }
 
     findAuctionBids = auctionId =>
@@ -92,7 +94,7 @@ class Auctions extends DB {
         db.collection(this.collection).where("sellerId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
 
     listenToUnfinished = set =>
-        db.collection(this.collection).where("finish", ">", new Date()).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+        db.collection(this.collection).where("status", '==', "Ongoing").onSnapshot(snap => set(snap.docs.map(this.reformat)))
 
     createAuctionBid = (auctionId, { id, ...rest }) =>
         db.collection(this.collection).doc(auctionId).collection(Bids).add(rest)
