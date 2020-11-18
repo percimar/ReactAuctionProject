@@ -35,8 +35,9 @@ class DB {
     listenAll = set =>
         db.collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
 
-    listenSubAll = (set, id, sub) =>
-        db.collection(this.collection).doc(id).collection(sub).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    listenSubAll = (set, id, sub) => {
+        return db.collection(this.collection).doc(id).collection(sub).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
 
     listenSubOne = (set, id, sub, subId) =>
         db.collection(this.collection).doc(id).collection(sub).doc(subId).onSnapshot(snap => set(this.reformat(snap)))
@@ -70,19 +71,26 @@ class DB {
 }
 
 const Bids = 'bids'
+// const Items = 'items'
 
 class Auctions extends DB {
 
     constructor() {
         super('auctions')
+        this.Items = new Items(this.collection)
     }
 
     reformat(doc) {
+        // return { ...super.reformat(doc)}
         return { ...super.reformat(doc), start: doc.data().start.toDate(), finish: doc.data().finish.toDate()}
     }
 
     findAuctionBids = auctionId =>
         this.findSubAll(auctionId, Bids)
+
+    listenToAuctionItems = (set, auctionId) => {
+        return this.listenSubAll(set, auctionId, Items)
+    }
 
     listenToAuctionBids = (set, auctionId) =>
         this.listenSubAll(set, auctionId, Bids)
@@ -100,7 +108,36 @@ class Auctions extends DB {
         db.collection(this.collection).doc(auctionId).collection(Bids).add(rest)
 }
 
-const Items = 'items'
+class Items extends DB {
+    
+    constructor(containing) {
+        super('items')
+        this.containing = containing
+    }
+
+    reformat(doc) {
+        return {...super.reformat(doc)}
+    }
+
+    findOneAuctionAllItems = async auctionId => {
+        const data = await db.collection(this.containing).doc(auctionId).collection.get()
+        return data.docs.map(this.reformat)
+    }
+
+    listenToOneAuctionAllItems = (set, auctionId) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    removeOneItem = (auctionId, itemId) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).delete()
+    }
+
+    addItem = (auctionId, { id, ...rest }) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).add(rest)
+    }
+}
+
+
 
 class Users extends DB {
 
