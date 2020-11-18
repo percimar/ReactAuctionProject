@@ -17,6 +17,21 @@ export default function HeaderLinksLeft() {
   return (
     <List className={classes.list}>
       {
+        user &&
+        user.role === "admin"
+        &&
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            component={Link}
+            to="/admin"
+          >
+            Admin Dashboard
+          </Button>
+        </ListItem>
+      }
+      {
         user
         &&
         user.role === "user"

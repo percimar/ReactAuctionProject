@@ -5,6 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Auction from './Auction'
+import Button from '@material-ui/core/Button'
 import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
 
 const useStyles = makeStyles(styles);
@@ -23,6 +24,13 @@ export default function Auctions() {
       <GridContainer justify="center">
         <GridItem xs={12} sm={12} md={8}>
           <h2 className={classes.title}>Current Auctions</h2>
+          {
+            user && user.role === 'admin' ?
+            <Button simple color="primary" size="lg">Add Auction</Button>
+            :
+            ''
+          }
+          
         </GridItem>
       </GridContainer>
       <GridContainer>

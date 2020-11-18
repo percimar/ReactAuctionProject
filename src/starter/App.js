@@ -36,7 +36,6 @@ function App() {
     return fb.auth().onAuthStateChanged(findAndSetUser)
   }, [])
 
-  console.log(user)
   return (
     <Router>
       <UserContext.Provider value={{ user }}>
@@ -60,14 +59,15 @@ function App() {
                 {
                   user.role === "admin"
                     ?
-                    <Route exact path="/">
+                    <Route path="/admin">
                       <Admin />
                     </Route>
                     :
-                    <Route exact path="/">
-                      <LandingPage />
-                    </Route>
+                    ""
                 }
+                <Route exact path="/">
+                  <LandingPage />
+                </Route>
                 <Route path="/useritems">
                   <UserItems />
                 </Route>
