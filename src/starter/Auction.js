@@ -31,7 +31,7 @@ Transition.displayName = "Transition";
 
 const useStyles = makeStyles(styles);
 
-export default function Auction({ id, displayName, finish, start, status }) {
+export default function Auction({ set, id, displayName, finish, start, status }) {
 
     const { user } = useContext(UserContext)
 
@@ -62,7 +62,6 @@ export default function Auction({ id, displayName, finish, start, status }) {
 
     const [items, setItems] = useState(null)
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItems, id), [id])
-    console.log(items)
 
     const [bids, setBids] = useState([])
     // useEffect(() => db.Auctions.listenToAuctionBids(setBids, id), [id])
@@ -139,7 +138,7 @@ export default function Auction({ id, displayName, finish, start, status }) {
                         {/* <Button color="primary" size="sm" onClick={showItems}>
                             Show Items
                             </Button> */}
-                        <Button color="primary" size="sm">
+                        <Button color="primary" size="sm" onClick={() => set(id)}>
                             See Details
                             </Button>
                         {
