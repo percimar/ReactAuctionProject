@@ -12,6 +12,9 @@ import Primary from "../components/Typography/Primary.js";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import db from '../db'
+import Item from './Item'
+import { Link } from 'react-router-dom';
+
 
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
@@ -62,7 +65,7 @@ export default function Auction({ id, displayName, finish, start, status }) {
 
     const [items, setItems] = useState(null)
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItems, id), [id])
-    console.log(items)
+    // console.log(items)
 
     const [bids, setBids] = useState([])
     // useEffect(() => db.Auctions.listenToAuctionBids(setBids, id), [id])
@@ -136,9 +139,12 @@ export default function Auction({ id, displayName, finish, start, status }) {
                         </Info> */}
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                        {/* <Button color="primary" size="sm" onClick={showItems}>
+                        {/* { <Button color="primary" size="sm" onClick={() => <Item key={id} {...items}/>}>
                             Show Items
-                            </Button> */}
+                            </Button> } */}
+
+                        <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
+
                         <Button color="primary" size="sm">
                             See Details
                             </Button>

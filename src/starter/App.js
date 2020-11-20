@@ -9,6 +9,7 @@ import Login from './Login'
 import Logout from './Logout'
 import Profile from './Profile'
 import LandingPage from './LandingPage'
+import AuctionItems from './AuctionItems'
 import HeaderLinksLeft from './HeaderLinksLeft'
 import HeaderLinksRight from './HeaderLinksRight'
 import Header from "./Header";
@@ -73,6 +74,9 @@ function App() {
                 </Route>
                 <Route path="/userauctions">
                   <UserAuctions />
+                </Route>
+                <Route path="/Auction/Items/:AuctionId">
+                  <AuctionItems />
                 </Route>
                 <Route path="/profile">
                   <Profile />
