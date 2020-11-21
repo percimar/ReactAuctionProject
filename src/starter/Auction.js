@@ -80,7 +80,7 @@ export default function Auction({ id, displayName, finish, start, status }) {
         await db.Auctions.createAuctionBid(id, { amount, buyerId: user.id, when: new Date() })
         setClassicModal(false)
     }
-
+// hi
     const history = useHistory()
 
     const attemptBid = () => {
