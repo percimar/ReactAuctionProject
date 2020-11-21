@@ -12,6 +12,9 @@ import Primary from "../components/Typography/Primary.js";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import db from '../db'
+import Item from './Item'
+import { Link } from 'react-router-dom';
+
 
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
@@ -31,30 +34,41 @@ Transition.displayName = "Transition";
 
 const useStyles = makeStyles(styles);
 
-export default function Auction({ id, sellerId, itemId }) {
+export default function Auction({ id, displayName, finish, start, status }) {
 
     const { user } = useContext(UserContext)
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
-    setTimeout(function () {
-        setCardAnimation("");
-    }, 700);
+
+    //fix for unmount error
+    useEffect(() => {
+        const clear = setTimeout(() => setCardAnimation(""), 700)
+        return () => clearTimeout(clear)
+    }, [])
+
+
     const classes = useStyles();
 
     const [classicModal, setClassicModal] = React.useState(false);
 
+    const [view, setView] = useState('details')
+
     const [seller, setSeller] = useState({ name: "" })
-    useEffect(() => {
-        if (user) {
-            return db.Users.listenOne(setSeller, sellerId)
-        }
-    }, [sellerId, user])
+    // useEffect(() => {
+    //     if (user) {
+    //         return db.Users.listenOne(setSeller, sellerId)
+    //     }
+    // }, [sellerId, user])
 
     const [item, setItem] = useState({ name: "" })
-    useEffect(() => db.Users.listenToUserItem(setItem, sellerId, itemId), [sellerId, itemId])
+    // useEffect(() => db.Users.listenToUserItem(setItem, sellerId, itemId), [sellerId, itemId])    --defunct (remove or keep?)
+
+    const [items, setItems] = useState(null)
+    useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItems, id), [id])
+    // console.log(items)
 
     const [bids, setBids] = useState([])
-    useEffect(() => db.Auctions.listenToAuctionBids(setBids, id), [id])
+    // useEffect(() => db.Auctions.listenToAuctionBids(setBids, id), [id])
 
     const [amount, setAmount] = useState(0)
 
@@ -66,7 +80,7 @@ export default function Auction({ id, sellerId, itemId }) {
         await db.Auctions.createAuctionBid(id, { amount, buyerId: user.id, when: new Date() })
         setClassicModal(false)
     }
-
+// hi
     const history = useHistory()
 
     const attemptBid = () => {
@@ -77,50 +91,71 @@ export default function Auction({ id, sellerId, itemId }) {
         }
     }
 
+    const seeDetails = () => {
+        setClassicModal(true)
+    }
+
     return (
         <>
             <GridItem xs={12} sm={12} md={4}>
                 <Card className={classes[cardAnimaton]}>
                     <CardHeader color="primary" className={classes.cardHeader}>
+                        {displayName}
                         {/* <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} /> */}
                     </CardHeader>
                     <CardBody>
-                        {
+                        {/* {
                             user
                             &&
                             <>
                                 <Primary>
-                                    Seller
+                                    Name
                                 </Primary>
                                 <Info>
-                                    {seller.name}
+                                    {displayName}
                                 </Info>
                                 <br />
                             </>
-                        }
+                        } */}
                         <Primary>
-                            Item
-                    </Primary>
+                            Start
+                        </Primary>
                         <Info>
-                            {item.name}
+                            {start.toString()}
                         </Info>
                         <br />
                         <Primary>
-                            High Bid So Far
+                            Finish
+                        </Primary>
+                        <Info>
+                            {finish.toString()}
+                        </Info>
+                        {/* <br />
+                        <Primary>
+                            Highest Bid So Far
                     </Primary>
                         <Info>
                             {highestBid()}
-                        </Info>
+                        </Info> */}
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                        {
-                            !user || user.id !== sellerId
-                                ?
-                                <Button simple color="primary" size="lg" onClick={attemptBid}>
-                                    Bid
+                        {/* { <Button color="primary" size="sm" onClick={() => <Item key={id} {...items}/>}>
+                            Show Items
+                            </Button> } */}
+
+                        <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
+
+                        <Button color="primary" size="sm">
+                            See Details
                             </Button>
-                                :
-                                null
+                        {
+                            // !user || user.id !== sellerId
+                            //     ?
+                            //     <Button simple color="primary" size="lg" onClick={attemptBid}>
+                            //         Bid
+                            // </Button>
+                            //     :
+                            //     null
                         }
                     </CardFooter>
                 </Card>
@@ -152,9 +187,11 @@ export default function Auction({ id, sellerId, itemId }) {
                     >
                         <Close className={classes.modalClose} />
                     </IconButton>
-                    <h4 className={classes.modalTitle}>Bid on Item</h4>
+                    <h4 className={classes.modalTitle}>Auction Details</h4>
                 </DialogTitle>
-                <DialogContent
+                <DialogContent>
+                </DialogContent>
+                {/* <DialogContent
                     id="classic-modal-slide-description"
                     className={classes.modalBody}
                 >
@@ -184,7 +221,7 @@ export default function Auction({ id, sellerId, itemId }) {
                         Bid
                     </Button>
 
-                </DialogActions>
+                </DialogActions> */}
             </Dialog>
         </>
     )

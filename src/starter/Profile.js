@@ -21,7 +21,7 @@ export default function Profile() {
   const { user } = useContext(UserContext)
 
   const classes = useStyles();
-
+// add user image 
   const uploadAvatar = async event => {
     const filenameRef = fb.storage().ref().child(`avatars/${user.id}`)
     const snapshot = await filenameRef.put(event.target.files[0])
@@ -52,7 +52,7 @@ export default function Profile() {
                   <p className={classes.description}>
                     {user.name}
                     <br />
-                    <small className={classes.smallTitle}>{user.role}</small>
+                    <small className={classes.smallTitle}>Role: {user.role}</small>
                   </p>
                 </CardBody>
                 <CardFooter className={classes.justifyCenter}>
