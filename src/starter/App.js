@@ -53,6 +53,12 @@ function App() {
         />
 
         <Switch>
+          <Route exact path="/">
+            <LandingPage />
+          </Route>
+          <Route path="/Auction/Items/:AuctionId">
+            <AuctionItems />
+          </Route>
           {
             user
               ?
@@ -66,17 +72,11 @@ function App() {
                     :
                     ""
                 }
-                <Route exact path="/">
-                  <LandingPage />
-                </Route>
                 <Route path="/useritems">
                   <UserItems />
                 </Route>
                 <Route path="/userauctions">
                   <UserAuctions />
-                </Route>
-                <Route path="/Auction/Items/:AuctionId">
-                  <AuctionItems />
                 </Route>
                 <Route path="/profile">
                   <Profile />
@@ -84,7 +84,6 @@ function App() {
                 <Route path="/logout">
                   <Logout />
                 </Route>
-
               </>
               :
               <>
@@ -93,9 +92,6 @@ function App() {
                 </Route>
                 <Route path="/login">
                   <Login />
-                </Route>
-                <Route exact path="/">
-                  <LandingPage />
                 </Route>
               </>
           }
