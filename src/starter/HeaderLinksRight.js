@@ -44,6 +44,55 @@ export default function HeaderLinksRight() {
         </Button>
         </ListItem>
       }
+
+      {
+        user
+        &&
+        user.role === "user"
+        &&
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            component={Link}
+            to="/useritems"
+          >
+            My Items
+          </Button>
+        </ListItem>
+      }
+      {
+        user
+        &&
+        user.role === "user"
+        &&
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            component={Link}
+            to="/userauctions"
+          >
+            My Auctions
+          </Button>
+        </ListItem>
+      }
+      {
+        user
+        &&
+        user.role === "user"
+        &&
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            component={Link}
+            to="/profile"
+          >
+            My Profile
+          </Button>
+        </ListItem>
+      }
       {
         user
         &&
@@ -55,7 +104,7 @@ export default function HeaderLinksRight() {
             to="/logout"
           >
             Logout {user.name}
-        </Button>
+          </Button>
         </ListItem>
       }
     </List >
