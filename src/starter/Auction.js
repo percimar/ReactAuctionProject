@@ -79,7 +79,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
         await db.Auctions.createAuctionBid(id, { amount, buyerId: user.id, when: new Date() })
         setClassicModal(false)
     }
-// hi
+    // hi
     const history = useHistory()
 
     const attemptBid = () => {
@@ -142,12 +142,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                             Show Items
 
                             </Button> */}
-                        <Button color="primary" size="sm" onClick={() => set(id)}>
-
-                        <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
-
-                            See Details
-                            </Button>
+                        <Button size="sm" color="primary" component={Link} to={`/Auction/Items/${id}`}>Show Items</Button>
                         {
                             // !user || user.id !== sellerId
                             //     ?
