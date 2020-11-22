@@ -56,9 +56,6 @@ function App() {
           <Route exact path="/">
             <LandingPage />
           </Route>
-          <Route path="/Auction/Items/:AuctionId">
-            <AuctionItems />
-          </Route>
           {
             user
               ?

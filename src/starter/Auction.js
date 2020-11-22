@@ -138,20 +138,9 @@ export default function Auction({ set, id, displayName, finish, start, status })
                         </Info> */}
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                        {/* { <Button color="primary" size="sm" onClick={() => <Item key={id} {...items}/>}>
-                            Show Items
-
-                            </Button> */}
-                        <Button size="sm" color="primary" component={Link} to={`/Auction/Items/${id}`}>Show Items</Button>
-                        {
-                            // !user || user.id !== sellerId
-                            //     ?
-                            //     <Button simple color="primary" size="lg" onClick={attemptBid}>
-                            //         Bid
-                            // </Button>
-                            //     :
-                            //     null
-                        }
+                        <Button color="primary" size="sm" onClick={() => set(id)}>
+                            See Details
+                        </Button>
                     </CardFooter>
                 </Card>
             </GridItem>
