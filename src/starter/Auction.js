@@ -120,14 +120,14 @@ export default function Auction({ set, id, displayName, finish, start, status })
                             Start
                         </Primary>
                         <Info>
-                            {start.toString()}
+                            {start.toDateString()}
                         </Info>
                         <br />
                         <Primary>
                             Finish
                         </Primary>
                         <Info>
-                            {finish.toString()}
+                            {finish.toDateString()}
                         </Info>
                         {/* <br />
                         <Primary>

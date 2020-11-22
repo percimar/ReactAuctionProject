@@ -34,8 +34,8 @@ export default function AuctionDetails({ set, id }) {
               <h2 className={classes.title}>Loading Auction...</h2> :
               <>
                 <h2 className={classes.title}>{auction.displayName}</h2>
-                <h3 className={classes.description}>Started {auction.start.toString()}</h3>
-                <h3 className={classes.description}>Ends {auction.finish.toString()}</h3>
+                <h3 className={classes.description}>Started {auction.start.toDateString()}</h3>
+                <h3 className={classes.description}>Ends {auction.finish.toDateString()}</h3>
               </>
           }
         </GridItem>
@@ -46,8 +46,8 @@ export default function AuctionDetails({ set, id }) {
             //When auction is loading
             !items ?
               <h2 className={classes.title}>Loading Items...</h2> :
-              items.map(item => 
-                  <Item key={item.id} {...item}/>
+              items.map(item =>
+                <Item key={item.id} {...item} />
               )
           }
         </GridItem>
