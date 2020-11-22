@@ -31,54 +31,6 @@ export default function HeaderLinksLeft() {
           </Button>
         </ListItem>
       }
-      {
-        user
-        &&
-        user.role === "user"
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/profile"
-          >
-            Profile
-          </Button>
-        </ListItem>
-      }
-      {
-        user
-        &&
-        user.role === "user"
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/useritems"
-          >
-            My Items
-          </Button>
-        </ListItem>
-      }
-      {
-        user
-        &&
-        user.role === "user"
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/userauctions"
-          >
-            My Auctions
-          </Button>
-        </ListItem>
-      }
     </List>
   );
 }

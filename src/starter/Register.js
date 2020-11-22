@@ -71,13 +71,12 @@ export default function Register() {
                             <Card className={classes[cardAnimaton]}>
 
                                 <CardHeader color="primary" className={classes.cardHeader}>
-                                    <h4>Login</h4>
+                                    <h4>Register</h4>
                                 </CardHeader>
-                                <p className={classes.divider}>Or Be Classical</p>
                                 <CardBody>
                                     <CustomInput
                                         onChange={event => setEmail(event.target.value)}
-                                        labelText="Email..."
+                                        labelText="Email"
                                         id="email"
                                         formControlProps={{
                                             fullWidth: true
@@ -94,6 +93,26 @@ export default function Register() {
                                         }}
                                     />
                                     <CustomInput
+                                        labelText="Name"
+                                        id="name"
+                                        formControlProps={{
+                                            fullWidth: true
+                                        }}
+                                        inputProps={{
+                                            onChange: event => setName(event.target.value),
+                                            value: name,
+                                            type: "text",
+                                            endAdornment: (
+                                                <InputAdornment position="end">
+                                                    <Icon className={classes.inputIconsColor}>
+                                                        assignmentind
+                                                    </Icon>
+                                                </InputAdornment>
+                                            ),
+                                            autoComplete: "off"
+                                        }}
+                                    />
+                                    <CustomInput
                                         labelText="Password"
                                         id="pass"
                                         formControlProps={{
@@ -106,7 +125,7 @@ export default function Register() {
                                             endAdornment: (
                                                 <InputAdornment position="end">
                                                     <Icon className={classes.inputIconsColor}>
-                                                        lock_outline
+                                                        lock_filled
                                                     </Icon>
                                                 </InputAdornment>
                                             ),
@@ -126,23 +145,10 @@ export default function Register() {
                                             endAdornment: (
                                                 <InputAdornment position="end">
                                                     <Icon className={classes.inputIconsColor}>
-                                                        lock_outline
+                                                        lock_filled
                                                     </Icon>
                                                 </InputAdornment>
                                             ),
-                                            autoComplete: "off"
-                                        }}
-                                    />
-                                    <CustomInput
-                                        labelText="Name"
-                                        id="name"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                        inputProps={{
-                                            onChange: event => setName(event.target.value),
-                                            value: name,
-                                            type: "text",
                                             autoComplete: "off"
                                         }}
                                     />

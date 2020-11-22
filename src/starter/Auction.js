@@ -79,7 +79,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
         await db.Auctions.createAuctionBid(id, { amount, buyerId: user.id, when: new Date() })
         setClassicModal(false)
     }
-// hi
+    // hi
     const history = useHistory()
 
     const attemptBid = () => {
@@ -120,14 +120,14 @@ export default function Auction({ set, id, displayName, finish, start, status })
                             Start
                         </Primary>
                         <Info>
-                            {start.toString()}
+                            {start.toDateString()}
                         </Info>
                         <br />
                         <Primary>
                             Finish
                         </Primary>
                         <Info>
-                            {finish.toString()}
+                            {finish.toDateString()}
                         </Info>
                         {/* <br />
                         <Primary>
@@ -138,25 +138,9 @@ export default function Auction({ set, id, displayName, finish, start, status })
                         </Info> */}
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                        {/* { <Button color="primary" size="sm" onClick={() => <Item key={id} {...items}/>}>
-                            Show Items
-
-                            </Button> */}
                         <Button color="primary" size="sm" onClick={() => set(id)}>
-
-                        <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
-
                             See Details
-                            </Button>
-                        {
-                            // !user || user.id !== sellerId
-                            //     ?
-                            //     <Button simple color="primary" size="lg" onClick={attemptBid}>
-                            //         Bid
-                            // </Button>
-                            //     :
-                            //     null
-                        }
+                        </Button>
                     </CardFooter>
                 </Card>
             </GridItem>
