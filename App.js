@@ -9,7 +9,6 @@ import Login from './Login'
 import Logout from './Logout'
 import Profile from './Profile'
 import LandingPage from './LandingPage'
-import AuctionItems from './AuctionItems'
 import HeaderLinksLeft from './HeaderLinksLeft'
 import HeaderLinksRight from './HeaderLinksRight'
 import Header from "./Header";
@@ -37,6 +36,7 @@ function App() {
     return fb.auth().onAuthStateChanged(findAndSetUser)
   }, [])
 
+  console.log(user)
   return (
     <Router>
       <UserContext.Provider value={{ user }}>
@@ -60,23 +60,19 @@ function App() {
                 {
                   user.role === "admin"
                     ?
-                    <Route path="/admin">
+                    <Route exact path="/">
                       <Admin />
                     </Route>
                     :
-                    ""
+                    <Route exact path="/">
+                      <LandingPage />
+                    </Route>
                 }
-                <Route exact path="/">
-                  <LandingPage />
-                </Route>
                 <Route path="/useritems">
                   <UserItems />
                 </Route>
                 <Route path="/userauctions">
                   <UserAuctions />
-                </Route>
-                <Route path="/Auction/Items/:AuctionId">
-                  <AuctionItems />
                 </Route>
                 <Route path="/profile">
                   <Profile />

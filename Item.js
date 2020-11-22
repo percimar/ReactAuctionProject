@@ -23,7 +23,6 @@ export default function Item({ name, description, picture }) {
 
     return (
         <GridItem xs={12} sm={12} md={4}>
-            
             <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary" className={classes.cardHeader}>
                     <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} />
@@ -44,17 +43,11 @@ export default function Item({ name, description, picture }) {
                     </Info>
                 </CardBody>
                 <CardFooter className={classes.cardFooter}>
-                    {/*show bid if auction did not finish + item is available for bids*/}
-                    <Button simple color="primary" size="lg">
-                        Bid
-                    </Button>
-                    {/* Show Edit item for item's owner
                     <Button simple color="primary" size="lg">
                         Edit Item
-                    </Button> */}
+                    </Button>
                 </CardFooter>
             </Card>
-
         </GridItem>
     )
 }
