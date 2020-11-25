@@ -34,10 +34,30 @@ export default function Login() {
 
     const history = useHistory()
 
+    const [errorMsg, setErrorMsg] = useState("")
+    const [errorCode, setErrorCode] = useState("")
+
+    // const login = async () => {
+    //     await fb.auth().signInWithEmailAndPassword(email, password)
+    //     // redirect to home page
+    //     history.push("/")
+    // }
+
     const login = async () => {
-        await fb.auth().signInWithEmailAndPassword(email, password)
-        // redirect to home page
-        history.push("/")
+        await fb.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            setErrorMsg(errorMessage)
+            setErrorCode(errorCode)
+            console.log(errorCode)
+        });
+        // redirect to home page if authentication is correct
+        // redirect to login page if authentication fails
+        errorCode !== false
+            ?
+            history.push("/login")
+            :
+            history.push("/")
     }
 
     return (
@@ -130,6 +150,13 @@ export default function Login() {
                                             />
                                         </div>
                                     </CardBody>
+                                    {
+                                        errorMsg
+                                        &&
+                                        <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom" disabled="disabled" >
+                                            {errorMsg}
+                                        </button>
+                                    }
                                     <CardFooter className={classes.cardFooter}>
                                         <Button type="submit" simple color="primary" size="lg">
                                             Login
