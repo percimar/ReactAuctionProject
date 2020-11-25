@@ -1,3 +1,4 @@
+//Carlos: Added categories
 
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from '../UserContext'
@@ -12,9 +13,6 @@ import Primary from "../components/Typography/Primary.js";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import db from '../db'
-import Item from './Item'
-import { Link } from 'react-router-dom';
-
 
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
@@ -60,11 +58,17 @@ export default function Auction({ set, id, displayName, finish, start, status })
     //     }
     // }, [sellerId, user])
 
-    const [item, setItem] = useState({ name: "" })
     // useEffect(() => db.Users.listenToUserItem(setItem, sellerId, itemId), [sellerId, itemId])    --defunct (remove or keep?)
 
-    const [items, setItems] = useState(null)
+    const [items, setItems] = useState([])
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItems, id), [id])
+    
+
+    const [categories, setCategories] = useState([])
+    useEffect(() => {
+        setCategories([])
+        items.map(item => db.Categories.listenOne(setCategories, item.catId, categories))
+    }, [items])
 
     const [bids, setBids] = useState([])
     // useEffect(() => db.Auctions.listenToAuctionBids(setBids, id), [id])
@@ -79,7 +83,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
         await db.Auctions.createAuctionBid(id, { amount, buyerId: user.id, when: new Date() })
         setClassicModal(false)
     }
-// hi
+
     const history = useHistory()
 
     const attemptBid = () => {
@@ -94,13 +98,22 @@ export default function Auction({ set, id, displayName, finish, start, status })
         setClassicModal(true)
     }
 
+    const editAuction = (id) => {
+
+    }
+
+    const deleteAuction = (id) => {
+        // add map that removes items in auction
+        // db.Auctions.remove(id)
+    }
+
+
     return (
         <>
             <GridItem xs={12} sm={12} md={4}>
                 <Card className={classes[cardAnimaton]}>
                     <CardHeader color="primary" className={classes.cardHeader}>
                         {displayName}
-                        {/* <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} /> */}
                     </CardHeader>
                     <CardBody>
                         {/* {
@@ -129,6 +142,14 @@ export default function Auction({ set, id, displayName, finish, start, status })
                         <Info>
                             {finish.toString()}
                         </Info>
+                        <br/>
+                        <Primary>
+                            Categories
+                        </Primary>
+                        <Info>
+                            {categories.map(item => item.name).join(', ')}
+                        </Info>
+
                         {/* <br />
                         <Primary>
                             Highest Bid So Far
@@ -138,15 +159,17 @@ export default function Auction({ set, id, displayName, finish, start, status })
                         </Info> */}
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                        {/* { <Button color="primary" size="sm" onClick={() => <Item key={id} {...items}/>}>
+                        {/* <Button color="primary" size="sm" onClick={showItems}>
                             Show Items
-
                             </Button> */}
                         <Button color="primary" size="sm" onClick={() => set(id)}>
-
-                        <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
-
                             See Details
+                            </Button>
+                        <Button color="primary" size="sm" onClick={() => edit(id)}>
+                            Edit
+                            </Button>
+                        <Button color="primary" size="sm" onClick={() => deleteAuction(id)}>
+                            X
                             </Button>
                         {
                             // !user || user.id !== sellerId
