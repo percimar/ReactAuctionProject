@@ -43,21 +43,32 @@ export default function Login() {
     //     history.push("/")
     // }
 
+    // const login = async () => {
+    //     await fb.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+    //         var errorCode = error.code;
+    //         var errorMessage = error.message;
+    //         setErrorMsg(errorMessage)
+    //         setErrorCode(errorCode)
+    //         console.log(errorCode)
+    //     });
+    //     // redirect to home page if authentication is correct
+    //     // redirect to login page if authentication fails
+    //     if (errorCode === undefined){
+    //         history.push("/")
+    //     }
+    // }
+
     const login = async () => {
-        await fb.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
-            var errorCode = error.code;
-            var errorMessage = error.message;
-            setErrorMsg(errorMessage)
-            setErrorCode(errorCode)
-            console.log(errorCode)
-        });
-        // redirect to home page if authentication is correct
-        // redirect to login page if authentication fails
-        errorCode !== false
-            ?
-            history.push("/login")
-            :
+        await fb.auth().signInWithEmailAndPassword(email, password)
+        .then((user) => {
             history.push("/")
+        })
+        .catch((error) => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          setErrorMsg(errorMessage)
+          setErrorCode(errorCode)
+        });
     }
 
     return (
@@ -153,7 +164,7 @@ export default function Login() {
                                     {
                                         errorMsg
                                         &&
-                                        <button type="button" class="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom" disabled="disabled" >
+                                        <button type="button" className="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom" disabled="disabled" style={{ marginLeft: "15%", marginRight: "15%" }} >
                                             {errorMsg}
                                         </button>
                                     }
