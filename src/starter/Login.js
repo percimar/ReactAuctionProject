@@ -22,7 +22,7 @@ import fb from 'fb'
 const useStyles = makeStyles(styles);
 
 export default function Login() {
-    
+
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
         setCardAnimation("");
@@ -57,7 +57,7 @@ export default function Login() {
 
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     <h4>Login</h4>
-                                    <div className={classes.socialLine}>
+                                    {/* <div className={classes.socialLine}>
                                         <Button
                                             justIcon
                                             href="#pablo"
@@ -85,56 +85,57 @@ export default function Login() {
                                         >
                                             <i className={"fab fa-google-plus-g"} />
                                         </Button>
-                                    </div>
+                                    </div> */}
                                 </CardHeader>
-                                <p className={classes.divider}>Or Be Classical</p>
-                                <CardBody>
-                                    <CustomInput
-                                        onChange={event => setEmail(event.target.value)}
-                                        labelText="Email"
-                                        id="email"
-                                        formControlProps={{
-                                            fullWidth: true
-                                        }}
-                                        inputProps={{
-                                            onChange: event => setEmail(event.target.value),
-                                            value: email,
-                                            type: "email",
-                                            endAdornment: (
-                                                <InputAdornment position="end">
-                                                    <Email className={classes.inputIconsColor} />
-                                                </InputAdornment>
-                                            )
-                                        }}
-                                    />
-                                    <div>
+                                <form className={classes.form} onSubmit={login} action="#">
+                                    <CardBody>
                                         <CustomInput
-                                            labelText="Password"
-                                            id="pass"
+                                            onChange={event => setEmail(event.target.value)}
+                                            labelText="Email"
+                                            id="email"
                                             formControlProps={{
                                                 fullWidth: true
                                             }}
                                             inputProps={{
-                                                onChange: event => setPassword(event.target.value),
-                                                value: password,
-                                                type: "password",
+                                                onChange: event => setEmail(event.target.value),
+                                                value: email,
+                                                type: "email",
                                                 endAdornment: (
                                                     <InputAdornment position="end">
-                                                        <Icon className={classes.inputIconsColor}>
-                                                            lock_outline
-                                                    </Icon>
+                                                        <Email className={classes.inputIconsColor} />
                                                     </InputAdornment>
-                                                ),
-                                                autoComplete: "off"
+                                                )
                                             }}
                                         />
-                                    </div>
-                                </CardBody>
-                                <CardFooter className={classes.cardFooter}>
-                                    <Button simple color="primary" size="lg" onClick={login}>
-                                        Login
-                                    </Button>
-                                </CardFooter>
+                                        <div>
+                                            <CustomInput
+                                                labelText="Password"
+                                                id="pass"
+                                                formControlProps={{
+                                                    fullWidth: true
+                                                }}
+                                                inputProps={{
+                                                    onChange: event => setPassword(event.target.value),
+                                                    value: password,
+                                                    type: "password",
+                                                    endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            <Icon className={classes.inputIconsColor}>
+                                                                lock_filled
+                                                    </Icon>
+                                                        </InputAdornment>
+                                                    ),
+                                                    autoComplete: "off"
+                                                }}
+                                            />
+                                        </div>
+                                    </CardBody>
+                                    <CardFooter className={classes.cardFooter}>
+                                        <Button type="submit" simple color="primary" size="lg">
+                                            Login
+                                        </Button>
+                                    </CardFooter>
+                                </form>
                             </Card>
                         </GridItem>
                     </GridContainer>

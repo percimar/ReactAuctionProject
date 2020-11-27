@@ -133,14 +133,14 @@ export default function Auction({ set, id, displayName, finish, start, status })
                             Start
                         </Primary>
                         <Info>
-                            {start.toString()}
+                            {start.toDateString()}
                         </Info>
                         <br />
                         <Primary>
                             Finish
                         </Primary>
                         <Info>
-                            {finish.toString()}
+                            {finish.toDateString()}
                         </Info>
                         <br/>
                         <Primary>
@@ -159,6 +159,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                         </Info> */}
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
+
                         {/* <Button color="primary" size="sm" onClick={showItems}>
                             Show Items
                             </Button> */}
@@ -180,6 +181,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                             //     :
                             //     null
                         }
+
                     </CardFooter>
                 </Card>
             </GridItem>

@@ -7,10 +7,11 @@ const profilePageStyle = {
   profile: {
     textAlign: "center",
     "& img": {
-      maxWidth: "160px",
+      maxWidth: "128px",
+      maxHeight: "128px",
       width: "100%",
       margin: "0 auto",
-      transform: "translate3d(0, -50%, 0)"
+      transform: "translate3d(0, -100%, 0)"
     }
   },
   description: {
