@@ -81,9 +81,11 @@ export default function AnsweredFaqs({ id, faq }) {
                                             />
                                             <div style={{ textAlign: "center" }} >
                                                 <Button simple color="info" size="lg" disabled={!valid()} onClick={update}>
-                                                    Submit Answer
+                                                <i className="material-icons">done</i>
+                                                Submit
                                                 </Button>
                                                 <Button simple color="danger" size="lg" onClick={remove}>
+                                                    <i className="material-icons">delete</i>
                                                     Delete
                                                 </Button>
                                             </div>
@@ -106,16 +108,18 @@ export default function AnsweredFaqs({ id, faq }) {
                                             />
                                             <div style={{ textAlign: "center" }} >
                                                 <Button simple color="info" size="lg" disabled={!valid()} onClick={update}>
-                                                    Update Answer
+                                                <i className="material-icons">done</i>
+                                                Update
                                                 </Button>
                                                 <Button simple color="danger" size="lg" onClick={remove}>
+                                                    <i className="material-icons">delete</i>
                                                     Delete
                                                 </Button>
                                             </div>
 
                                         </>
                                     }
-                                    
+
                                 </CardBody>
                             </Card>
                         </div>
@@ -132,7 +136,7 @@ export default function AnsweredFaqs({ id, faq }) {
                             </Card>
                         </div>
                     :
-                    faq.answer !== "" 
+                    faq.answer !== ""
                     &&
                     <div>
                         <Card className={classes[cardAnimaton]}>

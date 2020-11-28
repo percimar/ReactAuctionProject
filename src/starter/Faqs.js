@@ -15,6 +15,7 @@ import Parallax from "../components/Parallax/Parallax.js";
 import GridContainer from "../components/Grid/GridContainer.js";
 import classNames from "classnames";
 import Footer from "../components/Footer/Footer.js";
+import image from "../assets/img/bg8.jpg";
 
 import AnsweredFaqs from './AnsweredFaqs'
 
@@ -84,7 +85,7 @@ export default function Faqs() {
 
 
         <div>
-            <Parallax filter image={"assets/img/landing-bg.jpg"}>
+            <Parallax filter image={image}>
                 <div className={classes.container}>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={6}>

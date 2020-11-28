@@ -6,7 +6,7 @@ import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Item from './Item'
 import ItemForm from './ItemForm'
-import image from "../assets/img/bg7.jpg";
+import image from "../assets/img/bg8.jpg";
 import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
 
 const useStyles = makeStyles(styles);

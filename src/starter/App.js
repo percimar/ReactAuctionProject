@@ -43,7 +43,7 @@ function App() {
       <UserContext.Provider value={{ user }}>
         <Header
           color="transparent"
-          brand="myBay"
+          brand="MOTORMOB"
           leftLinks={<HeaderLinksLeft />}
           rightLinks={<HeaderLinksRight />}
           fixed
