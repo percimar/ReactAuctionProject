@@ -115,7 +115,7 @@ export default function AnsweredFaqs({ id, faq }) {
 
                                         </>
                                     }
-
+                                    
                                 </CardBody>
                             </Card>
                         </div>
@@ -132,7 +132,7 @@ export default function AnsweredFaqs({ id, faq }) {
                             </Card>
                         </div>
                     :
-                    faq.answer !== ""
+                    faq.answer !== "" 
                     &&
                     <div>
                         <Card className={classes[cardAnimaton]}>
@@ -146,15 +146,7 @@ export default function AnsweredFaqs({ id, faq }) {
 
             }
 
-            {/* <div>
-                <Card className={classes[cardAnimaton]}>
-                    <CardBody>
-                        QUESTION: {faq.question}
-                        <hr />
-                                ANSWER: {faq.answer}
-                    </CardBody>
-                </Card>
-            </div> */}
+
         </>
 
     )

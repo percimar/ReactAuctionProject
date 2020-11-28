@@ -115,7 +115,7 @@ export default function HeaderLinksRight() {
           to="/faqs"
         >
           FAQs
-          </Button>
+        </Button>
       </ListItem>
 
     </List >

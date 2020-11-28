@@ -68,9 +68,9 @@ function App() {
                       <Route path="/admin">
                         <Admin />
                       </Route>
-                      <Route path="/faqs">
+                      {/* <Route path="/faqs">
                         <Faqs />
-                      </Route>
+                      </Route> */}
                     </>
                     :
                     ""
