@@ -168,9 +168,24 @@ class Users extends DB {
 
 }
 
+
+class FAQs extends DB {
+
+    constructor() {
+        super('faqs')
+    }
+
+    reformat(doc) {
+        return {...super.reformat(doc)}
+    }
+
+
+}
+
 export default {
     Auctions: new Auctions(),
     Bids,
     Users: new Users(),
-    Items
+    Items,
+    FAQs: new FAQs()
 }

@@ -8,6 +8,7 @@ import Register from './Register'
 import Login from './Login'
 import Logout from './Logout'
 import Profile from './Profile'
+import Faqs from './Faqs'
 import LandingPage from './LandingPage'
 import AuctionItems from './AuctionItems'
 import HeaderLinksLeft from './HeaderLinksLeft'
@@ -63,9 +64,14 @@ function App() {
                 {
                   user.role === "admin"
                     ?
-                    <Route path="/admin">
-                      <Admin />
-                    </Route>
+                    <>
+                      <Route path="/admin">
+                        <Admin />
+                      </Route>
+                      <Route path="/faqs">
+                        <Faqs />
+                      </Route>
+                    </>
                     :
                     ""
                 }
@@ -81,6 +87,9 @@ function App() {
                 <Route path="/logout">
                   <Logout />
                 </Route>
+                <Route path="/faqs">
+                  <Faqs />
+                </Route>
               </>
               :
               <>
@@ -90,6 +99,10 @@ function App() {
                 <Route path="/login">
                   <Login />
                 </Route>
+                <Route path="/faqs">
+                  <Faqs />
+                </Route>
+
               </>
           }
         </Switch>
