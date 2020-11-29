@@ -18,7 +18,11 @@ import Datetime from "react-datetime";
 
 const useStyles = makeStyles(styles);
 
-export default function AuctionForm() {
+export default function AuctionForm({editObject, open}) {
+
+    if (editObject) {
+        useEffect(() => prepareEdit(editObject), [])
+    }
 
     const { user } = useContext(UserContext)
 
@@ -41,8 +45,29 @@ export default function AuctionForm() {
         start >= new Date() &&
         finish > start
 
-    const create = () =>
+    const create = () => {
         db.Auctions.create({ displayName: title, start, finish, status: "Ongoing" })
+        open(false)
+        setTitle('')
+        setStart(new Date())
+        setFinish(new Date())
+    }
+
+    const prepareEdit = (object) => {
+        console.log(object)
+        setItemId(object.id)
+        setTitle(object.displayName)
+        setStart(object.start)
+        setFinish(object.finish)
+    }
+
+    const update = () => {
+        db.Auctions.update({id: itemId, displayName: title, start, finish, status: "Ongoing"})
+        open(false)
+    }
+
+    console.log(itemId)
+
 
     return (
         <GridItem xs={12} sm={12} md={4}>
@@ -84,10 +109,16 @@ export default function AuctionForm() {
                         />
                     </FormControl>
                 </CardBody>
-                <CardFooter>
-                    <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
-                        Add Auction
+                <CardFooter className={classes.cardFooter}>
+                    <Button color="primary" size="sm" disabled={!valid()} onClick={!editObject ? create : update}>
+                        {!editObject ? 'Add Auction' : 'Save Changes'}
                     </Button>
+                    {
+                        editObject && 
+                        <Button color="primary" size="sm" onClick={() => open(false)}>    
+                            Close
+                        </Button>
+                    }
                 </CardFooter>
             </Card>
         </GridItem>

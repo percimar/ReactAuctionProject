@@ -93,8 +93,8 @@ export default function Auctions() {
                     <Button simple='true' color="primary" size="large" onClick={() => setViewCategory(!viewCategory)}>View Auctions By Category</Button>
                   }
                   {
-                    user && user.role === 'admin' && categoryId=='' && 
-                    <Button simple='true' color="primary" size="large" onClick={() => setAddAuction(!addAuction)}>{ !addAuction ? 'Add Auction' : 'Close Form' }</Button>
+                    user && user.role === 'admin' && !categoryId &&
+                    <Button simple='true' color="primary" size="large" onClick={() => setAddAuction(!addAuction)}>Add Auction</Button>
                   }
                 </GridItem>
               </GridContainer>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import db from '../db'
 import GridItem from "../components/Grid/GridItem.js";
 import Button from "../components/CustomButtons/Button.js";
@@ -9,10 +9,18 @@ import CardFooter from "../components/Card/CardFooter.js";
 import CustomInput from "../components/CustomInput/CustomInput.js";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
+import UserContext from '../UserContext'
 
 const useStyles = makeStyles(styles);
 
-export default function ItemForm({ userId }) {
+export default function ItemForm({auctionId, open, editObject}) {
+
+    if (editObject) {
+        console.log(editObject)
+        useEffect(() => prepareEdit(editObject), [])
+    }
+
+    const { user } = useContext(UserContext)
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
@@ -29,8 +37,24 @@ export default function ItemForm({ userId }) {
         description !== "" &&
         picture !== ""
 
-    const create = () =>
-        db.Users.createUserItem(userId, { name, description, picture })
+    const create = () => {
+        // db.Users.createUserItem(userId, { name, description, picture })
+        db.Auctions.Items.addItem(auctionId, {name, description, picture, catId: '', sellerUserId: user.id})
+        setView(false)
+    }
+
+    const prepareEdit = (object) => {
+        setName(object.name)
+        setDescription(object.description)
+        setPicture(object.picture)
+    }
+
+    const edit = () => {
+    }
+
+    const remove = () => {
+
+    }
 
     return (
         <GridItem xs={12} sm={12} md={4}>
@@ -60,9 +84,12 @@ export default function ItemForm({ userId }) {
                         inputProps={{
                             onChange: event => setDescription(event.target.value),
                             value: description,
-                            type: "text"
+                            type: "text",
+                            multiline: true,
+                            rows: 5
                         }}
                     />
+
                     <CustomInput
                         labelText="Picture"
                         id="picture"
@@ -77,9 +104,22 @@ export default function ItemForm({ userId }) {
                     />
                 </CardBody>
                 <CardFooter className={classes.cardFooter}>
-                    <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
-                        Add Item
-                    </Button>
+                    {
+                        !editObject ? 
+                        <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
+                            Add Item
+                        </Button>
+                        :
+                        <>
+                        <Button simple color="primary" size="lg" disabled={!valid()} onClick={edit}>
+                            Save Changes
+                        </Button>
+                        <Button simple color="primary" size="lg" onClick={() => open(false)}>
+                            Cancel
+                        </Button>
+                        </>
+                    }
+                    
                 </CardFooter>
             </Card>
         </GridItem>

@@ -18,8 +18,12 @@ import Datetime from "react-datetime";
 
 const useStyles = makeStyles(styles);
 
-export default function AuctionForm() {
+export default function CategoryForm({ editObject, open }) {
 
+    if (editObject) {
+        useEffect(() => prepareEdit(editObject), [])
+    }
+    
     const { user } = useContext(UserContext)
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
@@ -27,7 +31,7 @@ export default function AuctionForm() {
         setCardAnimation("");
     }, 700);
     const classes = useStyles();
-
+    const [itemId, setItemId] = useState("")
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
 
@@ -35,8 +39,21 @@ export default function AuctionForm() {
         name !== "" &&
         description !== ""
 
-    const create = () =>
+    const create = () => {
         db.Categories.create({ name, description })
+        open(false)
+    }
+        
+    const prepareEdit = (object) => {
+        setName(object.name)
+        setDescription(object.description)
+    }
+
+    const update = () => {
+        db.Categories.update({id: itemId, name, description})
+        open(false)
+        console.log('updated')
+    }
 
     return (
         <GridItem xs={12} sm={12} md={4}>
@@ -48,9 +65,23 @@ export default function AuctionForm() {
                     <TextField onChange={event => setDescription(event.target.value)} label='Description' value={description}>Description</TextField>
                 </CardBody>
                 <CardFooter>
-                    <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
-                        Add Category
+                    {
+                        !editObject ?
+                            <Button color="primary" size="sm" disabled={!valid()} onClick={create}>
+                                Add Category
                     </Button>
+                            :
+                            <>
+                            <Button color="primary" size="sm" onClick={update}>
+                                Save Changes
+                            </Button>
+                            <br/>
+                            <Button color="primary" size="sm" onClick={() => open(false)}>
+                                Cancel
+                            </Button>
+                            </>
+                    }
+
                 </CardFooter>
             </Card>
         </GridItem>
