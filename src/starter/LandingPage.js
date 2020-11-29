@@ -7,6 +7,7 @@ import GridItem from "../components/Grid/GridItem.js";
 import Parallax from "../components/Parallax/Parallax.js";
 import styles from "../assets/jss/material-kit-react/views/landingPage.js";
 import Auctions from "./Auctions.js";
+import image from "../assets/img/bg8.jpg";
 
 const useStyles = makeStyles(styles);
 
@@ -14,13 +15,13 @@ export default function LandingPage() {
   const classes = useStyles();
   return (
     <div>
-      <Parallax filter image={"assets/img/landing-bg.jpg"}>
+      <Parallax filter image={image}>
         <div className={classes.container}>
           <GridContainer>
             <GridItem xs={12} sm={12} md={6}>
-              <h1 className={classes.title}>myBay Auction Site</h1>
+              <h1 className={classes.title}>MOTORMOB</h1>
               <h4>
-                Buy and Sell
+              Where timing matters
               </h4>
             </GridItem>
           </GridContainer>
