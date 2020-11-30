@@ -74,7 +74,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
     }, [items])
 
     console.log(categories)
-    
+
     //for display
     // const [catNames, setCatNames] = useState([])
     // useEffect(() => {
@@ -173,11 +173,11 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     </Primary>
                                     <Info>
                                         {
-                                        // catNames.map(item => item).join(', ')
-                                        categories.map(item => item.name).join(', ')
+                                            // catNames.map(item => item).join(', ')
+                                            categories.map(item => item.name).join(', ')
                                         }
                                     </Info>
-                                    <br/>
+                                    <br />
                                     <Primary>
                                         Accepting Item Submissions
                                     </Primary>

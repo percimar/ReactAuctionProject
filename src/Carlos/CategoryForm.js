@@ -1,14 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import db from '../../db'
-import UserContext from '../../UserContext'
-import GridItem from "../../components/Grid/GridItem.js";
-import Button from "../../components/CustomButtons/Button.js";
-import Card from "../../components/Card/Card.js";
-import CardBody from "../../components/Card/CardBody.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardFooter from "../../components/Card/CardFooter.js";
+import db from '../db'
+import UserContext from '../UserContext'
+import GridItem from "../components/Grid/GridItem.js";
+import Button from "../components/CustomButtons/Button.js";
+import Card from "../components/Card/Card.js";
+import CardBody from "../components/Card/CardBody.js";
+import CardHeader from "../components/Card/CardHeader.js";
+import CardFooter from "../components/Card/CardFooter.js";
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "../../assets/jss/material-kit-react/views/loginPage.js";
+import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';

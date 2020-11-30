@@ -3,14 +3,14 @@
 import db from '../db'
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from '../UserContext'
-import AuctionDetails from './Carlos/AuctionDetails'
+import AuctionDetails from '../Carlos/AuctionDetails'
 import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Auction from './Auction'
 import AuctionForm from './AuctionForm'
-import Category from './Carlos/Category'
-import CategoryForm from './Carlos/CategoryForm'
+import Category from '../Carlos/Category'
+import CategoryForm from '../Carlos/CategoryForm'
 import Button from '@material-ui/core/Button'
 import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
 
@@ -37,7 +37,7 @@ export default function Auctions() {
   const [viewCategory, setViewCategory] = useState(false)
 
   const selectNewCategory = (catId, name) => {
-    if(catId === '') {
+    if (catId === '') {
       db.Auctions.listenToUnfinished(setAuctions)
     }
     setCategoryId(catId)
@@ -85,7 +85,7 @@ export default function Auctions() {
                   {
                     categoryId &&
                     <>
-                      <Button simple='true' color="primary" size="large" onClick={() => selectNewCategory('','')}>View All Auctions</Button>
+                      <Button simple='true' color="primary" size="large" onClick={() => selectNewCategory('', '')}>View All Auctions</Button>
                     </>
                   }
                   {
@@ -123,6 +123,10 @@ export default function Auctions() {
           <>
             <GridContainer justify="center">
               <GridItem xs={12} sm={12} md={8}>
+
+                <h2 className={classes.title}>Current Auctions</h2>
+                <br /><br />
+
                 <h2 className={classes.title}>Categories</h2>
                 {
                   categoryName &&

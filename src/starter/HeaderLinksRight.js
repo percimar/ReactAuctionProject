@@ -96,6 +96,22 @@ export default function HeaderLinksRight() {
       {
         user
         &&
+        user.role === "user"
+        &&
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            component={Link}
+            to="/following"
+          >
+            My Following
+          </Button>
+        </ListItem>
+      }
+      {
+        user
+        &&
         <ListItem className={classes.listItem}>
           <Button
             color="transparent"
@@ -107,6 +123,7 @@ export default function HeaderLinksRight() {
           </Button>
         </ListItem>
       }
+
     </List >
   );
 }

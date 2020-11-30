@@ -8,6 +8,7 @@ import Register from './Register'
 import Login from './Login'
 import Logout from './Logout'
 import Profile from './Profile'
+import Faqs from './Faqs'
 import LandingPage from './LandingPage'
 import AuctionItems from './AuctionItems'
 import HeaderLinksLeft from './HeaderLinksLeft'
@@ -16,6 +17,7 @@ import Header from "./Header";
 import Admin from "./Admin";
 import UserItems from "./UserItems";
 import UserAuctions from "./UserAuctions";
+import Following from '../Mahmoud/Following'
 import UserContext from '../UserContext'
 
 function App() {
@@ -42,7 +44,7 @@ function App() {
       <UserContext.Provider value={{ user }}>
         <Header
           color="transparent"
-          brand="myBay"
+          brand="MOTORMOB"
           leftLinks={<HeaderLinksLeft />}
           rightLinks={<HeaderLinksRight />}
           fixed
@@ -63,9 +65,14 @@ function App() {
                 {
                   user.role === "admin"
                     ?
-                    <Route path="/admin">
-                      <Admin />
-                    </Route>
+                    <>
+                      <Route path="/admin">
+                        <Admin />
+                      </Route>
+                      {/* <Route path="/faqs">
+                        <Faqs />
+                      </Route> */}
+                    </>
                     :
                     ""
                 }
@@ -81,8 +88,14 @@ function App() {
                 <Route path="/profile">
                   <Profile />
                 </Route>
+                <Route path="/following">
+                  <Following />
+                </Route>
                 <Route path="/logout">
                   <Logout />
+                </Route>
+                <Route path="/faqs">
+                  <Faqs />
                 </Route>
               </>
               :
@@ -93,6 +106,10 @@ function App() {
                 <Route path="/login">
                   <Login />
                 </Route>
+                <Route path="/faqs">
+                  <Faqs />
+                </Route>
+
               </>
           }
         </Switch>
