@@ -46,15 +46,14 @@ export default function AuctionForm({editObject, open}) {
         finish > start
 
     const create = () => {
-        db.Auctions.create({ displayName: title, start, finish, status: "Ongoing" })
         open(false)
+        db.Auctions.create({ displayName: title, start, finish, status: "Ongoing" })
         setTitle('')
         setStart(new Date())
         setFinish(new Date())
     }
 
     const prepareEdit = (object) => {
-        console.log(object)
         setItemId(object.id)
         setTitle(object.displayName)
         setStart(object.start)
@@ -63,11 +62,9 @@ export default function AuctionForm({editObject, open}) {
 
     const update = () => {
         db.Auctions.update({id: itemId, displayName: title, start, finish, status: "Ongoing"})
+        console.log(open)
         open(false)
     }
-
-    console.log(itemId)
-
 
     return (
         <GridItem xs={12} sm={12} md={4}>

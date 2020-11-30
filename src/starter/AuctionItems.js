@@ -32,7 +32,7 @@ export default function AuctionItems() {
 
     const [items, setItem] = useState([])
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItem, AuctionId), [AuctionId])
-    console.log("item: ", items)
+    // console.log("item: ", items)
 
     const [addItem, setAddItem] = useState(false)
 
