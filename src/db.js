@@ -55,7 +55,7 @@ class DB {
     listenOne = (set, id) => {
         return db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
     }
-        
+
 
     // item has no id
     create = ({ id, ...rest }) =>
@@ -82,7 +82,7 @@ class Auctions extends DB {
 
     reformat(doc) {
         // return { ...super.reformat(doc)}
-        return { ...super.reformat(doc), start: doc.data().start.toDate(), finish: doc.data().finish.toDate()}
+        return { ...super.reformat(doc), start: doc.data().start.toDate(), finish: doc.data().finish.toDate() }
     }
 
     findAuctionBids = auctionId =>
@@ -109,14 +109,14 @@ class Auctions extends DB {
 }
 
 class Items extends DB {
-    
+
     constructor(containing) {
         super('items')
         this.containing = containing
     }
 
     reformat(doc) {
-        return {...super.reformat(doc)}
+        return { ...super.reformat(doc) }
     }
 
     findOneAuctionAllItems = async auctionId => {
@@ -137,12 +137,11 @@ class Items extends DB {
     }
 }
 
-
-
 class Users extends DB {
 
     constructor() {
         super('users')
+        this.Following = new Following(this.collection)
     }
 
     findByRole = role =>
@@ -168,9 +167,38 @@ class Users extends DB {
 
 }
 
+class Following extends DB {
+
+    constructor(containing) {
+        super('following')
+        this.containing = containing
+    }
+    reformat(doc) {
+        return { ...super.reformat(doc) }
+    }
+
+    listenToOneUserAllFollowing = (set, userId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToFollowingByAuction = (set, userId, auctionId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).where("auctionId", "==", auctionId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+        // db.collection(this.containing).doc(userId).
+    }
+    removeOneFollowing = (userId, followingId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).doc(followingId).delete()
+    }
+
+    addFollowing = (userId, { id, ...rest }) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).add(rest)
+    }
+
+}
+
 export default {
     Auctions: new Auctions(),
     Bids,
     Users: new Users(),
-    Items
+    Items,
+    Following
 }

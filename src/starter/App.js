@@ -16,6 +16,7 @@ import Header from "./Header";
 import Admin from "./Admin";
 import UserItems from "./UserItems";
 import UserAuctions from "./UserAuctions";
+import Following from './Mahmoud/Following'
 import UserContext from '../UserContext'
 
 function App() {
@@ -77,6 +78,9 @@ function App() {
                 </Route>
                 <Route path="/profile">
                   <Profile />
+                </Route>
+                <Route path="/following">
+                  <Following />
                 </Route>
                 <Route path="/logout">
                   <Logout />

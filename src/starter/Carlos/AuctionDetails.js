@@ -23,11 +23,28 @@ export default function AuctionDetails({ set, id }) {
   const [items, setItems] = useState([])
   useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItems, id))
 
+  const [Followedauction, setFollowing] = useState(null)
+  useEffect(() => db.Users.Following.listenToFollowingByAuction(setFollowing, user.id, id))
+
+  const addfollow = () => {
+    db.Users.Following.addFollowing(user.id, { auctionId: id, notifications: false })
+  }
+  const removefollow = () => {
+    db.Users.Following.removeOneFollowing(user.id, Followedauction[0].id)
+  }
   return (
     <div className={classes.section}>
       <GridContainer justify="center">
         <GridItem xs={12} sm={12} md={8}>
           <Button simple="true" color="primary" size="large" onClick={() => set(null)}>Back to Auctions</Button>
+          {
+            Followedauction == null || Followedauction.length == 0 ?
+              <>
+                <Button simple="true" color="primary" size="large" onClick={() => addfollow()}>Add to Following</Button>
+              </> :
+              <Button simple="true" color="primary" size="large" onClick={() => removefollow()}>Remove from Following</Button>
+          }
+
           {
             //When auction is loading
             !auction ?
