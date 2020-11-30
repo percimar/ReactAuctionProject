@@ -1,17 +1,17 @@
 
 import React, { useState, useEffect, useContext } from "react";
-import UserContext from '../../UserContext'
-import GridItem from "../../components/Grid/GridItem.js";
-import Button from "../../components/CustomButtons/Button.js";
-import Card from "../../components/Card/Card.js";
-import CardBody from "../../components/Card/CardBody.js";
-import CardHeader from "../../components/Card/CardHeader.js";
-import CardFooter from "../../components/Card/CardFooter.js";
-import Info from "../../components/Typography/Info.js";
-import Primary from "../../components/Typography/Primary.js";
+import UserContext from '../UserContext'
+import GridItem from "../components/Grid/GridItem.js";
+import Button from "../components/CustomButtons/Button.js";
+import Card from "../components/Card/Card.js";
+import CardBody from "../components/Card/CardBody.js";
+import CardHeader from "../components/Card/CardHeader.js";
+import CardFooter from "../components/Card/CardFooter.js";
+import Info from "../components/Typography/Info.js";
+import Primary from "../components/Typography/Primary.js";
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "../../assets/jss/material-kit-react/views/loginPage.js";
-import db from '../../db'
+import styles from "../assets/jss/material-kit-react/views/loginPage.js";
+import db from '../db'
 
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
@@ -20,7 +20,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Close from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
-import CustomInput from "../../components/CustomInput/CustomInput.js";
+import CustomInput from "../components/CustomInput/CustomInput.js";
 import CategoryForm from './CategoryForm'
 import { useHistory } from 'react-router-dom';
 
