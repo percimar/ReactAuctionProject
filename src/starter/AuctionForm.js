@@ -13,11 +13,16 @@ import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import TextField from '@material-ui/core/TextField'
 import Datetime from "react-datetime";
 
 const useStyles = makeStyles(styles);
 
-export default function AuctionForm() {
+export default function AuctionForm({editObject, open}) {
+
+    if (editObject) {
+        useEffect(() => prepareEdit(editObject), [])
+    }
 
     const { user } = useContext(UserContext)
 
@@ -28,28 +33,50 @@ export default function AuctionForm() {
     const classes = useStyles();
 
     const [itemId, setItemId] = useState("")
+    const [title, setTitle] = useState("")
     const [start, setStart] = useState(new Date())
     const [finish, setFinish] = useState(new Date())
 
     const [items, setItems] = useState([])
-    useEffect(() => db.Users.listenToUserItems(setItems, user.id), [user.id])
+    // useEffect(() => db.Users.listenToUserItems(setItems, user.id), [user.id])
 
     const valid = () =>
-        itemId !== "" &&
+        title !== "" &&
         start >= new Date() &&
         finish > start
 
-    const create = () =>
-        db.Auctions.create({ sellerId: user.id, itemId, buyerId: "", name: itemId, start, finish, status: "" })
+    const create = () => {
+        db.Auctions.create({ displayName: title, start, finish, status: "Ongoing" })
+        open(false)
+        setTitle('')
+        setStart(new Date())
+        setFinish(new Date())
+    }
+
+    const prepareEdit = (object) => {
+        console.log(object)
+        setItemId(object.id)
+        setTitle(object.displayName)
+        setStart(object.start)
+        setFinish(object.finish)
+    }
+
+    const update = () => {
+        db.Auctions.update({id: itemId, displayName: title, start, finish, status: "Ongoing"})
+        open(false)
+    }
+
+    console.log(itemId)
+
 
     return (
         <GridItem xs={12} sm={12} md={4}>
             <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary" className={classes.cardHeader}>
-
+                    <TextField onChange={event => setTitle(event.target.value)} label='Name' value={title}>Auction Name</TextField>
                 </CardHeader>
                 <CardBody>
-                    <FormControl>
+                    {/* <FormControl>
                         <InputLabel id="itemId">Item</InputLabel>
                         <Select
                             labelId="itemId"
@@ -61,8 +88,8 @@ export default function AuctionForm() {
                                 items.map(item => <MenuItem key={item.id} value={item.id}>{item.name}</MenuItem>)
                             }
                         </Select>
-                    </FormControl>
-                    <br/>
+                    </FormControl> */}
+                    <br />
                     <FormControl>
                         <Datetime
                             value={start}
@@ -82,10 +109,16 @@ export default function AuctionForm() {
                         />
                     </FormControl>
                 </CardBody>
-                <CardFooter>
-                    <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
-                        Add Auction
+                <CardFooter className={classes.cardFooter}>
+                    <Button color="primary" size="sm" disabled={!valid()} onClick={!editObject ? create : update}>
+                        {!editObject ? 'Add Auction' : 'Save Changes'}
                     </Button>
+                    {
+                        editObject && 
+                        <Button color="primary" size="sm" onClick={() => open(false)}>    
+                            Close
+                        </Button>
+                    }
                 </CardFooter>
             </Card>
         </GridItem>

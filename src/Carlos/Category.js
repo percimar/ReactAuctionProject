@@ -21,6 +21,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Close from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import CustomInput from "../components/CustomInput/CustomInput.js";
+import CategoryForm from './CategoryForm'
 import { useHistory } from 'react-router-dom';
 
 const Transition = React.forwardRef(function Transition(props, ref) {
@@ -47,38 +48,139 @@ export default function Category({ set, category, id, description, name }) {
 
     const [classicModal, setClassicModal] = React.useState(false);
 
+    const [deleteModal, setDeleteModal] = useState(false)
+
     const history = useHistory()
+
+    const [editForm, setEditForm] = useState(false)
+
+    const editCategory = () => {
+        setEditForm(!editForm)
+    }
+
+    const confirmDelete = () => {
+        setDeleteModal(true)
+    }
+
+    const deleteCategory = (id) => {
+        // add map that removes items in auction
+        db.Categories.remove(id)
+        setDeleteModal(false)
+        console.log('deleted ' + id)
+    }
 
 
     return (
         <>
-            <GridItem xs={12} sm={12} md={4}>
-                <Card className={classes[cardAnimaton]}>
-                    <CardHeader color="primary" className={classes.cardHeader}>
-                        {/* <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} /> */}
-                    </CardHeader>
-                    <CardBody>
-                        <Primary>
-                            Category
+            {
+                !editForm ?
+                    <>
+                        <GridItem xs={12} sm={12} md={4}>
+                            <Card className={classes[cardAnimaton]}>
+                                <CardHeader color="primary" className={classes.cardHeader}>
+                                    {/* <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} /> */}
+                                </CardHeader>
+                                <CardBody>
+                                    <Primary>
+                                        Category
                         </Primary>
-                        <Info>
-                            {name}
-                        </Info>
-                        <br />
-                        <Primary>
-                            Description
+                                    <Info>
+                                        {name}
+                                    </Info>
+                                    <br />
+                                    <Primary>
+                                        Description
                         </Primary>
-                        <Info>
-                            {description}
-                        </Info>
-                    </CardBody>
-                    <CardFooter className={classes.cardFooter}>
-                        <Button color="primary" size="sm" onClick={() => set(id, name)}>
-                            See Auctions in Category
+                                    <Info>
+                                        {description}
+                                    </Info>
+                                </CardBody>
+                                <CardFooter className={classes.cardFooter}>
+                                    <Button color="primary" size="sm" onClick={() => set(id, name)}>
+                                        Set Category
                             </Button>
-                    </CardFooter>
-                </Card>
-            </GridItem>
+                                    <br />
+                                    {
+                                        user && user.role == 'admin' &&
+                                        <>
+                                            <Button color="primary" size="sm" onClick={() => editCategory(id)}>
+                                                Edit
+                            </Button>
+                                            <Button color="primary" size="sm" onClick={() => confirmDelete(id)}>
+                                                X
+                        </Button>
+                                        </>
+                                    }
+                                </CardFooter>
+                            </Card>
+                        </GridItem>
+
+                        <Dialog
+                            classes={{
+                                root: classes.center,
+                                paper: classes.modal
+                            }}
+                            open={deleteModal}
+                            TransitionComponent={Transition}
+                            keepMounted
+                            onClose={() => setDeleteModal(false)}
+                            aria-labelledby="classic-modal-slide-title"
+                            aria-describedby="classic-modal-slide-description"
+                        >
+                            <DialogTitle
+                                id="classic-modal-slide-title"
+                                disableTypography
+                                className={classes.modalHeader}
+                            >
+                                <IconButton
+                                    className={classes.modalCloseButton}
+                                    key="close"
+                                    aria-label="Close"
+                                    color="inherit"
+                                    onClick={() => setDeleteModal(false)}
+                                >
+                                    <Close className={classes.modalClose} />
+                                </IconButton>
+                                {/* <h4 className={classes.modalTitle}>Delete Auction?</h4> */}
+                            </DialogTitle>
+                            <DialogContent>
+                            </DialogContent>
+                            <DialogContent
+                                id="classic-modal-slide-description"
+                                className={classes.modalBody}
+                            >
+                                Delete {name}?
+                        {/* <CustomInput
+                            labelText="Amount"
+                            id="amount"
+                            formControlProps={{
+                                fullWidth: true
+                            }}
+                            inputProps={{
+                                onChange: event => setAmount(event.target.value),
+                                value: amount,
+                                type: "number"
+                            }}
+                        /> */}
+                            </DialogContent>
+                            <DialogActions className={classes.modalFooter}>
+                                <Button
+                                    onClick={() => deleteCategory(id)}
+                                    color="danger"
+                                    simple
+                                >
+                                    Delete
+                        </Button>
+                                <Button color="transparent" simple onClick={() => setDeleteModal(false)}>
+                                    Cancel
+                        </Button>
+
+                            </DialogActions>
+                        </Dialog>
+                    </>
+                    :
+                    <CategoryForm editObject={{ id, name, description }} open={setEditForm} />
+            }
         </>
     )
 }

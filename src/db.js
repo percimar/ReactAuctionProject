@@ -72,7 +72,7 @@ class DB {
     }
 }
 
-const Bids = 'bids'
+// const Bids = 'bids'   
 // const Items = 'items'
 
 class Auctions extends DB {
@@ -104,7 +104,7 @@ class Auctions extends DB {
         db.collection(this.collection).where("sellerId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
 
     listenToUnfinished = set => {
-        return db.collection(this.collection).where("status", '==', "Ongoing").onSnapshot(snap => set(snap.docs.map(this.reformat)))
+        return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
     createAuctionBid = (auctionId, { id, ...rest }) =>
         db.collection(this.collection).doc(auctionId).collection(Bids).add(rest)
@@ -128,7 +128,10 @@ class Categories extends DB {
     }
 
     listenOne = async (set, catId) => {
-        return db.collection(this.collection).doc(catId).onSnapshot(snap => set(categories => [...categories, this.reformat(snap)]))
+        console.log('cat Id', catId)
+        //use forEach function ?
+        return db.collection(this.collection).doc(catId).onSnapshot(snap => set(categories =>
+            [...categories, this.reformat(snap)]))
     }
 }
 
@@ -137,6 +140,7 @@ class Items extends DB {
     constructor(containing) {
         super('items')
         this.containing = containing
+        this.Bids = new Bids(this.containing, this.collection)
     }
 
     reformat(doc) {
@@ -180,15 +184,32 @@ class Items extends DB {
     //     })
     // }
 
-    getItemsWithCategory = async (auctionId, categoryId, set, array) => {
-       
-    }
-
-
-
     // listenToCategory = (set, auctionId, itemId) => {
     //     return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId)
     // }
+}
+
+class Bids extends DB {
+
+    constructor(topContainer, containing) {
+        super('bids')
+        this.topContainer = topContainer
+        this.containing = containing
+    }
+
+    createBid = (auctionId, itemId, bid) => {
+        db.collection(this.topContainer).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).add(bid)
+    }
+
+    listenToOneItemAllBids = (auctionId, itemId, set) => {
+        db.collection(this.topContainer).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    findHighest = async (auctionId, itemId, set) => {
+        // db.collection(this.topContainer).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).orderBy('amount').limit(1).onSnapshot(snap => set(this.reformat(snap)))
+        db.collection(this.topContainer).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).orderBy('amount').limit(1).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
 }
 
 class Users extends DB {
@@ -264,7 +285,7 @@ class FAQs extends DB {
 
 export default {
     Auctions: new Auctions(),
-    Bids,
+    Bids: new Bids(),
     Users: new Users(),
     Following,
     FAQs: new FAQs(),

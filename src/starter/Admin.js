@@ -54,16 +54,17 @@ export default function Admin() {
         // get all users (if just reset, logout and login as existing user to generate user document in db)
         // add sample items, auctions, and bids for them
 
-        const users = await db.Users.findByRole('user')
-        await Promise.all(
-            users.map(
-                async user => {
-                    const itemDoc = await db.Users.createUserItem(user.id, { name: 'Cat', description: 'Furry', picture: "" })
-                    const auctionDoc = await db.Auctions.create({ sellerId: user.id, itemId: itemDoc.id, buyerId: "", start: new Date(), finish: new Date(), status: ""})
-                    await db.Auctions.createAuctionBid(auctionDoc.id, { amount: 10, buyerId: user.id, when: new Date() })
-                }
-            )
-        )
+        // const users = await db.Users.findByRole('user')
+        // await Promise.all(
+        //     users.map(
+        //         async user => {
+        //             const itemDoc = await db.Users.createUserItem(user.id, { name: 'Cat', description: 'Furry', picture: "" })
+        //             const auctionDoc = await db.Auctions.create({ sellerId: user.id, itemId: itemDoc.id, buyerId: "", start: new Date(), finish: new Date(), status: ""})
+        //             await db.Auctions.createAuctionBid(auctionDoc.id, { amount: 10, buyerId: user.id, when: new Date() })
+        //         }
+        //     )
+        // )
+        //add sample auctions
     }
 
     return (
