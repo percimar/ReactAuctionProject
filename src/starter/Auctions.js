@@ -126,7 +126,7 @@ export default function Auctions() {
               <GridContainer style={{ marginTop: '30px' }}>
                 {
                   addAuction &&
-                  <AuctionForm />
+                  <AuctionForm open={addAuction}/>
                 }
                 {
                   auctions ?
