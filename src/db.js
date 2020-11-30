@@ -283,6 +283,18 @@ class FAQs extends DB {
 
 }
 
+class Bugs extends DB {
+
+    constructor() {
+        super('bugs')
+    }
+
+    reformat(doc) {
+        return {...super.reformat(doc)}
+    }
+
+}
+
 export default {
     Auctions: new Auctions(),
     Bids: new Bids(),
@@ -290,5 +302,6 @@ export default {
     Following,
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Items: new Items()
+    Items: new Items(),
+    Bugs: new Bugs()
 }
