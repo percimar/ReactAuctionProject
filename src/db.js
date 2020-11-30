@@ -242,7 +242,7 @@ export default {
     Auctions: new Auctions(),
     Bids,
     Users: new Users(),
-    FAQs: new FAQs()
+    FAQs: new FAQs(),
     Categories: new Categories(),
     Items: new Items()
 }
