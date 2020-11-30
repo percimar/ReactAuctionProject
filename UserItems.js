@@ -18,7 +18,7 @@ export default function UserItems() {
   const classes = useStyles();
 
   const [items, setItems] = useState([])
-  useEffect(() => db.Users.listenToUserItems(setItems, user.id), [user.id])
+  // useEffect(() => db.Users.listenToUserItems(setItems, user.id), [user.id])
 
   return (
     <div
@@ -37,11 +37,11 @@ export default function UserItems() {
         </GridContainer>
         <GridContainer>
           {
-            items.map(item =>
-              <Item key={item.id} userId={user.id} {...item} />
-            )
+            // items.map(item =>
+            //   <Item key={item.id} userId={user.id} {...item} />
+            // )
           }
-          <ItemForm userId={user.id} />
+          {/* <ItemForm userId={user.id} /> */}
         </GridContainer>
       </div>
     </div>

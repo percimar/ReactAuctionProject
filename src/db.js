@@ -152,6 +152,10 @@ class Items extends DB {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
+    listenToItemsByUser = (set, auctionId, itemId, userId) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).where("sellerId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
     // findCategories = async (auctionId, itemId) => {
     //     const cat = await db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).get()
     //     console.log(this.reformat(cat).catId)
@@ -181,7 +185,7 @@ class Items extends DB {
     // }
 
     getItemsWithCategory = async (auctionId, categoryId, set, array) => {
-       
+
     }
 
 
@@ -257,7 +261,7 @@ class FAQs extends DB {
     }
 
     reformat(doc) {
-        return {...super.reformat(doc)}
+        return { ...super.reformat(doc) }
     }
 
 }
