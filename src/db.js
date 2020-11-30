@@ -267,7 +267,7 @@ export default {
     Bids,
     Users: new Users(),
     Following,
-    FAQs: new FAQs()
+    FAQs: new FAQs(),
     Categories: new Categories(),
     Items: new Items()
 }

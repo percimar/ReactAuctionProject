@@ -52,7 +52,7 @@ export default function Following({ id }) {
                         <br />
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                        <Button simple="true" color="primary" size="large" onClick={() => <AuctionDetails id={id} />}>See Auction Details</Button>
+                        <Button simple color="primary" size="lg" onClick={() => <AuctionDetails id={id} />}>See Auction Details</Button>
                     </CardFooter>
                 </Card>
             </GridItem>

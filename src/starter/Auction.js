@@ -166,7 +166,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                         <Button color="primary" size="sm" onClick={() => set(id)}>
                             See Details
                             </Button>
-                        <Button color="primary" size="sm" onClick={() => edit(id)}>
+                        <Button color="primary" size="sm" onClick={() => editAuction(id)}>
                             Edit
                             </Button>
                         <Button color="primary" size="sm" onClick={() => deleteAuction(id)}>
