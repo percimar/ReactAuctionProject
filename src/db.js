@@ -1,3 +1,5 @@
+//Carlos: Added Categories, modified auctions and items to query with category 
+
 import fb from './fb'
 
 const db = fb.firestore()
@@ -101,11 +103,33 @@ class Auctions extends DB {
     listenToAuctionsByUser = (set, userId) =>
         db.collection(this.collection).where("sellerId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
 
-    listenToUnfinished = set =>
-        db.collection(this.collection).where("status", '==', "Ongoing").onSnapshot(snap => set(snap.docs.map(this.reformat)))
-
+    listenToUnfinished = set => {
+        return db.collection(this.collection).where("status", '==', "Ongoing").onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
     createAuctionBid = (auctionId, { id, ...rest }) =>
         db.collection(this.collection).doc(auctionId).collection(Bids).add(rest)
+
+    // listenByCategory = (set, array) => {
+    //     return db.collection(this.collection).where('id', 'in', array).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    // }
+
+    listenByCategory = (set, array) => {
+        return db.collection(this.collection).where(fb.firestore.FieldPath.documentId(), 'in', array).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+}
+
+class Categories extends DB {
+    constructor() {
+        super('categories')
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc) }
+    }
+
+    listenOne = async (set, catId) => {
+        return db.collection(this.collection).doc(catId).onSnapshot(snap => set(categories => [...categories, this.reformat(snap)]))
+    }
 }
 
 class Items extends DB {
@@ -128,6 +152,11 @@ class Items extends DB {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
+    // findCategories = async (auctionId, itemId) => {
+    //     const cat = await db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).get()
+    //     console.log(this.reformat(cat).catId)
+    // }
+
     removeOneItem = (auctionId, itemId) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).delete()
     }
@@ -135,6 +164,31 @@ class Items extends DB {
     addItem = (auctionId, { id, ...rest }) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).add(rest)
     }
+
+    listenWithCategory = (set, array, catId, auctionId) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).onSnapshot(snap => snap.size > 0 ? set(array => [...array, auctionId]) : '')
+    }
+
+    // listenWithCategory = (set, array, catId, auctionId) => {
+    //     const ref = db.collection('auctions').doc(auctionId).collection('items').where('catId', '==', 'X54I5YSOuNkcWuimFrzc')
+    //     return ref.get().then((docSnapshot) => {
+    //         if(docSnapshot.size > 0) {
+    //             console.log('it do be existing tho')
+    //         } else {
+    //             console.log('eyo where it at tho')
+    //         }   
+    //     })
+    // }
+
+    getItemsWithCategory = async (auctionId, categoryId, set, array) => {
+       
+    }
+
+
+
+    // listenToCategory = (set, auctionId, itemId) => {
+    //     return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId)
+    // }
 }
 
 class Users extends DB {
@@ -167,6 +221,7 @@ class Users extends DB {
 
 }
 
+
 class Following extends DB {
 
     constructor(containing) {
@@ -195,10 +250,24 @@ class Following extends DB {
 
 }
 
+class FAQs extends DB {
+
+    constructor() {
+        super('faqs')
+    }
+
+    reformat(doc) {
+        return {...super.reformat(doc)}
+    }
+
+}
+
 export default {
     Auctions: new Auctions(),
     Bids,
     Users: new Users(),
-    Items,
-    Following
+    Following,
+    FAQs: new FAQs()
+    Categories: new Categories(),
+    Items: new Items()
 }

@@ -6,7 +6,7 @@ import GridItem from "../components/Grid/GridItem.js";
 import Button from "../components/CustomButtons/Button.js";
 import Card from "../components/Card/Card.js";
 import styles from "../assets/jss/material-kit-react/views/landingPageSections/teamStyle.js";
-import image from "../assets/img/bg7.jpg";
+import image from "../assets/img/bg8.jpg";
 
 const useStyles = makeStyles(styles);
 

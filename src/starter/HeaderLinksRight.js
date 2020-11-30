@@ -123,6 +123,17 @@ export default function HeaderLinksRight() {
           </Button>
         </ListItem>
       }
+      <ListItem className={classes.listItem}>
+        <Button
+          color="transparent"
+          className={classes.navLink}
+          component={Link}
+          to="/faqs"
+        >
+          FAQs
+        </Button>
+      </ListItem>
+
     </List >
   );
 }

@@ -15,7 +15,7 @@ import CustomInput from "../components/CustomInput/CustomInput.js";
 import { useHistory } from 'react-router-dom';
 
 import styles from "assets/jss/material-kit-react/views/loginPage.js";
-import image from "assets/img/bg7.jpg";
+import image from "assets/img/bg8.jpg";
 
 import fb from 'fb'
 
@@ -34,10 +34,41 @@ export default function Login() {
 
     const history = useHistory()
 
+    const [errorMsg, setErrorMsg] = useState("")
+    const [errorCode, setErrorCode] = useState("")
+
+    // const login = async () => {
+    //     await fb.auth().signInWithEmailAndPassword(email, password)
+    //     // redirect to home page
+    //     history.push("/")
+    // }
+
+    // const login = async () => {
+    //     await fb.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+    //         var errorCode = error.code;
+    //         var errorMessage = error.message;
+    //         setErrorMsg(errorMessage)
+    //         setErrorCode(errorCode)
+    //         console.log(errorCode)
+    //     });
+    //     // redirect to home page if authentication is correct
+    //     // redirect to login page if authentication fails
+    //     if (errorCode === undefined){
+    //         history.push("/")
+    //     }
+    // }
+
     const login = async () => {
         await fb.auth().signInWithEmailAndPassword(email, password)
-        // redirect to home page
-        history.push("/")
+        .then((user) => {
+            history.push("/")
+        })
+        .catch((error) => {
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          setErrorMsg(errorMessage)
+          setErrorCode(errorCode)
+        });
     }
 
     return (
@@ -130,6 +161,13 @@ export default function Login() {
                                             />
                                         </div>
                                     </CardBody>
+                                    {
+                                        errorMsg
+                                        &&
+                                        <button type="button" className="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom" disabled="disabled" style={{ marginLeft: "15%", marginRight: "15%" }} >
+                                            {errorMsg}
+                                        </button>
+                                    }
                                     <CardFooter className={classes.cardFooter}>
                                         <Button type="submit" simple color="primary" size="lg">
                                             Login
