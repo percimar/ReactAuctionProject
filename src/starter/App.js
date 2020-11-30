@@ -17,7 +17,7 @@ import Header from "./Header";
 import Admin from "./Admin";
 import UserItems from "./UserItems";
 import UserAuctions from "./UserAuctions";
-import Following from './Mahmoud/Following'
+import Following from '../Mahmoud/Following'
 import UserContext from '../UserContext'
 
 function App() {

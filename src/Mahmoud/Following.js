@@ -1,12 +1,12 @@
 
 import React, { useContext, useEffect, useState } from "react";
-import GridItem from "../../components/Grid/GridItem.js";
+import GridItem from "../components/Grid/GridItem.js";
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "../../assets/jss/material-kit-react/views/loginPage.js";
-import UserContext from '../../UserContext'
-import db from '../../db'
-import Parallax from "../../components/Parallax/Parallax.js";
-import GridContainer from "../../components/Grid/GridContainer.js";
+import styles from "../assets/jss/material-kit-react/views/loginPage.js";
+import UserContext from '../UserContext'
+import db from '../db'
+import Parallax from "../components/Parallax/Parallax.js";
+import GridContainer from "../components/Grid/GridContainer.js";
 import FollowingItem from './FollowingItem'
 
 const useStyles = makeStyles(styles);
