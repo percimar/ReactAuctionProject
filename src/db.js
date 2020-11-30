@@ -108,7 +108,7 @@ class Auctions extends DB {
     }
 
     listenToUnfinishedFiltered = (set, searchText) => {
-        return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.filter(doc => doc.displayName.includes(searchText)).map(this.reformat)))
+        return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.filter(doc => doc.data().displayName.toLowerCase().includes(searchText.toLowerCase())).map(this.reformat)))
     }
 
     createAuctionBid = (auctionId, { id, ...rest }) =>

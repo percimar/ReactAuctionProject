@@ -26,9 +26,6 @@ export default function Auctions() {
   const classes = useStyles();
 
   const [auctions, setAuctions] = useState([])
-  useEffect(() => searchText
-    ? db.Auctions.listenToUnfinishedFiltered(setAuctions, searchText)
-    : db.Auctions.listenToUnfinished(setAuctions), [categoryId, user, searchText])
 
   const [selectAuction, setSelectAuction] = useState('')
 
@@ -38,6 +35,12 @@ export default function Auctions() {
   useEffect(() => db.Categories.listenAll(setCategories), [user])
 
   const [categoryId, setCategoryId] = useState('')
+
+  useEffect(() =>
+    searchText
+      ? db.Auctions.listenToUnfinishedFiltered(setAuctions, searchText)
+      : db.Auctions.listenToUnfinished(setAuctions)
+    , [categoryId, user, searchText])
 
   const [categoryName, setCategoryName] = useState('')
 
@@ -126,7 +129,7 @@ export default function Auctions() {
               <GridContainer style={{ marginTop: '30px' }}>
                 {
                   addAuction &&
-                  <AuctionForm open={addAuction}/>
+                  <AuctionForm open={addAuction} />
                 }
                 {
                   auctions ?
