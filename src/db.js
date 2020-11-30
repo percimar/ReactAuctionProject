@@ -106,6 +106,11 @@ class Auctions extends DB {
     listenToUnfinished = set => {
         return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
+
+    listenToUnfinishedFiltered = (set, searchText) => {
+        return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.filter(doc => doc.displayName.includes(searchText)).map(this.reformat)))
+    }
+
     createAuctionBid = (auctionId, { id, ...rest }) =>
         db.collection(this.collection).doc(auctionId).collection(Bids).add(rest)
 
@@ -278,7 +283,7 @@ class FAQs extends DB {
     }
 
     reformat(doc) {
-        return {...super.reformat(doc)}
+        return { ...super.reformat(doc) }
     }
 
 }
