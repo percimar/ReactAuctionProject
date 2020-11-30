@@ -16,7 +16,7 @@ import Item from './Item'
 import GridContainer from "../components/Grid/GridContainer.js";
 import UserContext from '../UserContext'
 import { Link } from 'react-router-dom';
-
+import ItemForm from './ItemForm'
 
 const useStyles = makeStyles(styles);
 
@@ -34,26 +34,40 @@ export default function AuctionItems() {
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItem, AuctionId), [AuctionId])
     console.log("item: ", items)
 
+    const [addItem, setAddItem] = useState(false)
+
+    const [editItem, setEditItem] = useState(false)
+
+
     return (
 
         <div className={classes.section}>
-            <GridContainer justify="center">
-                <GridItem xs={12} sm={12} md={8}>
-                    <h2 className={classes.title}>Auction Items</h2>
-                    {
-                        user && user.role === 'admin' ?
-                            <Button simple color="primary" size="lg">Add Item</Button>
-                            :
-                            ''
-                    }
+            {
+                <>
+                    <GridContainer justify="center">
+                        <GridItem xs={12} sm={12} md={8}>
+                            <h2 className={classes.title}>Auction Items</h2>
+                            {
+                                user && user.role === 'admin' && 
+                                <>
+                                    <Button simple color="primary" size="lg" onClick={()=>setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
+                                    <Button simple color="primary" size="lg">Show Pending Items</Button>
+                                </>
+                            }
 
-                </GridItem>
-            </GridContainer>
-            <GridContainer>
-                {
-                    items.map(item => <Item key={""} {...item} />)
-                }
-            </GridContainer>
+                        </GridItem>
+                    </GridContainer>
+                    <GridContainer>
+                        {
+                            addItem &&
+                            <ItemForm auctionId={AuctionId} setView={setAddItem}/>
+                        }
+                        {
+                            items.map(item => <Item key={item.id} auctionId={AuctionId} {...item} />)
+                        }
+                    </GridContainer>
+                </>
+            }
             <Button size="sm" color="primary" component={Link} to={`/`}>Back to Auctions</Button>
         </div>
     )
