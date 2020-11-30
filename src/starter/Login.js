@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Icon from "@material-ui/core/Icon";
@@ -34,8 +34,14 @@ export default function Login() {
 
     const history = useHistory()
 
-    const [errorMsg, setErrorMsg] = useState("")
+    const [errorMessage, setErrorMessage] = useState("")
     const [errorCode, setErrorCode] = useState("")
+
+    // useEffect(() => {
+    //     login();
+    //     setErrorMessage("");
+    //     setErrorCode("");
+    // }, []);
 
     // const login = async () => {
     //     await fb.auth().signInWithEmailAndPassword(email, password)
@@ -58,17 +64,16 @@ export default function Login() {
     //     }
     // }
 
-    const login = async () => {
+    const login = async (event) => {
+        event.preventDefault();
         await fb.auth().signInWithEmailAndPassword(email, password)
-        .then((user) => {
-            history.push("/")
-        })
-        .catch((error) => {
-          var errorCode = error.code;
-          var errorMessage = error.message;
-          setErrorMsg(errorMessage)
-          setErrorCode(errorCode)
-        });
+            .then((user) => {
+                history.push("/")
+            })
+            .catch((error) => {
+                setErrorMessage(error.message)
+                setErrorCode(error.code)
+            });
     }
 
     return (
@@ -118,7 +123,7 @@ export default function Login() {
                                         </Button>
                                     </div> */}
                                 </CardHeader>
-                                <form className={classes.form} onSubmit={login} action="#">
+                                <form className={classes.form} onSubmit={login}>
                                     <CardBody>
                                         <CustomInput
                                             onChange={event => setEmail(event.target.value)}
@@ -162,10 +167,10 @@ export default function Login() {
                                         </div>
                                     </CardBody>
                                     {
-                                        errorMsg
+                                        errorMessage
                                         &&
                                         <button type="button" className="btn btn-secondary" data-toggle="tooltip" data-placement="bottom" title="Tooltip on bottom" disabled="disabled" style={{ marginLeft: "15%", marginRight: "15%" }} >
-                                            {errorMsg}
+                                            {errorMessage}
                                         </button>
                                     }
                                     <CardFooter className={classes.cardFooter}>
