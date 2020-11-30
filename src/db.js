@@ -169,6 +169,10 @@ class Items extends DB {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).add(rest)
     }
 
+    updateItem = (auctionId, {id, ...rest}) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(id).set(rest)
+    }
+
     listenWithCategory = (set, array, catId, auctionId) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).onSnapshot(snap => snap.size > 0 ? set(array => [...array, auctionId]) : '')
     }

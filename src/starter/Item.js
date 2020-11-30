@@ -56,7 +56,7 @@ export default function Item({ auctionId, id, name, description, picture }) {
 
     const valid = () => amount > highestBid()
 
-    const [classicModal, setClassicModal] = useState(false)
+    const [deleteModal, setDeleteModal] = useState(false)
 
     const [editForm, setEditForm] = useState(false)
 
@@ -74,86 +74,90 @@ export default function Item({ auctionId, id, name, description, picture }) {
         setClassicModal(false)
     }
 
+    const remove = () => {
+        db.Auctions.Items.removeOneItem(auctionId, id)
+    }
+
     return (
         <>
             {
                 !editForm ?
-                <>
-                    <GridItem xs={12} sm={12} md={4}>
+                    <>
+                        <GridItem xs={12} sm={12} md={4}>
 
-                        <Card className={classes[cardAnimaton]}>
-                            <CardHeader color="primary" className={classes.cardHeader}>
-                                <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} />
-                            </CardHeader>
-                            <CardBody>
-                                <Primary>
-                                    Name
+                            <Card className={classes[cardAnimaton]}>
+                                <CardHeader color="primary" className={classes.cardHeader}>
+                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} />
+                                </CardHeader>
+                                <CardBody>
+                                    <Primary>
+                                        Name
                     </Primary>
-                                <Info>
-                                    {name}
-                                </Info>
-                                <br />
-                                <Primary>
-                                    Description
+                                    <Info>
+                                        {name}
+                                    </Info>
+                                    <br />
+                                    <Primary>
+                                        Description
                     </Primary>
-                                <Info>
-                                    {description}
-                                </Info>
-                                <br />
-                                <Primary>
-                                    Highest Bid
+                                    <Info>
+                                        {description}
+                                    </Info>
+                                    <br />
+                                    <Primary>
+                                        Highest Bid
                     </Primary>
-                                <Info>
-                                    {highestBid()}
-                                </Info>
-                                {
-                                    user && user.role == 'admin' &&
-                                    <>
-                                        <br />
-                                        <Primary>
-                                            Bids so far
+                                    <Info>
+                                        {highestBid()}
+                                    </Info>
+                                    {
+                                        user && user.role == 'admin' &&
+                                        <>
+                                            <br />
+                                            <Primary>
+                                                Bids so far
                                 </Primary>
-                                        <Info>
-                                            {bids.length}
-                                        </Info>
-                                    </>
-                                }
-                            </CardBody>
-                            <CardFooter className={classes.cardFooter}>
-                                {/*show bid if auction did not finish + item is available for bids*/}
-                                <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
-                                    Bid
+                                            <Info>
+                                                {bids.length}
+                                            </Info>
+                                        </>
+                                    }
+                                </CardBody>
+                                <CardFooter className={classes.cardFooter}>
+                                    {/*show bid if auction did not finish + item is available for bids*/}
+                                    <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
+                                        Bid
                         </Button>
-                            </CardFooter>
-                            <CardFooter className={classes.cardFooter}>
-                                <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
-                                    Edit
+                                </CardFooter>
+                                <CardFooter className={classes.cardFooter}>
+                                    <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
+                                        Edit
                         </Button>
-                                <Button color="danger" size="sm" onClick={() => setClassicModal(true)}>
-                                    Remove
+                                    <Button color="danger" size="sm" onClick={() => remove(true)}>
+                                        Remove
                         </Button>
-                            </CardFooter>
+                                </CardFooter>
 
-                        </Card>
+                            </Card>
 
-                    </GridItem>
+                        </GridItem>
 
 
-                </>
-                :
-                <>
-                <ItemForm auctionId={auctionId} open={setEditForm} editObject={{name, description, picture}}/>
-                </>
+                    </>
+                    :
+                    <>
+                        <ItemForm auctionId={auctionId} setView={setEditForm} editObject={{ id, name, description, picture }} />
+                    </>
             }
             <Dialog
                 classes={{
                     root: classes.center,
                     paper: classes.modal
                 }}
-                open={classicModal}
+                open={deleteModal}
                 TransitionComponent={Transition}
                 keepMounted
-                onClose={() => setClassicModal(false)}
+                onClose={() => setDeleteModal(false)}
                 aria-labelledby="classic-modal-slide-title"
                 aria-describedby="classic-modal-slide-description"
             >
@@ -167,11 +171,11 @@ export default function Item({ auctionId, id, name, description, picture }) {
                         key="close"
                         aria-label="Close"
                         color="inherit"
-                        onClick={() => setClassicModal(false)}
+                        onClick={() => setDeleteModal(false)}
                     >
                         <Close className={classes.modalClose} />
                     </IconButton>
-                    <h4 className={classes.modalTitle}>Auction Details</h4>
+                    {/* <h4 className={classes.modalTitle}>Delete Auction?</h4> */}
                 </DialogTitle>
                 <DialogContent>
                 </DialogContent>
@@ -179,31 +183,31 @@ export default function Item({ auctionId, id, name, description, picture }) {
                     id="classic-modal-slide-description"
                     className={classes.modalBody}
                 >
-                    Enter an amount {bids.length > 0 && 'higher than ' + highestBid()}
-                    <CustomInput
-                        labelText="Amount"
-                        id="amount"
-                        formControlProps={{
-                            fullWidth: true
-                        }}
-                        inputProps={{
-                            onChange: event => setAmount(event.target.value),
-                            value: amount,
-                            type: "number"
-                        }}
-                    />
+                    Delete {name}?
+                        {/* <CustomInput
+                            labelText="Amount"
+                            id="amount"
+                            formControlProps={{
+                                fullWidth: true
+                            }}
+                            inputProps={{
+                                onChange: event => setAmount(event.target.value),
+                                value: amount,
+                                type: "number"
+                            }}
+                        /> */}
                 </DialogContent>
                 <DialogActions className={classes.modalFooter}>
                     <Button
-                        onClick={() => setClassicModal(false)}
+                        onClick={() => deleteAuction(id)}
                         color="danger"
                         simple
                     >
+                        Delete
+                        </Button>
+                    <Button color="transparent" simple onClick={() => setDeleteModal(false)}>
                         Cancel
-            </Button>
-                    <Button color="transparent" simple onClick={bid} disabled={!valid()}>
-                        Bid
-            </Button>
+                        </Button>
 
                 </DialogActions>
             </Dialog>

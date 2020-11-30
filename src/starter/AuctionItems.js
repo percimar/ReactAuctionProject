@@ -51,6 +51,7 @@ export default function AuctionItems() {
                                 user && user.role === 'admin' && 
                                 <>
                                     <Button simple color="primary" size="lg" onClick={()=>setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
+                                    <Button color="danger" size="lg">Close Auction</Button>
                                     <Button simple color="primary" size="lg">Show Pending Items</Button>
                                 </>
                             }

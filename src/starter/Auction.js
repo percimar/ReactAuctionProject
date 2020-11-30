@@ -10,6 +10,8 @@ import CardHeader from "../components/Card/CardHeader.js";
 import CardFooter from "../components/Card/CardFooter.js";
 import Info from "../components/Typography/Info.js";
 import Primary from "../components/Typography/Primary.js";
+import Danger from '../components/Typography/Danger.js'
+import Success from '../components/Typography/Success'
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import db from '../db'
@@ -173,13 +175,16 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     <Info>
                                         {
                                             // catNames.map(item => item).join(', ')
+                                            categories.length > 0 ?
                                             categories.map(item => item.name).join(', ')
+                                            :
+                                            'No Categories'
                                         }
                                     </Info>
                                     <br />
-                                    <Primary>
+                                    <Success>
                                         Accepting Item Submissions
-                                    </Primary>
+                                    </Success>
                                 </CardBody>
                                 <CardFooter className={classes.cardFooter}>
 

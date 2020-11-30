@@ -13,7 +13,7 @@ import UserContext from '../UserContext'
 
 const useStyles = makeStyles(styles);
 
-export default function ItemForm({auctionId, open, editObject}) {
+export default function ItemForm({auctionId, setView, editObject}) {
 
     if (editObject) {
         console.log(editObject)
@@ -27,7 +27,8 @@ export default function ItemForm({auctionId, open, editObject}) {
         setCardAnimation("");
     }, 700);
     const classes = useStyles();
-
+    
+    const [id, setId] = useState('')
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     const [picture, setPicture] = useState("")
@@ -39,22 +40,23 @@ export default function ItemForm({auctionId, open, editObject}) {
 
     const create = () => {
         // db.Users.createUserItem(userId, { name, description, picture })
-        db.Auctions.Items.addItem(auctionId, {name, description, picture, catId: '', sellerUserId: user.id})
+        db.Auctions.Items.addItem(auctionId, {name, description, picture, catId: 'X54I5YSOuNkcWuimFrzc', sellerUserId: user.id})
         setView(false)
     }
 
     const prepareEdit = (object) => {
+        setId(object.id)
         setName(object.name)
         setDescription(object.description)
         setPicture(object.picture)
     }
 
     const edit = () => {
+        db.Auctions.Items.updateItem(auctionId, { id, name, description, picture })
+        setView(false)
     }
 
-    const remove = () => {
-
-    }
+    
 
     return (
         <GridItem xs={12} sm={12} md={4}>
