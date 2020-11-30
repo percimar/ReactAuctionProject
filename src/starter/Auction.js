@@ -73,7 +73,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
         items.map(item => db.Categories.listenOne(setCategories, item.catId, categories))
     }, [items])
 
-    console.log(categories)
+    // console.log(categories)
 
     //for display
     // const [catNames, setCatNames] = useState([])
@@ -124,7 +124,6 @@ export default function Auction({ set, id, displayName, finish, start, status })
         // add map that removes items in auction
         db.Auctions.remove(id)
         setDeleteModal(false)
-        console.log('deleted ' + id)
     }
 
 
