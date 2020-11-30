@@ -191,12 +191,11 @@ class Items extends DB {
     // }
 }
 
-
-
 class Users extends DB {
 
     constructor() {
         super('users')
+        this.Following = new Following(this.collection)
     }
 
     findByRole = role =>
@@ -223,6 +222,33 @@ class Users extends DB {
 }
 
 
+class Following extends DB {
+
+    constructor(containing) {
+        super('following')
+        this.containing = containing
+    }
+    reformat(doc) {
+        return { ...super.reformat(doc) }
+    }
+
+    listenToOneUserAllFollowing = (set, userId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToFollowingByAuction = (set, userId, auctionId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).where("auctionId", "==", auctionId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+        // db.collection(this.containing).doc(userId).
+    }
+    removeOneFollowing = (userId, followingId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).doc(followingId).delete()
+    }
+
+    addFollowing = (userId, { id, ...rest }) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).add(rest)
+    }
+
+}
 
 class FAQs extends DB {
 
@@ -234,14 +260,13 @@ class FAQs extends DB {
         return {...super.reformat(doc)}
     }
 
-
 }
-
 
 export default {
     Auctions: new Auctions(),
     Bids,
     Users: new Users(),
+    Following,
     FAQs: new FAQs()
     Categories: new Categories(),
     Items: new Items()
