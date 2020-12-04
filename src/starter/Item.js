@@ -43,6 +43,16 @@ export default function Item({ auctionId, id, name, description, picture }) {
 
     const { user } = useContext(UserContext)
 
+    const history = useHistory()
+
+    const attemptBid = () => {
+        if (user) {
+            setClassicModal(true)
+        } else {
+            history.push("/login")
+        }
+    }
+    
     // const [highestBidQuery, setHighestBid] = useState([])
     // useEffect(() => {
     //     db.Auctions.Items.Bids.findHighest(auctionId, id, setHighestBid)
@@ -58,9 +68,13 @@ export default function Item({ auctionId, id, name, description, picture }) {
 
     const [deleteModal, setDeleteModal] = useState(false)
 
+    const [classicModal, setClassicModal] = useState(false)
+
     const [editForm, setEditForm] = useState(false)
 
     const [amount, setAmount] = useState(0)
+
+    
 
     const highestBid = () => {
         return Math.max(...bids.map(bid => bid.amount), 0)
@@ -74,7 +88,12 @@ export default function Item({ auctionId, id, name, description, picture }) {
         setClassicModal(false)
     }
 
+    const confirmDelete = () => {
+        setDeleteModal(true)
+    }
+
     const remove = () => {
+        setDeleteModal(false)
         db.Auctions.Items.removeOneItem(auctionId, id)
     }
 
@@ -129,14 +148,20 @@ export default function Item({ auctionId, id, name, description, picture }) {
                                         Bid
                         </Button>
                                 </CardFooter>
-                                <CardFooter className={classes.cardFooter}>
-                                    <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
-                                        Edit
-                        </Button>
-                                    <Button color="danger" size="sm" onClick={() => remove(true)}>
-                                        Remove
-                        </Button>
-                                </CardFooter>
+                                {
+                                    user && user.role == 'admin' &&
+                                    <>
+                                        <CardFooter className={classes.cardFooter}>
+                                            <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
+                                                Edit
+                                    </Button>
+                                            <Button color="danger" size="sm" onClick={() => confirmDelete()}>
+                                                Remove
+                                    </Button>
+                                        </CardFooter>
+                                    </>
+                                }
+
 
                             </Card>
 
@@ -158,6 +183,56 @@ export default function Item({ auctionId, id, name, description, picture }) {
                 TransitionComponent={Transition}
                 keepMounted
                 onClose={() => setDeleteModal(false)}
+                aria-labelledby="delete-modal-slide-title"
+                aria-describedby="delete-modal-slide-description"
+            >
+                <DialogTitle
+                    id="delete-modal-slide-title"
+                    disableTypography
+                    className={classes.modalHeader}
+                >
+                    <IconButton
+                        className={classes.modalCloseButton}
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        onClick={() => setDeleteModal(false)}
+                    >
+                        <Close className={classes.modalClose} />
+                    </IconButton>
+                </DialogTitle>
+                <DialogContent>
+                </DialogContent>
+                <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                >
+                    Delete {name}?
+                </DialogContent>
+                <DialogActions className={classes.modalFooter}>
+                    <Button
+                        onClick={() => remove(id)}
+                        color="danger"
+                        simple
+                    >
+                        Delete
+                        </Button>
+                    <Button color="transparent" simple onClick={() => setDeleteModal(false)}>
+                        Cancel
+                        </Button>
+
+                </DialogActions>
+            </Dialog>
+
+            <Dialog
+                classes={{
+                    root: classes.center,
+                    paper: classes.modal
+                }}
+                open={classicModal}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setClassicModal(false)}
                 aria-labelledby="classic-modal-slide-title"
                 aria-describedby="classic-modal-slide-description"
             >
@@ -171,43 +246,41 @@ export default function Item({ auctionId, id, name, description, picture }) {
                         key="close"
                         aria-label="Close"
                         color="inherit"
-                        onClick={() => setDeleteModal(false)}
+                        onClick={() => setClassicModal(false)}
                     >
                         <Close className={classes.modalClose} />
                     </IconButton>
-                    {/* <h4 className={classes.modalTitle}>Delete Auction?</h4> */}
+                    <h4 className={classes.modalTitle}>Bid on Item</h4>
                 </DialogTitle>
-                <DialogContent>
-                </DialogContent>
                 <DialogContent
                     id="classic-modal-slide-description"
                     className={classes.modalBody}
                 >
-                    Delete {name}?
-                        {/* <CustomInput
-                            labelText="Amount"
-                            id="amount"
-                            formControlProps={{
-                                fullWidth: true
-                            }}
-                            inputProps={{
-                                onChange: event => setAmount(event.target.value),
-                                value: amount,
-                                type: "number"
-                            }}
-                        /> */}
+                    Enter an amount higher than {highestBid()}
+                    <CustomInput
+                        labelText="Amount"
+                        id="amount"
+                        formControlProps={{
+                            fullWidth: true
+                        }}
+                        inputProps={{
+                            onChange: event => setAmount(event.target.value),
+                            value: amount,
+                            type: "number"
+                        }}
+                    />
                 </DialogContent>
                 <DialogActions className={classes.modalFooter}>
                     <Button
-                        onClick={() => deleteAuction(id)}
+                        onClick={() => setClassicModal(false)}
                         color="danger"
                         simple
                     >
-                        Delete
-                        </Button>
-                    <Button color="transparent" simple onClick={() => setDeleteModal(false)}>
                         Cancel
-                        </Button>
+                    </Button>
+                    <Button color="transparent" simple onClick={bid} disabled={!valid()}>
+                        Bid
+                    </Button>
 
                 </DialogActions>
             </Dialog>

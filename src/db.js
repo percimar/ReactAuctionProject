@@ -1,4 +1,4 @@
-//Carlos: Added Categories, modified auctions and items to query with category 
+//Carlos: Added items functions and auctions
 
 import fb from './fb'
 
@@ -193,6 +193,8 @@ class Items extends DB {
     // }
 }
 
+
+
 class Bids extends DB {
 
     constructor(topContainer, containing) {
@@ -221,6 +223,7 @@ class Users extends DB {
     constructor() {
         super('users')
         this.Following = new Following(this.collection)
+        this.Notifications = new Notifications(this.collection)
     }
 
     findByRole = role =>
@@ -244,6 +247,21 @@ class Users extends DB {
     createUserItem = (userId, { id, ...rest }) =>
         db.collection(this.collection).doc(userId).collection(Items).add(rest)
 
+}
+
+class Notifications extends DB {
+    constructor(containing) {
+        super('notifications')
+        this.containing = containing
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    listenToNotifications = (set, userId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
 }
 
 
@@ -292,6 +310,7 @@ export default {
     Bids: new Bids(),
     Users: new Users(),
     Following,
+    Notifications: new Notifications(), 
     FAQs: new FAQs(),
     Categories: new Categories(),
     Items: new Items()
