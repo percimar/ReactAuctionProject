@@ -174,12 +174,20 @@ class Items extends DB {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).add(rest)
     }
 
-    updateItem = (auctionId, {id, ...rest}) => {
+    updateItem = (auctionId, { id, ...rest }) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(id).set(rest)
     }
 
     listenWithCategory = (set, array, catId, auctionId) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).onSnapshot(snap => snap.size > 0 ? set(array => [...array, auctionId]) : '')
+    }
+
+    listenToAllItems = (set) => {
+        return db.collectionGroup(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToAllItemsByUser = (set, userId) => {
+        return db.collectionGroup(this.collection).where("sellerUserId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
     // listenWithCategory = (set, array, catId, auctionId) => {
@@ -234,23 +242,11 @@ class Users extends DB {
     findByRole = role =>
         this.findByField('role', role)
 
-    findUserItems = (userId) =>
-        this.findSubAll(userId, Items)
-
     removeUserItem = (userId, itemId) =>
         db.collection(this.collection).doc(userId).collection(Items).doc(itemId).delete()
 
-    listenToUserItem = (set, userId, itemId) =>
-        this.listenSubOne(set, userId, Items, itemId)
-
-    listenToUserItems = (set, userId) =>
-        this.listenSubAll(set, userId, Items)
-
     listenToCount = set =>
         db.collection(this.collection).onSnapshot(snap => set(snap.docs.length))
-
-    createUserItem = (userId, { id, ...rest }) =>
-        db.collection(this.collection).doc(userId).collection(Items).add(rest)
 
 }
 
@@ -317,7 +313,7 @@ class Bugs extends DB {
     }
 
     reformat(doc) {
-        return {...super.reformat(doc)}
+        return { ...super.reformat(doc) }
     }
 
 }
@@ -327,9 +323,8 @@ export default {
     Bids: new Bids(),
     Users: new Users(),
     Following,
-    Notifications: new Notifications(), 
+    Notifications: new Notifications(),
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Items: new Items(),
     Bugs: new Bugs()
 }
