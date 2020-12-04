@@ -142,12 +142,15 @@ export default function Item({ auctionId, id, name, description, picture }) {
                                         </>
                                     }
                                 </CardBody>
-                                <CardFooter className={classes.cardFooter}>
+                                {
+                                    user && user.id != sellerUserId &&
+                                    <CardFooter className={classes.cardFooter}>
                                     {/*show bid if auction did not finish + item is available for bids*/}
-                                    <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
-                                        Bid
-                        </Button>
-                                </CardFooter>
+                                        <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
+                                            Bid
+                                        </Button>
+                                    </CardFooter>
+                                }
                                 {
                                     user && user.role == 'admin' &&
                                     <>

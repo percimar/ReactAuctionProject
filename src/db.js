@@ -308,8 +308,6 @@ class FAQs extends DB {
 
     reformat(doc) {
         return { ...super.reformat(doc) }
-<<<<<<< HEAD
-=======
     }
 
 }
@@ -322,7 +320,6 @@ class Bugs extends DB {
 
     reformat(doc) {
         return { ...super.reformat(doc) }
->>>>>>> aa5a6a4d31b55ec35db9ce2971e2e2617faefb24
     }
 
 }

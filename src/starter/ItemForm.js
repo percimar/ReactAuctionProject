@@ -13,8 +13,7 @@ import UserContext from '../UserContext'
 
 const useStyles = makeStyles(styles);
 
-export default function ItemForm({auctionId, setView, editObject}) {
-
+export default function ItemForm({ auctionId, setView, editObject }) {
     if (editObject) {
         console.log(editObject)
         useEffect(() => prepareEdit(editObject), [])
@@ -27,7 +26,7 @@ export default function ItemForm({auctionId, setView, editObject}) {
         setCardAnimation("");
     }, 700);
     const classes = useStyles();
-    
+
     const [id, setId] = useState('')
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
@@ -40,7 +39,7 @@ export default function ItemForm({auctionId, setView, editObject}) {
 
     const create = () => {
         // db.Users.createUserItem(userId, { name, description, picture })
-        db.Auctions.Items.addItem(auctionId, {name, description, picture, catId: 'X54I5YSOuNkcWuimFrzc', sellerUserId: user.id})
+        db.Auctions.Items.addItem(auctionId, { name, description, picture, catId: 'X54I5YSOuNkcWuimFrzc', sellerUserId: user.id })
         setView(false)
     }
 
@@ -52,11 +51,11 @@ export default function ItemForm({auctionId, setView, editObject}) {
     }
 
     const edit = () => {
-        db.Auctions.Items.updateItem(auctionId, { id, name, description, picture })
+        db.Auctions.Items.updateItem(auctionId, { name, description, picture, catId: 'X54I5YSOuNkcWuimFrzc', sellerUserId: user.id })
         setView(false)
     }
 
-    
+
 
     return (
         <GridItem xs={12} sm={12} md={4}>
@@ -107,21 +106,21 @@ export default function ItemForm({auctionId, setView, editObject}) {
                 </CardBody>
                 <CardFooter className={classes.cardFooter}>
                     {
-                        !editObject ? 
-                        <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
-                            Add Item
+                        !editObject ?
+                            <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
+                                Add Item
                         </Button>
-                        :
-                        <>
-                        <Button simple color="primary" size="lg" disabled={!valid()} onClick={edit}>
-                            Save Changes
+                            :
+                            <>
+                                <Button simple color="primary" size="lg" disabled={!valid()} onClick={edit}>
+                                    Save Changes
                         </Button>
-                        <Button simple color="primary" size="lg" onClick={() => open(false)}>
-                            Cancel
+                                <Button simple color="primary" size="lg" onClick={() => open(false)}>
+                                    Cancel
                         </Button>
-                        </>
+                            </>
                     }
-                    
+
                 </CardFooter>
             </Card>
         </GridItem>
