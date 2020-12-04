@@ -19,7 +19,8 @@ export default function UserItems() {
   const classes = useStyles();
 
   const [items, setItems] = useState([])
-  useEffect(() => db.Users.listenToUserItems(setItems, user.id), [user.id])
+  // useEffect(() => db.Users.listenToUserItems(setItems, user.id), [user.id])
+  useEffect(() => db.Auctions.Items.listenToAllItemsByUser(setItems, user.id), [user.id])
 
   return (
     <>
@@ -44,11 +45,18 @@ export default function UserItems() {
         <GridContainer>
           {
             items.map(item =>
+<<<<<<< HEAD
               // <Item key={item.id} userId={user.id} {...item} />
               console.log("Item",item)
             )
           }
           {/* <ItemForm userId={user.id} /> */}
+=======
+              <Item key={item.id} {...item} />
+            )
+          }
+          <ItemForm />
+>>>>>>> aa5a6a4d31b55ec35db9ce2971e2e2617faefb24
         </GridContainer>
       </div>
     </>

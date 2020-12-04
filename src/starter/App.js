@@ -18,6 +18,8 @@ import Admin from "./Admin";
 import UserItems from "./UserItems";
 import UserAuctions from "./UserAuctions";
 import Following from '../Mahmoud/Following'
+import Notifications from './Notifications'
+import Bugs from './Bugs'
 import UserContext from '../UserContext'
 
 function App() {
@@ -91,11 +93,17 @@ function App() {
                 <Route path="/following">
                   <Following />
                 </Route>
+                <Route path="/notifications">
+                  <Notifications />
+                </Route>
                 <Route path="/logout">
                   <Logout />
                 </Route>
                 <Route path="/faqs">
                   <Faqs />
+                </Route>
+                <Route path="/bugs">
+                  <Bugs />
                 </Route>
               </>
               :
@@ -109,6 +117,7 @@ function App() {
                 <Route path="/faqs">
                   <Faqs />
                 </Route>
+
 
               </>
           }

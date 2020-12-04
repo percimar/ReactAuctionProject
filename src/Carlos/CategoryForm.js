@@ -45,6 +45,7 @@ export default function CategoryForm({ editObject, open }) {
     }
         
     const prepareEdit = (object) => {
+        setItemId(object.id)
         setName(object.name)
         setDescription(object.description)
     }

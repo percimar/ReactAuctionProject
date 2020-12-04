@@ -10,6 +10,8 @@ import CardHeader from "../components/Card/CardHeader.js";
 import CardFooter from "../components/Card/CardFooter.js";
 import Info from "../components/Typography/Info.js";
 import Primary from "../components/Typography/Primary.js";
+import Danger from '../components/Typography/Danger.js'
+import Success from '../components/Typography/Success'
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import db from '../db'
@@ -138,19 +140,6 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     {displayName}
                                 </CardHeader>
                                 <CardBody>
-                                    {/* {
-                                user
-                                &&
-                                <>
-                                    <Primary>
-                                        Name
-                                    </Primary>
-                                    <Info>
-                                        {displayName}
-                                    </Info>
-                                    <br />
-                                </>
-                            } */}
                                     <Primary>
                                         Start
                             </Primary>
@@ -173,13 +162,16 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     <Info>
                                         {
                                             // catNames.map(item => item).join(', ')
+                                            categories.length > 0 ?
                                             categories.map(item => item.name).join(', ')
+                                            :
+                                            'No Categories'
                                         }
                                     </Info>
                                     <br />
-                                    <Primary>
+                                    <Success>
                                         Accepting Item Submissions
-                                    </Primary>
+                                    </Success>
                                 </CardBody>
                                 <CardFooter className={classes.cardFooter}>
 
@@ -187,20 +179,17 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                 Show Items
                                 </Button> */}
                                     <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
-
-                                    {/* <Button color="primary" size="sm" onClick={() => set(id)}>
-                                        See Details
-                                </Button> */}
                                     {
                                         user && user.role == 'admin' &&
+                                        <>
                                         <Button color="primary" size="sm" onClick={() => editAuction()}>
                                             Edit
-                                </Button>
+                                        </Button>
+                                         <Button color="primary" size="sm" onClick={() => confirmDelete(id)}>
+                                         X
+                                        </Button>
+                                        </>
                                     }
-
-                                    <Button color="primary" size="sm" onClick={() => confirmDelete(id)}>
-                                        X
-                                </Button>
                                 </CardFooter>
                             </Card>
                         </GridItem>
@@ -240,18 +229,6 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                 className={classes.modalBody}
                             >
                                 Delete {displayName}?
-                        {/* <CustomInput
-                            labelText="Amount"
-                            id="amount"
-                            formControlProps={{
-                                fullWidth: true
-                            }}
-                            inputProps={{
-                                onChange: event => setAmount(event.target.value),
-                                value: amount,
-                                type: "number"
-                            }}
-                        /> */}
                             </DialogContent>
                             <DialogActions className={classes.modalFooter}>
                                 <Button

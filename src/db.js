@@ -1,4 +1,4 @@
-//Carlos: Added Categories, modified auctions and items to query with category 
+//Carlos: Added items functions and auctions
 
 import fb from './fb'
 
@@ -106,6 +106,11 @@ class Auctions extends DB {
     listenToUnfinished = set => {
         return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
+
+    listenToUnfinishedFiltered = (set, searchText) => {
+        return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.filter(doc => doc.data().displayName.toLowerCase().includes(searchText.toLowerCase())).map(this.reformat)))
+    }
+
     createAuctionBid = (auctionId, { id, ...rest }) =>
         db.collection(this.collection).doc(auctionId).collection(Bids).add(rest)
 
@@ -128,7 +133,7 @@ class Categories extends DB {
     }
 
     listenOne = async (set, catId) => {
-        console.log('cat Id', catId)
+        // console.log('cat Id', catId)
         //use forEach function ?
         return db.collection(this.collection).doc(catId).onSnapshot(snap => set(categories =>
             [...categories, this.reformat(snap)]))
@@ -144,6 +149,7 @@ class Items extends DB {
     }
 
     reformat(doc) {
+        console.log(doc.ref)
         return { ...super.reformat(doc) }
     }
 
@@ -170,11 +176,24 @@ class Items extends DB {
     }
 
     addItem = (auctionId, { id, ...rest }) => {
+        if (!auctionId) { throw new ReferenceError("pass auctionId to addItem") }
         return db.collection(this.containing).doc(auctionId).collection(this.collection).add(rest)
+    }
+
+    updateItem = (auctionId, { id, ...rest }) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(id).set(rest)
     }
 
     listenWithCategory = (set, array, catId, auctionId) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).onSnapshot(snap => snap.size > 0 ? set(array => [...array, auctionId]) : '')
+    }
+
+    listenToAllItems = (set) => {
+        return db.collectionGroup(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToAllItemsByUser = (set, userId) => {
+        return db.collectionGroup(this.collection).where("sellerUserId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
     // listenWithCategory = (set, array, catId, auctionId) => {
@@ -192,6 +211,8 @@ class Items extends DB {
     //     return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId)
     // }
 }
+
+
 
 class Bids extends DB {
 
@@ -221,29 +242,33 @@ class Users extends DB {
     constructor() {
         super('users')
         this.Following = new Following(this.collection)
+        this.Notifications = new Notifications(this.collection)
     }
 
     findByRole = role =>
         this.findByField('role', role)
 
-    findUserItems = (userId) =>
-        this.findSubAll(userId, Items)
-
     removeUserItem = (userId, itemId) =>
         db.collection(this.collection).doc(userId).collection(Items).doc(itemId).delete()
-
-    listenToUserItem = (set, userId, itemId) =>
-        this.listenSubOne(set, userId, Items, itemId)
-
-    listenToUserItems = (set, userId) =>
-        this.listenSubAll(set, userId, Items)
 
     listenToCount = set =>
         db.collection(this.collection).onSnapshot(snap => set(snap.docs.length))
 
-    createUserItem = (userId, { id, ...rest }) =>
-        db.collection(this.collection).doc(userId).collection(Items).add(rest)
+}
 
+class Notifications extends DB {
+    constructor(containing) {
+        super('notifications')
+        this.containing = containing
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    listenToNotifications = (set, userId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
 }
 
 
@@ -283,6 +308,21 @@ class FAQs extends DB {
 
     reformat(doc) {
         return { ...super.reformat(doc) }
+<<<<<<< HEAD
+=======
+    }
+
+}
+
+class Bugs extends DB {
+
+    constructor() {
+        super('bugs')
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc) }
+>>>>>>> aa5a6a4d31b55ec35db9ce2971e2e2617faefb24
     }
 
 }
@@ -292,7 +332,8 @@ export default {
     Bids: new Bids(),
     Users: new Users(),
     Following,
+    Notifications: new Notifications(),
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Items: new Items()
+    Bugs: new Bugs()
 }

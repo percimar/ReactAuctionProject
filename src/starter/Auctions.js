@@ -5,6 +5,9 @@ import React, { useState, useEffect, useContext } from "react";
 import UserContext from '../UserContext'
 import AuctionDetails from '../Carlos/AuctionDetails'
 import { makeStyles } from "@material-ui/core/styles";
+import Search from '@material-ui/icons/Search';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import CustomInput from "../components/CustomInput/CustomInput.js";
 import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Auction from './Auction'
@@ -23,14 +26,21 @@ export default function Auctions() {
   const classes = useStyles();
 
   const [auctions, setAuctions] = useState([])
-  useEffect(() => db.Auctions.listenToUnfinished(setAuctions), [categoryId, user])
 
   const [selectAuction, setSelectAuction] = useState('')
+
+  const [searchText, setSearchText] = useState("");
 
   const [categories, setCategories] = useState([])
   useEffect(() => db.Categories.listenAll(setCategories), [user])
 
   const [categoryId, setCategoryId] = useState('')
+
+  useEffect(() =>
+    searchText
+      ? db.Auctions.listenToUnfinishedFiltered(setAuctions, searchText)
+      : db.Auctions.listenToUnfinished(setAuctions)
+    , [categoryId, user, searchText])
 
   const [categoryName, setCategoryName] = useState('')
 
@@ -44,8 +54,6 @@ export default function Auctions() {
     setViewCategory(false)
     setCategoryName(name)
   }
-
-  const [testCat, setTestCat] = useState([])
 
   const [addAuction, setAddAuction] = useState(false)
 
@@ -74,10 +82,28 @@ export default function Auctions() {
               <GridContainer justify="center">
                 <GridItem xs={12} sm={12} md={8}>
                   <h2 className={classes.title}>Current Auctions</h2>
+                  <CustomInput
+                    onChange={event => setSearchText(event.target.value)}
+                    labelText="Search"
+                    placeholder="Search"
+                    id="searchText"
+                    formControlProps={{
+                      fullWidth: true
+                    }}
+                    inputProps={{
+                      onChange: event => setSearchText(event.target.value),
+                      value: searchText,
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <Search className={classes.inputIconsColor} />
+                        </InputAdornment>
+                      )
+                    }}
+                  />
                   {
                     categoryName &&
                     <>
-                      <h3 className={classes.description}>{categoryName}</h3>
+                      <h3 className={classes.description}>Category: {categoryName}</h3>
                     </>
                   }
                 </GridItem>
@@ -101,7 +127,7 @@ export default function Auctions() {
               <GridContainer style={{ marginTop: '30px' }}>
                 {
                   addAuction &&
-                  <AuctionForm open={addAuction}/>
+                  <AuctionForm open={setAddAuction}/>
                 }
                 {
                   auctions ?
@@ -146,7 +172,7 @@ export default function Auctions() {
             <GridContainer style={{ marginTop: '30px' }}>
               {
                 addCategory &&
-                <CategoryForm />
+                <CategoryForm open={setAddCategory}/>
               }
               {
                 categories.map(category =>
