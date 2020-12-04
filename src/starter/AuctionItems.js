@@ -49,25 +49,53 @@ export default function AuctionItems() {
     const [items, setItem] = useState([])
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItem, AuctionId), [AuctionId])
 
+    const [auction, setAuction] = useState(null)
+    useEffect(() => {
+        db.Auctions.listenOne(setAuction, AuctionId)
+    }, [])
 
     const [addItem, setAddItem] = useState(false)
 
     const [editItem, setEditItem] = useState(false)
 
     const [classicModal, setClassicModal] = useState(false)
+    useEffect(() => {
+        auction && auction.status == 'Closed' && setClassicModal(true)
+    }, [auction])
 
     const [confirmModal, setConfirmModal] = useState(false)
 
     const [confirm, setConfirm] = useState(false)
 
-    const openConfirm = (e) => {
-        setConfirm(true)   
+    const openConfirm = () => {
+        setConfirm(true)
     }
+
+    // if(auction && auction.status == 'Closed') {
+    //     setClassicModal(true)
+    // } 
 
     const closeAuction = () => {
         setConfirmModal(false)
-        db.Auctions.update({id: AuctionId, status: "Closed"})
+        db.Auctions.update({ id: AuctionId, displayName: auction.displayName, start: auction.start, finish: auction.finish, status: "Closed" })
+        notifyWinners()
         setClassicModal(true)
+    }
+
+    const notifyWinners = async () => {
+        items.map(async (item) => {
+            let bids = await db.Auctions.Items.Bids.findAllBids(AuctionId, item.id)
+            if (bids.length > 0) {
+                let highest = Math.max(...bids.map(bid => bid.amount), 0)
+                let winningBid = await db.Auctions.Items.Bids.findByAmount(AuctionId, item.id, highest)
+                db.Users.Notifications.sendNotification(winningBid[0].bidderUserId,
+                    {
+                        title: 'You have won an item!',
+                        description: `You have won the ${item.name} from the ${auction.displayName}. Decide how to receive your item`
+                    })
+            }
+        })
+
     }
 
 
@@ -85,12 +113,12 @@ export default function AuctionItems() {
                                     <Button simple color="primary" size="lg" onClick={() => setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
                                     {
                                         !confirm ?
-                                        <Button color="danger" size="lg" onClick={() => openConfirm()}>Close Auction</Button>
-                                        :
-                                        <>
-                                            <Button color="transparent" size="sm" onClick={() => setConfirm(false)}> Back </Button>
-                                            <Button color="danger" size="lg" onClick={() => closeAuction()}>Confirm?</Button>
-                                        </>
+                                            <Button color="danger" size="lg" onClick={() => openConfirm()}>Close Auction</Button>
+                                            :
+                                            <>
+                                                <Button color="transparent" size="sm" onClick={() => setConfirm(false)}> Back </Button>
+                                                <Button color="danger" size="lg" onClick={() => closeAuction()}>Confirm?</Button>
+                                            </>
                                     }
 
                                     <Button simple color="primary" size="lg">Show Pending Items</Button>
@@ -108,7 +136,7 @@ export default function AuctionItems() {
                             items.map(item => <Item key={item.id} auctionId={AuctionId} {...item} />)
                         }
                     </GridContainer>
-                    
+
                     <Dialog
                         classes={{
                             root: classes.center,
@@ -134,7 +162,7 @@ export default function AuctionItems() {
                             id="classic-modal-slide-description"
                             className={classes.modalBody}
                         >
-                            This Auction has been closed by {user.name}
+                            This Auction has been closed by admin
                             <br />
                                 Click the button below to return to auctions page
                             </DialogContent>

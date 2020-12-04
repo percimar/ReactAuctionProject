@@ -36,18 +36,30 @@ export default function Auctions() {
 
   const [categoryId, setCategoryId] = useState('')
 
+  // useEffect(() =>
+  //   searchText
+  //     ? db.Auctions.listenToUnfinishedFiltered(setAuctions, searchText)
+  //     : selectNewCategory(categoryId, categoryName)
+  //   , [categoryId, user, searchText])
+
   useEffect(() =>
     searchText
-      ? db.Auctions.listenToUnfinishedFiltered(setAuctions, searchText)
-      : db.Auctions.listenToUnfinished(setAuctions)
+      ? prepareSearch()
+      : selectNewCategory(categoryId, categoryName)
     , [categoryId, user, searchText])
+
+
+  const prepareSearch = () => {
+    selectNewCategory('', '')
+    db.Auctions.listenToUnfinishedFiltered(setAuctions, searchText)
+  }
 
   const [categoryName, setCategoryName] = useState('')
 
   const [viewCategory, setViewCategory] = useState(false)
 
   const selectNewCategory = (catId, name) => {
-    if (catId === '') {
+    if (catId === '' && searchText == '') {
       db.Auctions.listenToUnfinished(setAuctions)
     }
     setCategoryId(catId)
@@ -61,15 +73,22 @@ export default function Auctions() {
 
   const [auctionsWithCat, setAuctionsWithCat] = useState([])
 
+
   useEffect(() => {
+    //reset auctions with cat
     setAuctionsWithCat([])
+    //for each auction, find items with a certain category. If items are found, auctionId is added to auctionsWithCat
     auctions.map(auction => db.Auctions.Items.listenWithCategory(setAuctionsWithCat, auctionsWithCat, categoryId, auction.id))
-    // db.Auctions.Items.getItemsWithCategory('aZ9GtJthtYn2Id0p1Ab2', 'X54I5YSOuNkcWuimFrzc', setAuctionsWithCat, auctionsWithCat)
+    console.log(auctionsWithCat)
   }, [categoryId])
 
   useEffect(() => {
     if (auctionsWithCat.length > 0) {
+      //go through each auction and find every auction with its id in the array
       db.Auctions.listenByCategory(setAuctions, auctionsWithCat)
+    }
+    else if (auctionsWithCat.length <= 0) {
+      setAuctions([])
     }
   }, [auctionsWithCat])
 
@@ -127,16 +146,19 @@ export default function Auctions() {
               <GridContainer style={{ marginTop: '30px' }}>
                 {
                   addAuction &&
-                  <AuctionForm open={setAddAuction}/>
+                  <AuctionForm open={setAddAuction} />
                 }
                 {
-                  auctions ?
+                  auctions.length > 0 ?
                     auctions.map(auction =>
                       <Auction key={auction.id} set={setSelectAuction} {...auction} />
                     )
                     :
                     <>
-                      <h2 className={classes.title}>Loading Auctions...</h2>
+                      <GridItem>
+                        <h2 className={classes.title}>Auctions Not Found</h2>
+                      </GridItem>
+
                     </>
                 }
               </GridContainer>
@@ -172,7 +194,7 @@ export default function Auctions() {
             <GridContainer style={{ marginTop: '30px' }}>
               {
                 addCategory &&
-                <CategoryForm open={setAddCategory}/>
+                <CategoryForm open={setAddCategory} />
               }
               {
                 categories.map(category =>

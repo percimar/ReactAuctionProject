@@ -41,6 +41,11 @@ export default function Register() {
                 await fb.auth().createUserWithEmailAndPassword(email, password)
                 console.log(fb.auth().currentUser.uid)
                 await db.Users.update({ id: fb.auth().currentUser.uid, name, role: "user" })
+                db.Users.Notifications.sendNotification(fb.auth().currentUser.uid, {
+                    title: 'Welcome!',
+                    description: `Click here to bid on your first auction!`,
+                    link: '/'
+                })
                 history.push("/")
             } catch (error) {
                 alert(error.message)

@@ -21,7 +21,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import Close from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import CustomInput from "../components/CustomInput/CustomInput.js";
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 import db from '../db'
 
@@ -34,7 +34,7 @@ Transition.displayName = "Transition";
 
 const useStyles = makeStyles(styles);
 
-export default function Item({ auctionId, id, name, description, picture }) {
+export default function Item({ auctionId, id, name, description, picture, catId }) {
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
@@ -52,17 +52,10 @@ export default function Item({ auctionId, id, name, description, picture }) {
             history.push("/login")
         }
     }
-    
-    // const [highestBidQuery, setHighestBid] = useState([])
-    // useEffect(() => {
-    //     db.Auctions.Items.Bids.findHighest(auctionId, id, setHighestBid)
-    //     setHighestBid(highestBidQuery[0])
-    // }, [id])
-    // console.log(highestBidQuery)
+
 
     const [bids, setBids] = useState([])
     useEffect(() => db.Auctions.Items.Bids.listenToOneItemAllBids(auctionId, id, setBids), [id])
-    // console.log(bids)
 
     const valid = () => amount > highestBid()
 
@@ -74,7 +67,9 @@ export default function Item({ auctionId, id, name, description, picture }) {
 
     const [amount, setAmount] = useState(0)
 
-    
+    const [category, setCategory] = useState(null)
+    useEffect(() => db.Categories.listenOne(setCategory, catId), [catId])
+
 
     const highestBid = () => {
         return Math.max(...bids.map(bid => bid.amount), 0)
@@ -103,7 +98,6 @@ export default function Item({ auctionId, id, name, description, picture }) {
                 !editForm ?
                     <>
                         <GridItem xs={12} sm={12} md={4}>
-
                             <Card className={classes[cardAnimaton]}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} />
@@ -121,6 +115,13 @@ export default function Item({ auctionId, id, name, description, picture }) {
                     </Primary>
                                     <Info>
                                         {description}
+                                    </Info>
+                                    <br />
+                                    <Primary>
+                                        Category
+                    </Primary>
+                                    <Info>
+                                        {category && category.name}
                                     </Info>
                                     <br />
                                     <Primary>
@@ -144,9 +145,14 @@ export default function Item({ auctionId, id, name, description, picture }) {
                                 </CardBody>
                                 <CardFooter className={classes.cardFooter}>
                                     {/*show bid if auction did not finish + item is available for bids*/}
-                                    <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
-                                        Bid
-                        </Button>
+                                    {
+                                        <>
+                                            <Button color="primary" size="lg" onClick={attemptBid}>
+                                                Bid
+                                        </Button>
+                                        </>
+                                    }
+
                                 </CardFooter>
                                 {
                                     user && user.role == 'admin' &&
@@ -161,17 +167,13 @@ export default function Item({ auctionId, id, name, description, picture }) {
                                         </CardFooter>
                                     </>
                                 }
-
-
                             </Card>
 
                         </GridItem>
-
-
                     </>
                     :
                     <>
-                        <ItemForm auctionId={auctionId} setView={setEditForm} editObject={{ id, name, description, picture }} />
+                        <ItemForm auctionId={auctionId} setView={setEditForm} editObject={{ id, name, description, picture, catId }} />
                     </>
             }
             <Dialog
