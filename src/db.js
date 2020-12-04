@@ -58,7 +58,7 @@ class DB {
         return db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
     }
 
-
+    
     // item has no id
     create = ({ id, ...rest }) =>
         db.collection(this.collection).add(rest)

@@ -5,7 +5,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Item from './Item'
-import ItemForm from './ItemForm'
+import UsersItemForm from '../Mahmoud/UsersItemForm'
 import Parallax from "../components/Parallax/Parallax.js";
 import image from "../assets/img/bg8.jpg";
 import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
@@ -45,19 +45,12 @@ export default function UserItems() {
         <GridContainer>
           {
             items.map(item =>
-<<<<<<< HEAD
-              // <Item key={item.id} userId={user.id} {...item} />
-              console.log("Item",item)
-            )
-          }
-          {/* <ItemForm userId={user.id} /> */}
-=======
               <Item key={item.id} {...item} />
             )
           }
-          <ItemForm />
->>>>>>> aa5a6a4d31b55ec35db9ce2971e2e2617faefb24
+          <UsersItemForm />
         </GridContainer>
+        <h3>Please, edit/delete your items in auction page</h3>
       </div>
     </>
   )
