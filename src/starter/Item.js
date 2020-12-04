@@ -104,11 +104,11 @@ export default function Item({ auctionId, id, name, description, picture, seller
             {
                 !editForm ?
                     <>
-                        <GridItem xs={12} sm={12} md={4}>
+                        <GridItem xs={12} sm={12} md={4} >
 
-                            <Card className={classes[cardAnimaton]}>
+                            <Card className={classes[cardAnimaton]} style={{ height: "420px", width: "400px", textAlign:"center", marginLeft:"15px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
-                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} />
+                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px'}} />
                                 </CardHeader>
                                 <CardBody>
                                     <Primary>
