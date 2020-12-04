@@ -8,7 +8,7 @@ import db from '../db'
 import Parallax from "../components/Parallax/Parallax.js";
 import GridContainer from "../components/Grid/GridContainer.js";
 import FollowingItem from './FollowingItem'
-import image from "../../assets/img/bg8.jpg";
+import image from "../assets/img/bg8.jpg";
 
 const useStyles = makeStyles(styles);
 
