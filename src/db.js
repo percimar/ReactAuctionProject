@@ -133,7 +133,7 @@ class Categories extends DB {
     }
 
     listenOne = async (set, catId) => {
-        console.log('cat Id', catId)
+        // console.log('cat Id', catId)
         //use forEach function ?
         return db.collection(this.collection).doc(catId).onSnapshot(snap => set(categories =>
             [...categories, this.reformat(snap)]))
@@ -149,6 +149,7 @@ class Items extends DB {
     }
 
     reformat(doc) {
+        console.log(doc.ref)
         return { ...super.reformat(doc) }
     }
 
@@ -171,6 +172,7 @@ class Items extends DB {
     }
 
     addItem = (auctionId, { id, ...rest }) => {
+        if (!auctionId) { throw new ReferenceError("pass auctionId to addItem") }
         return db.collection(this.containing).doc(auctionId).collection(this.collection).add(rest)
     }
 

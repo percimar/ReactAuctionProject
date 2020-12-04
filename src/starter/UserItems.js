@@ -39,10 +39,10 @@ export default function UserItems() {
         <GridContainer>
           {
             items.map(item =>
-              <Item key={item.id} userId={user.id} {...item} />
+              <Item key={item.id} {...item} />
             )
           }
-          <ItemForm userId={user.id} />
+          <ItemForm />
         </GridContainer>
       </div>
     </div>
