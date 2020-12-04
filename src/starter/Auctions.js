@@ -55,8 +55,6 @@ export default function Auctions() {
     setCategoryName(name)
   }
 
-  const [testCat, setTestCat] = useState([])
-
   const [addAuction, setAddAuction] = useState(false)
 
   const [addCategory, setAddCategory] = useState(false)
@@ -129,7 +127,7 @@ export default function Auctions() {
               <GridContainer style={{ marginTop: '30px' }}>
                 {
                   addAuction &&
-                  <AuctionForm open={addAuction} />
+                  <AuctionForm open={setAddAuction}/>
                 }
                 {
                   auctions ?
@@ -174,7 +172,7 @@ export default function Auctions() {
             <GridContainer style={{ marginTop: '30px' }}>
               {
                 addCategory &&
-                <CategoryForm />
+                <CategoryForm open={setAddCategory}/>
               }
               {
                 categories.map(category =>

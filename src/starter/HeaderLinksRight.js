@@ -117,6 +117,20 @@ export default function HeaderLinksRight() {
             color="transparent"
             className={classes.navLink}
             component={Link}
+            to="/notifications"
+          >
+            My Notifications
+          </Button>
+        </ListItem>
+      }
+      {
+        user
+        &&
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            component={Link}
             to="/logout"
           >
             Logout {user.name}

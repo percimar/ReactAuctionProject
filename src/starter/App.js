@@ -18,6 +18,7 @@ import Admin from "./Admin";
 import UserItems from "./UserItems";
 import UserAuctions from "./UserAuctions";
 import Following from '../Mahmoud/Following'
+import Notifications from './Notifications'
 import Bugs from './Bugs'
 import UserContext from '../UserContext'
 
@@ -91,6 +92,9 @@ function App() {
                 </Route>
                 <Route path="/following">
                   <Following />
+                </Route>
+                <Route path="/notifications">
+                  <Notifications />
                 </Route>
                 <Route path="/logout">
                   <Logout />

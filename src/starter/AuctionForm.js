@@ -62,7 +62,6 @@ export default function AuctionForm({editObject, open}) {
 
     const update = () => {
         db.Auctions.update({id: itemId, displayName: title, start, finish, status: "Ongoing"})
-        console.log(open)
         open(false)
     }
 
