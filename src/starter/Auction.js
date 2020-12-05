@@ -167,7 +167,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                         Accepting Item Submissions
                                     </Success>
                                     {
-                                        items.length &&
+                                        items.length && user && user.role == 'admin' &&
                                         <Danger>
                                         Auction has items. You must close auction first to delete.
                                         </Danger>
