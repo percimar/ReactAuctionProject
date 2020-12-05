@@ -29,7 +29,7 @@ export default function HeaderLinksRight() {
           hoverColor="black"
           buttonText={user.name}
           dropdownList={[
-          <Button
+            <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
               className={classes.navLink}
@@ -38,17 +38,7 @@ export default function HeaderLinksRight() {
             >
               My Items
           </Button>
-             ,
-          //   <Button
-          //     style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-          //     color="transparent"
-          //     className={classes.navLink}
-          //     component={Link}
-          //     to="/userauctions"
-          //   >
-          //     My Auctions
-          // </Button>
-          //   ,
+            ,
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
@@ -99,16 +89,16 @@ export default function HeaderLinksRight() {
           }
         />
       }
-  {
+      {
         user
         &&
-        user.role === "admin"
+        (user.role === "admin" || user.role === "moderator")
         &&
         <CustomDropdown
           hoverColor="black"
           buttonText={user.name}
           dropdownList={[
-          <Button
+            <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
               className={classes.navLink}
@@ -125,7 +115,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/userauctions"
             >
-              My Auctions
+              Auctions
           </Button>
             ,
             <Button
@@ -172,7 +162,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/logout"
             >
-              Log Out
+              Log Out 
             </Button>
           ]
           }
