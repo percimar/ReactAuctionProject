@@ -71,9 +71,18 @@ export default function Item({ auctionId, id, name, description, picture, seller
     const [comment, setComment] = useState("");
 
     const addComment = () => {
-        db.Auctions.Items.Comments.addComment(auctionId, id, { userId: user.id, timestamp: new Date(), comment })
-        setComment(""); //clear TextField
+        if (comment) {
+            db.Auctions.Items.Comments.addComment(auctionId, id, { userId: user.id, timestamp: new Date(), comment })
+            db.Users.Notifications.sendNotification(sellerUserId,
+                {
+                    title: `A question was asked about ${name}`,
+                    description: `${user.name} wants to know ${comment}`,
+                    link: `/auctions/items/${auctionId}`
+                });
+            setComment("");
+        }
     }
+
 
     const attemptBid = () => {
         if (user) {
@@ -211,26 +220,30 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                     <CardContent>
                                         {comments.length > 0
                                             ? comments.map(comment =>
-                                                <Comment key={comment.id} auctionId={auctionId} itemId={id} {...comment} />)
+                                                <Comment key={comment.id} auctionId={auctionId} itemId={id} sellerUserId={sellerUserId} {...comment} />)
                                             : <Info>No questions found, be the first to leave one!</Info>}
                                         <hr />
-                                        <TextField
-                                            label="Ask a Question"
-                                            multiline
-                                            rows={2}
-                                            rowsMax={Number.MAX_SAFE_INTEGER}
-                                            value={comment}
-                                            onChange={(event) => setComment(event.target.value)}
-                                            InputProps={{
-                                                endAdornment: (
-                                                    <InputAdornment>
-                                                        <IconButton color="primary" onClick={addComment}>
-                                                            <SendIcon />
-                                                        </IconButton>
-                                                    </InputAdornment>
-                                                )
-                                            }}
-                                        />
+                                        {
+                                            user &&
+                                            user.id !== sellerUserId &&
+                                            <TextField
+                                                label="Ask a Question"
+                                                multiline
+                                                rows={2}
+                                                rowsMax={Number.MAX_SAFE_INTEGER}
+                                                value={comment}
+                                                onChange={(event) => setComment(event.target.value)}
+                                                InputProps={{
+                                                    endAdornment: (
+                                                        <InputAdornment>
+                                                            <IconButton color="primary" onClick={addComment}>
+                                                                <SendIcon />
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                    )
+                                                }}
+                                            />
+                                        }
 
                                     </CardContent>
                                 </Collapse>
