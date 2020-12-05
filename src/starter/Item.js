@@ -1,4 +1,4 @@
-
+import defaultCar from "../assets/img/defaultCar.jpg"
 import React, { useContext, useState, useEffect } from "react";
 import GridItem from "../components/Grid/GridItem.js";
 import Button from "../components/CustomButtons/Button.js";
@@ -145,7 +145,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
 
                             <Card className={classes[cardAnimaton]} style={{ width: "400px", textAlign: "center", marginLeft: "15px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
-                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px' }} />
+                                    <img src={picture ?? defaultCar} alt="item" style={{ width: '100px', height: '100px' }} />
                                 </CardHeader>
                                 <CardBody>
                                     <Primary>
@@ -205,13 +205,13 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                         <CardFooter className={classes.cardFooter}>
                                             <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
                                                 Edit
-                                    </Button>
+                                            </Button>
                                             <Button color="danger" size="sm" onClick={() => confirmDelete()}>
                                                 Remove
-                                    </Button>
+                                            </Button>
                                             <Button color="primary" size="sm" onClick={handleExpandClick}>
                                                 View Comments
-                                    </Button>
+                                            </Button>
                                         </CardFooter>
                                     </>
                                 }

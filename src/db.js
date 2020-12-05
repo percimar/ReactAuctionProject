@@ -181,6 +181,7 @@ class Items extends DB {
     }
 
     updateItem = (auctionId, { id, ...rest }) => {
+        console.log("auctionId", auctionId, "this id", id, rest)
         return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(id).set(rest)
     }
 
@@ -218,6 +219,7 @@ class Items extends DB {
     // listenToCategory = (set, auctionId, itemId) => {
     //     return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId)
     // }
+
 }
 
 

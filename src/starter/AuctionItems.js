@@ -41,7 +41,7 @@ export default function AuctionItems() {
 
     Transition.displayName = "Transition";
 
-    const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+    const [cardAnimaton, setCardAnimation] = useState("cardHidden");
     setTimeout(function () {
         setCardAnimation("");
     }, 700);
@@ -199,7 +199,7 @@ export default function AuctionItems() {
                                 id="classic-modal-slide-description"
                                 className={classes.modalBody}
                             >
-                                This Auction has been closed by {user.name}
+                                This Auction has been closed by {user?.name}
                                 <br />
                                 Click the button below to return to auctions page
                             </DialogContent>
