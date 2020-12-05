@@ -41,7 +41,7 @@ export default function Profile() {
     userId
       ? db.Users.listenOne(setProfileUser, userId)
       : setProfileUser(user)
-  }, [])
+  }, [userId])
 
   const [userAvatar, setUserAvatar] = useState(profileUser.avatar)
   const [reviews, setReviews] = useState([])
@@ -69,11 +69,11 @@ export default function Profile() {
       db.Users.Reviews.addReview(profileUser.id, { rating, review: reviewText, timestamp: new Date(), buyerUserId: user.id })
       db.Users.Notifications.sendNotification(profileUser.id,
         {
-          title: `A question was asked about ${name}`,
-          description: `${user.name} wants to know ${review}`,
-          link: `/auctions/items/${auctionId}`
+          title: `${user.name} left you a review`,
+          description: `They said ${reviewText}`,
+          link: `/profile/${profileUser.id}`
         });
-      setReview("");
+      setReviewText("");
     }
   }
 
@@ -112,15 +112,19 @@ export default function Profile() {
                         alt="Card-img-cap"
                       />
                     </div>
-                    <CardBody>
-                      <div style={{ textAlign: "center" }}>
-                        <label htmlFor="upload-photo">
-                          <Button variant="outlined" color="default" component="span">
-                            <h6>Upload Avatar Photo</h6>
-                          </Button>
-                        </label>
-                      </div>
-                    </CardBody>
+                    {
+                      user &&
+                      profileUser.id === user.id &&
+                      <CardBody>
+                        <div style={{ textAlign: "center" }}>
+                          <label htmlFor="upload-photo">
+                            <Button variant="outlined" color="default" component="span">
+                              <h6>Upload Avatar Photo</h6>
+                            </Button>
+                          </label>
+                        </div>
+                      </CardBody>
+                    }
                   </Card>
                 </GridItem>
                 <GridItem xs={12} sm={12} md={6}>

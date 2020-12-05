@@ -517,6 +517,9 @@ class Logs extends DB {
         return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
     }
 
+    listenAll = set =>
+        db.collection(this.collection).orderBy("timestamp", "desc").onSnapshot(snap => set(snap.docs.map(this.reformat)))
+
 }
 
 class Reviews extends DB {
