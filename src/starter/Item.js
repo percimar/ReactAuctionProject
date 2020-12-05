@@ -250,7 +250,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                                 Remove
                                             </Button>
                                             {
-                                                ad.id == id ?
+                                                ad.length == 0 ?
                                                     <Button style={{ background: "orange" }} size="sm" onClick={() => confirmPromotion()}>
                                                         Promote Item
                                             </Button>
