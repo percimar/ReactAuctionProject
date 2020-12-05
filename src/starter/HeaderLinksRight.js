@@ -145,7 +145,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/following"
             >
-              Following
+              Favorite List
           </Button>,
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
