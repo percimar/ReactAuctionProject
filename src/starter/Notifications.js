@@ -63,7 +63,7 @@ export default function Notifications() {
     }
 
     const clearAll = () => {
-        notifications.map(notification => notification.clear(notification.id))
+        notifications.map(notification => clear(notification.id))
     }
 
     const colorCard = (seen) => {

@@ -14,6 +14,11 @@ import { useParams } from 'react-router-dom';
 import db from '../db'
 import Item from './Item'
 import GridContainer from "../components/Grid/GridContainer.js";
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+
 import UserContext from '../UserContext'
 import { useHistory, Link } from 'react-router-dom';
 import ItemForm from './ItemForm'
@@ -51,8 +56,16 @@ export default function AuctionItems() {
 
     let { AuctionId } = useParams();
 
-    const [items, setItem] = useState([])
-    useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItem, AuctionId), [AuctionId])
+    const [items, setItems] = useState([])
+
+    useEffect(() => {
+        db.Auctions.Items.listenToOneAuctionAllItems(setItems, AuctionId)
+    }, [AuctionId])
+
+    // useEffect(() => db.Auctions.Items.listenOnlyCategories(setCategories, AuctionId))
+    // console.log(categories)
+
+    // useEffect(() => items.map(item => setCategories(categories => [...categories, item.catId]), [items]))
 
     const [auction, setAuction] = useState(null)
     useEffect(() => {
@@ -60,8 +73,6 @@ export default function AuctionItems() {
     }, [])
 
     const [addItem, setAddItem] = useState(false)
-
-    const [editItem, setEditItem] = useState(false)
 
     const [classicModal, setClassicModal] = useState(false)
     useEffect(() => {
@@ -71,6 +82,8 @@ export default function AuctionItems() {
     const [confirmModal, setConfirmModal] = useState(false)
 
     const [confirm, setConfirm] = useState(false)
+
+
 
     const openConfirm = () => {
         setConfirm(true)
@@ -117,146 +130,87 @@ export default function AuctionItems() {
     return (
 
         <div>
-            <Parallax filter image={image}>
+            <Parallax small filter image={image}>
             </Parallax>
             <div className={classNames(classes.main, classes.mainRaised)} >
-
-                {
-                    <>
-                        <GridContainer justify="center">
-                            <GridItem xs={12} sm={12} md={8} >
-                                <h1 className={classes.title} style={{ textAlign: "center", color: "white" }}>Auction Items</h1>
-                                <br />
+                <div className={classes.section}>
+                    {
+                        <div className={classes.section}>
+                            <GridContainer justify="center">
+                                <GridItem xs={12} sm={12} md={8}>
+                                    <h2 className={classes.title}>Auction Items</h2>
+                                </GridItem>
+                                <GridItem xs={12} sm={12} md={8}>
+                                    {
+                                        user && user.role != 'user' &&
+                                        <>
+                                            <Button simple color="primary" size="lg" onClick={() => setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
+                                            {
+                                                !confirm ?
+                                                    <Button color="danger" size="lg" onClick={() => openConfirm()}>Close Auction</Button>
+                                                    :
+                                                    <>
+                                                        <Button color="transparent" size="sm" onClick={() => setConfirm(false)}> Back </Button>
+                                                        <Button color="danger" size="lg" onClick={() => closeAuction()}>Confirm?</Button>
+                                                    </>
+                                            }
+                                            <Button simple color="primary" size="lg">Show Pending Items</Button>
+                                        </>
+                                    }
+                                </GridItem>
+                            </GridContainer>
+                            <GridContainer style={{ marginTop: '5%' }}>
                                 {
-                                    user && user.role === 'admin' &&
-                                    <>
-                                        <Button simple color="primary" size="lg" onClick={() => setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
-                                        {
-                                            !confirm ?
-                                                <Button color="danger" size="lg" onClick={() => openConfirm()}>Close Auction</Button>
-                                                :
-                                                <>
-                                                    <Button color="transparent" size="sm" onClick={() => setConfirm(false)}> Back </Button>
-                                                    <Button color="danger" size="lg" onClick={() => closeAuction()}>Confirm?</Button>
-                                                </>
-                                        }
-
-                                        <Button simple color="primary" size="lg">Show Pending Items</Button>
-                                    </>
+                                    addItem &&
+                                    <ItemForm auctionId={AuctionId} setView={setAddItem} />
                                 }
+                                {
+                                    items.map(item => <Item key={item.id} auctionId={AuctionId} {...item} />)
+                                }
+                            </GridContainer>
 
-                            </GridItem>
-                        </GridContainer>
-                        <GridContainer>
-                            {
-                                addItem &&
-                                <ItemForm auctionId={AuctionId} setView={setAddItem} />
-                            }
-                            {
-                                items.map(item => <Item key={item.id} auctionId={AuctionId} {...item} />)
-                            }
-                        </GridContainer>
-
-                        <Dialog
-                            classes={{
-                                root: classes.center,
-                                paper: classes.modal
-                            }}
-                            open={classicModal}
-                            TransitionComponent={Transition}
-                            keepMounted
-                            disableBackdropClick
-                            onClose={() => setClassicModal(false)}
-                            aria-labelledby="classic-modal-slide-title"
-                            aria-describedby="classic-modal-slide-description"
-                        >
-                            <DialogTitle
-                                id="classic-modal-slide-title"
-                                disableTypography
-                                className={classes.modalHeader}
+                            <Dialog
+                                classes={{
+                                    root: classes.center,
+                                    paper: classes.modal
+                                }}
+                                open={classicModal}
+                                keepMounted
+                                disableBackdropClick
+                                onClose={() => setClassicModal(false)}
+                                aria-labelledby="classic-modal-slide-title"
+                                aria-describedby="classic-modal-slide-description"
                             >
-                            </DialogTitle>
-                            <DialogContent>
-                            </DialogContent>
-                            <DialogContent
-                                id="classic-modal-slide-description"
-                                className={classes.modalBody}
-                            >
-                                This Auction has been closed by admin
+                                <DialogTitle
+                                    id="classic-modal-slide-title"
+                                    disableTypography
+                                    className={classes.modalHeader}
+                                >
+                                </DialogTitle>
+                                <DialogContent>
+                                </DialogContent>
+                                <DialogContent
+                                    id="classic-modal-slide-description"
+                                    className={classes.modalBody}
+                                >
+                                    This Auction has been closed by an admin or moderator
                             <br />
                                 Click the button below to return to auctions page
                             </DialogContent>
-                            <DialogContent
-                                id="classic-modal-slide-description"
-                                className={classes.modalBody}
-                            >
-                                This Auction has been closed by {user?.name}
-                                <br />
-                                Click the button below to return to auctions page
-                            </DialogContent>
-                            <DialogActions className={classes.modalFooter}>
-                                <Button
-                                    component={Link} to={`/`}
-                                    color="primary"
-                                    simple
-                                >
-                                    Return to auctions
-                        </Button>
-                            </DialogActions>
-                        </Dialog>
+                                <DialogActions className={classes.modalFooter}>
+                                    <Button
+                                        component={Link} to={`/`}
+                                        color="primary"
+                                        simple
+                                    >
+                                        Return to auctions
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
 
-                        {/* <Dialog
-                        classes={{
-                            root: classes.center,
-                            paper: classes.modal
-                        }}
-                        open={confirmModal}
-                        TransitionComponent={Transition}
-                        keepMounted
-                        onClose={() => setConfirmModal(false)}
-                        aria-labelledby="confirm-modal-slide-title"
-                        aria-describedby="confirm-modal-slide-description"
-                    >
-                        <DialogTitle
-                            id="confirm-modal-slide-title"
-                            disableTypography
-                            className={classes.modalHeader}
-                        >
-                            <IconButton
-                                className={classes.modalCloseButton}
-                                key="close"
-                                aria-label="Close"
-                                color="inherit"
-                                onClick={() => setConfirmModal(false)}
-                            >
-                                <Close className={classes.modalClose} />
-                            </IconButton>
-                        </DialogTitle>
-                        <DialogContent>
-                        </DialogContent>
-                        <DialogContent
-                            id="confirm-modal-slide-description"
-                            className={classes.modalBody}
-                        >
-                            Close this auction?
-                            </DialogContent>
-                        <DialogActions className={classes.modalFooter}>
-                            <Button
-                                onClick={() => closeAuction()}
-                                color="danger"
-                                simple
-                            >
-                                Close Auction
-                        </Button>
-                            <Button color="transparent" simple onClick={() => setConfirmModal(false)}>
-                                Cancel
-                        </Button>
-
-                        </DialogActions>
-                    </Dialog> */}
-
-                    </>
-                }
+                        </div>
+                    }
+                </div>
                 <div style={{ textAlign: "center" }}>
 
                     <Button size="lg" color="primary" component={Link} to={`/`} >

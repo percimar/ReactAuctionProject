@@ -8,7 +8,7 @@ import Item from './Item'
 import UsersItemForm from '../Mahmoud/UsersItemForm'
 import Parallax from "../components/Parallax/Parallax.js";
 import image from "../assets/img/bg8.jpg";
-import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
+import styles from "../assets/jss/material-kit-react/views/landingPage.js";
 
 const useStyles = makeStyles(styles);
 
@@ -29,20 +29,18 @@ export default function UserItems() {
           <GridContainer>
             <GridItem xs={12} sm={12} md={6}>
               <h1 className={classes.title}>MOTORMOB</h1>
-              <h4>
-                Where timing matters
-              </h4>
             </GridItem>
           </GridContainer>
         </div>
       </Parallax>
-      <div className={classes.section}>
+
+      <div className={classes.section} style={{textAlign:"center"}}>
         <GridContainer justify="center">
-          <GridItem xs={12} sm={12} md={8}>
+          <GridItem xs={12} sm={12} md={8} >
             <h2 className={classes.title}>My Items</h2>
           </GridItem>
         </GridContainer>
-        <GridContainer>
+        <GridContainer justify="center">
           {
             items.map(item =>
               <Item key={item.id} {...item} />

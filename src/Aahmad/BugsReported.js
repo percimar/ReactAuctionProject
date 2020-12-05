@@ -50,7 +50,7 @@ export default function BugsReported({ id, bug }) {
             {
                 user
                     ?
-                    user.role === "admin"
+                    user.role!='user'
                         ?
                         <div>
                             <Card className={classes[cardAnimaton]}>

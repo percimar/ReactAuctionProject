@@ -8,7 +8,7 @@ import CustomInput from "../components/CustomInput/CustomInput.js";
 import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Result from './Result'
-import AuctionForm from './AuctionForm'
+import AuctionForm from '../starter/AuctionForm'
 import styles from "../assets/jss/material-kit-react/views/landingPage.js";
 import Parallax from "../components/Parallax/Parallax.js";
 import image from "../assets/img/bg8.jpg";

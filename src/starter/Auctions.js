@@ -16,8 +16,11 @@ import Category from '../Carlos/Category'
 import CategoryForm from '../Carlos/CategoryForm'
 import Button from '@material-ui/core/Button'
 import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
+import { useHistory, Link } from 'react-router-dom';
+
 
 const useStyles = makeStyles(styles);
+
 
 export default function Auctions() {
 
@@ -35,6 +38,7 @@ export default function Auctions() {
   useEffect(() => db.Categories.listenAll(setCategories), [user])
 
   const [categoryId, setCategoryId] = useState('')
+
 
   // useEffect(() =>
   //   searchText
@@ -73,7 +77,6 @@ export default function Auctions() {
 
   const [auctionsWithCat, setAuctionsWithCat] = useState([])
 
-
   useEffect(() => {
     //reset auctions with cat
     setAuctionsWithCat([])
@@ -103,8 +106,8 @@ export default function Auctions() {
                   <h2 className={classes.title}>Current Auctions</h2>
                   <CustomInput
                     onChange={event => setSearchText(event.target.value)}
-                    labelText="Search"
-                    placeholder="Search"
+                    labelText="Search All Auctions"
+                    placeholder="Search All Auctions"
                     id="searchText"
                     formControlProps={{
                       fullWidth: true
@@ -138,7 +141,7 @@ export default function Auctions() {
                     <Button simple='true' color="primary" size="large" onClick={() => setViewCategory(!viewCategory)}>View Auctions By Category</Button>
                   }
                   {
-                    user && user.role === 'admin' && !categoryId &&
+                    user && user.role!='user' && !categoryId &&
                     <Button simple='true' color="primary" size="large" onClick={() => setAddAuction(!addAuction)}>Add Auction</Button>
                   }
                 </GridItem>
@@ -186,7 +189,7 @@ export default function Auctions() {
               <GridItem xs={12} sm={12} md={8}>
                 <Button simple='true' color="primary" size="large" onClick={() => setViewCategory(!viewCategory)}>View Auctions</Button>
                 {
-                  user && user.role === 'admin' &&
+                  user && user.role!='user' &&
                   <Button simple="true" color="primary" size="large" onClick={() => setAddCategory(!addCategory)}>Add Category</Button>
                 }
               </GridItem>

@@ -17,6 +17,28 @@ export default function HeaderLinksRight() {
   const { user } = useContext(UserContext)
 
   const classes = useStyles();
+
+  const [notifCount, setNotifCount] = useState(0)
+
+  const notificationsBar = () => {
+    db.Users.Notifications.listenToUnseenNotificationsCount(setNotifCount, user.id)
+    return (
+      <Button
+        style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+        color="transparent"
+        className={classes.navLink}
+        component={Link}
+        to="/notifications"
+      >
+        Notifications ({notifCount})
+      </Button>
+    )
+  }
+
+  const nameWithNotifications = () => {
+    return `${user.name} (${notifCount})`
+  }
+
   return (
 
     <>
@@ -27,9 +49,9 @@ export default function HeaderLinksRight() {
         &&
         <CustomDropdown
           hoverColor="black"
-          buttonText={user.name}
+          buttonText={nameWithNotifications()}
           dropdownList={[
-          <Button
+            <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
               className={classes.navLink}
@@ -38,23 +60,13 @@ export default function HeaderLinksRight() {
             >
               My Items
           </Button>
-             ,
-          //   <Button
-          //     style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-          //     color="transparent"
-          //     className={classes.navLink}
-          //     component={Link}
-          //     to="/userauctions"
-          //   >
-          //     My Auctions
-          // </Button>
-          //   ,
+            ,
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
               className={classes.navLink}
               component={Link}
-              to="/profile"
+              to={`/Profile/${user.id}`}
             >
               Profile
           </Button>
@@ -68,24 +80,7 @@ export default function HeaderLinksRight() {
             >
               Favorite
           </Button>,
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/notifications"
-            >
-              Notifications
-          </Button>,
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/results"
-            >
-              Results
-        </Button>,
+            notificationsBar(),
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
@@ -99,16 +94,20 @@ export default function HeaderLinksRight() {
           }
         />
       }
-  {
+      {
         user
         &&
-        user.role === "admin"
+        (user.role === "admin" || user.role === "moderator")
         &&
         <CustomDropdown
           hoverColor="black"
-          buttonText={user.name}
+          buttonText={nameWithNotifications()}
           dropdownList={[
-          <Button
+            user
+            &&
+            user.role != "admin"
+            &&
+            <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
               className={classes.navLink}
@@ -118,6 +117,10 @@ export default function HeaderLinksRight() {
               My Items
           </Button>
             ,
+            user
+            &&
+            user.role != "admin"
+            &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
@@ -125,19 +128,27 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/userauctions"
             >
-              My Auctions
+              Auctions
           </Button>
             ,
+            user
+            &&
+            user.role != "admin"
+            &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
               className={classes.navLink}
               component={Link}
-              to="/profile"
+              to={`/Profile/${user.id}`}
             >
               Profile
           </Button>
             ,
+            user
+            &&
+            user.role != "admin"
+            &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
@@ -147,24 +158,20 @@ export default function HeaderLinksRight() {
             >
               Favorite List
           </Button>,
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/notifications"
-            >
-              Notifications
-          </Button>,
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/results"
-            >
-              Results
-        </Button>,
+            user
+            &&
+            notificationsBar(),
+            // <Button
+            //   style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+            //   color="transparent"
+            //   className={classes.navLink}
+            //   component={Link}
+            //   to="/notifications"
+            // >
+            //     Notifications
+            // </Button>,
+            user
+            &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"
@@ -206,20 +213,6 @@ export default function HeaderLinksRight() {
               to="/login"
             >
               Login
-        </Button>
-          </ListItem>
-        }
-        {
-          !user
-          &&
-          <ListItem className={classes.listItem}>
-            <Button
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/results"
-            >
-              Results
         </Button>
           </ListItem>
         }

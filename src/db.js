@@ -125,9 +125,9 @@ class Auctions extends DB {
 
 
     listenByCategory = (set, array) => {
-        console.log(array)
         return db.collection(this.collection).where(fb.firestore.FieldPath.documentId(), 'in', array).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
+
     // findByCategory = async (array) => {
     //     let data = await db.collection(this.collection).where(fb.firestore.FieldPath.documentId(), 'in', array).get()
     //     return data.docs.map(this.reformat)
@@ -143,6 +143,10 @@ class Categories extends DB {
         return { ...super.reformat(doc) }
     }
 
+    reformatOnlyId(doc) {
+        return { id: doc.id }
+    }
+
     collectOne = async (set, catId) => {
         //use forEach function ?
         return db.collection(this.collection).doc(catId).onSnapshot(snap => set(categories =>
@@ -151,6 +155,13 @@ class Categories extends DB {
 
     listenOne = (set, catId) =>
         db.collection(this.collection).doc(catId).onSnapshot(snap => set(this.reformat(snap)))
+
+    listenWithArray = (set, array) => {
+        return db.collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformatOnlyId.id)))
+    }
+    // listenNoCategory = (set) => {
+    //     db.collection(this.collection).onSnapshot(snap=>set(this.reformat(snap)))
+    // }
 }
 
 class Items extends DB {
@@ -166,14 +177,22 @@ class Items extends DB {
         return { ...super.reformat(doc) }
     }
 
+    // reformatCat(doc) {
+    //     return { doc }
+    // }
+
     findOneAuctionAllItems = async auctionId => {
-        const data = await db.collection(this.containing).doc(auctionId).collection.get()
+        const data = await db.collection(this.containing).doc(auctionId).collection(this.collection).get()
         return data.docs.map(this.reformat)
     }
 
     listenToOneAuctionAllItems = (set, auctionId) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
+
+    // listenToOneAuctionItemCount = (set, auctionId) => {
+    //     return db.collection(this.collection).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.length))
+    // }
 
     // findCategories = async (auctionId, itemId) => {
     //     const cat = await db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).get()
@@ -194,10 +213,30 @@ class Items extends DB {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(id).set(rest)
     }
 
+    listenByCategory = (set, auctionId, catId) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    findByCategory = async (auctionId, catId) => {
+        let data = await db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).get()
+        return data.docs.map(this.reformat)
+    }
+
     listenWithCategory = (set, array, catId, auctionId) => {
         //find items with category id. If item is found, add auctionId to
         return db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).onSnapshot(snap => snap.size > 0 ? set(array => [...array, auctionId]) : '')
     }
+
+
+
+    // listenOnlyCategories = (set, auctionId) => {
+    //     return db.collection(this.containing).doc(auctionId).collection(this.collection).onSnapshot(snap => set(array => set(snap.docs.map(this.reformatCat))))
+    // }
+
+    // setWithoutCategory = async (auctionId, {...item}) => {
+    //     let doc = await db.collection('categories').where('name', '==', 'No Category').get()
+    //     this.updateItem(auctionId, {...item, catId: doc.id})
+    // }
 
     // findByCategory = async (array, catId, auctionId) => {
     //     let data = await db.collection(this.containing).doc(auctionId).collection(this.collection).where('catId', '==', catId).get()
@@ -272,10 +311,24 @@ class Users extends DB {
         super('users')
         this.Following = new Following(this.collection)
         this.Notifications = new Notifications(this.collection)
+        this.Reviews = new Reviews(this.collection)
     }
 
     findByRole = role =>
         this.findByField('role', role)
+
+    listenByRole = role => {
+        db.collection(this.collection).where('role', '==', role).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenAllNotAdmin = (set) => {
+        db.collection(this.collection).where('role', '!=', 'admin').onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    findAllUsersNotAdmin = () => {
+        let data = db.collection(this.collection).where('role', '!=', 'admin').get()
+        return data.docs.map(this.reformat)
+    }
 
     removeUserItem = (userId, itemId) =>
         db.collection(this.collection).doc(userId).collection(Items).doc(itemId).delete()
@@ -411,6 +464,11 @@ class Comments extends DB {
         db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
+    findOneItemAllComments = async (auctionId, itemId) => {
+        let data = await db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).get()
+        return data.docs.map(this.reformat)
+    }
+
 }
 
 class Replies extends DB {
@@ -457,6 +515,26 @@ class Logs extends DB {
 
     reformat(doc) {
         return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+}
+
+class Reviews extends DB {
+
+    constructor(containing) {
+        super('reviews')
+        this.containing = containing
+    }
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    listenReviewsForUser = (set, userId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    addReview = (userId, { id, ...rest }) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).add(rest)
     }
 
 }

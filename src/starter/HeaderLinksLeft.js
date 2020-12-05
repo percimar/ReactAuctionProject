@@ -27,7 +27,20 @@ export default function HeaderLinksLeft() {
           FAQs
         </Button>
       </ListItem>
-
+      {
+        !user
+        &&
+        <ListItem className={classes.listItem}>
+          <Button
+            color="transparent"
+            className={classes.navLink}
+            component={Link}
+            to="/results"
+          >
+            Results
+        </Button>
+        </ListItem>
+      }
       {/* {user
         &&
         <ListItem className={classes.listItem}>
@@ -44,7 +57,7 @@ export default function HeaderLinksLeft() {
 
       {
         user &&
-        user.role === "admin"
+        user.role == 'admin'
         &&
         <>
           <ListItem className={classes.listItem}>
