@@ -7,15 +7,21 @@ import CardBody from "../components/Card/CardBody.js";
 import CardHeader from "../components/Card/CardHeader.js";
 import CardFooter from "../components/Card/CardFooter.js";
 import CustomInput from "../components/CustomInput/CustomInput.js";
+import CustomDropdown from '../components/CustomDropdown/CustomDropdown'
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import UserContext from '../UserContext'
+import InputLabel from '@material-ui/core/InputLabel';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormHelperText from '@material-ui/core/FormHelperText';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles(styles);
 
-export default function ItemForm({ auctionId, categoryId, setView, editObject }) {
+export default function ItemForm({ auctionId, setView, editObject }) {
     if (editObject) {
-        console.log("editObject:", editObject)
+        // console.log("editObject:", editObject)
         useEffect(() => prepareEdit(editObject), [])
     }
 
@@ -31,6 +37,13 @@ export default function ItemForm({ auctionId, categoryId, setView, editObject })
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
     const [picture, setPicture] = useState("")
+    const [catId, setCatId] = useState("")
+    const [categories, setCategories] = useState([])
+    useEffect(() => db.Categories.listenAll(setCategories), [])
+    // if(catId) {
+    //     useEffect(() => db.Categories.listenOne(setCatId, catId), [])
+    // }
+
 
     const valid = () =>
         name !== "" &&
@@ -39,7 +52,7 @@ export default function ItemForm({ auctionId, categoryId, setView, editObject })
 
     const create = () => {
         // db.Users.createUserItem(userId, { name, description, picture })
-        db.Auctions.Items.addItem(auctionId, { name, description, picture, catId: categoryId, sellerUserId: user.id })
+        db.Auctions.Items.addItem(auctionId, { name, description, picture, catId, sellerUserId: user.id })
         setView(false)
     }
 
@@ -48,14 +61,13 @@ export default function ItemForm({ auctionId, categoryId, setView, editObject })
         setName(object.name)
         setDescription(object.description)
         setPicture(object.picture)
+        setCatId(object.catId)
     }
 
     const edit = () => {
-        db.Auctions.Items.updateItem(auctionId, { id, name, description, picture, catId: categoryId, sellerUserId: user.id })
+        db.Auctions.Items.updateItem(auctionId, { id, name, description, picture, catId, sellerUserId: user.id })
         setView(false)
     }
-
-
 
     return (
         <GridItem xs={12} sm={12} md={4}>
@@ -103,26 +115,41 @@ export default function ItemForm({ auctionId, categoryId, setView, editObject })
                             type: "text"
                         }}
                     />
+
+                    <FormControl fullWidth margin="normal" variant="outlined" className={classes.formControl}>
+                        <InputLabel id="demo-simple-select-filled-label">Category</InputLabel>
+                        <br />
+                        <Select
+                            labelId="demo-simple-select-filled-label"
+                            id="demo-simple-select-filled"
+                            value={catId}
+                            onChange={event => setCatId(event.target.value)}
+                        >
+                            {categories.map(category => <MenuItem id={category.id} value={category.id}>{category.name}</MenuItem>)}
+                        </Select>
+                    </FormControl>
+
+
                 </CardBody>
                 <CardFooter className={classes.cardFooter}>
                     {
                         !editObject ?
                             <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
                                 Add Item
-                        </Button>
+                            </Button>
                             :
                             <>
                                 <Button simple color="primary" size="lg" disabled={!valid()} onClick={edit}>
                                     Save Changes
-                        </Button>
-                                <Button simple color="primary" size="lg" onClick={() => open(false)}>
+                                </Button>
+                                <Button simple color="primary" size="lg" onClick={() => setView(false)}>
                                     Cancel
-                        </Button>
+                                </Button>
                             </>
                     }
 
                 </CardFooter>
             </Card>
-        </GridItem>
+        </GridItem >
     )
 }

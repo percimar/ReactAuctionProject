@@ -25,7 +25,7 @@ import Close from "@material-ui/icons/Close";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Slide from "@material-ui/core/Slide";
 import CustomInput from "../components/CustomInput/CustomInput.js";
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 import db from '../db'
 import Comment from '../Asmar/Comment'
@@ -95,7 +95,6 @@ export default function Item({ auctionId, id, name, description, picture, seller
 
     const [bids, setBids] = useState([])
     useEffect(() => db.Auctions.Items.Bids.listenToOneItemAllBids(auctionId, id, setBids), [id])
-    // console.log(bids)
 
     const valid = () => amount > highestBid()
 
@@ -156,9 +155,9 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                     <br />
                                     <Primary>
                                         Category
-                                    </Primary>
+                    </Primary>
                                     <Info>
-                                        {category[0] ? category[0].name : "getting name of category..."}
+                                        {category && category.name}
                                     </Info>
                                     <br />
                                     <Primary>
@@ -237,12 +236,10 @@ export default function Item({ auctionId, id, name, description, picture, seller
                             </Card>
 
                         </GridItem>
-
-
                     </>
                     :
                     <>
-                        <ItemForm auctionId={auctionId} categoryId={catId} setView={setEditForm} editObject={{ id, name, description, picture }} />
+                        <ItemForm auctionId={auctionId} setView={setEditForm} editObject={{ id, name, description, picture, catId }} />
                     </>
             }
             <Dialog
