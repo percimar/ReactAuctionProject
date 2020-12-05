@@ -124,6 +124,14 @@ export default function Item({ auctionId, id, name, description, picture, seller
 
     const bid = () => {
         db.Auctions.Items.Bids.createBid(auctionId, id, { amount: amount * 1, bidderUserId: user.id, timestamp: new Date() })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Bids",
+            action: `Bid ${amount * 1} on ${name}`
+        })
         setClassicModal(false)
     }
 
@@ -134,6 +142,14 @@ export default function Item({ auctionId, id, name, description, picture, seller
     const remove = () => {
         setDeleteModal(false)
         db.Auctions.Items.removeOneItem(auctionId, id)
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Items",
+            action: `Removed item id ${id}`
+        })
     }
 
     return (

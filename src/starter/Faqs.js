@@ -52,11 +52,19 @@ export default function Faqs() {
 
     const create = async () => {
         await db.FAQs.create({ askerUserId: user.id, question: question, answer: "", answererUserId: "" })
+        await db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "FAQs",
+            action: `Asked question ${question}`
+        })
         await sendNotifications()
         setQuestion("")
     }
 
-    const sendNotifications = async() => {
+    const sendNotifications = async () => {
         const admins = await db.Users.findByRole('admin')
         admins.map(admin => {
             db.Users.Notifications.sendNotification(admin.id, {

@@ -42,6 +42,14 @@ export default function CategoryForm({ editObject, open }) {
 
     const create = () => {
         db.Categories.create({ name, description })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Categories",
+            action: `Created category ${name}`
+        })
         open(false)
     }
 
@@ -53,6 +61,14 @@ export default function CategoryForm({ editObject, open }) {
 
     const update = () => {
         db.Categories.update({ id: itemId, name, description })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Categories",
+            action: `Updated category ${name}`
+        })
         open(false)
     }
 

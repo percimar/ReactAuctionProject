@@ -45,6 +45,14 @@ export default function UsersItemForm() {
 
     const create = () => {
         db.Auctions.Items.addItem(auction, { name, description, catId: category, sellerUserId: user.id })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Items",
+            action: `Created Item ${name}`
+        })
     }
 
     return (

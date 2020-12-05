@@ -58,7 +58,7 @@ class DB {
         return db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
     }
 
-    
+
     // item has no id
     create = ({ id, ...rest }) =>
         db.collection(this.collection).add(rest)
@@ -432,10 +432,23 @@ class Replies extends DB {
 
 }
 
+class Logs extends DB {
+
+    constructor() {
+        super('logs')
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+}
+
 export default {
     Auctions: new Auctions(),
     Users: new Users(),
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Bugs: new Bugs()
+    Bugs: new Bugs(),
+    Logs: new Logs()
 }
