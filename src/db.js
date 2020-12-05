@@ -416,7 +416,7 @@ class Replies extends DB {
         return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).doc(replyId).delete()
     }
 
-    addReply = (auctionId, itemId, commentId, { id, ...rest }) => {
+    addReply = (auctionId, itemId, commentId, { ...rest }) => {
         return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).add(rest)
     }
 
@@ -424,10 +424,7 @@ class Replies extends DB {
 
 export default {
     Auctions: new Auctions(),
-    Bids: new Bids(),
     Users: new Users(),
-    Following,
-    Notifications: new Notifications(),
     FAQs: new FAQs(),
     Categories: new Categories(),
     Bugs: new Bugs()

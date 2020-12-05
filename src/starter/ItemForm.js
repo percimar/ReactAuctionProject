@@ -27,7 +27,7 @@ export default function ItemForm({ auctionId, setView, editObject }) {
 
     const { user } = useContext(UserContext)
 
-    const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+    const [cardAnimaton, setCardAnimation] = useState("cardHidden");
     setTimeout(function () {
         setCardAnimation("");
     }, 700);
@@ -36,7 +36,6 @@ export default function ItemForm({ auctionId, setView, editObject }) {
     const [id, setId] = useState('')
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
-    const [picture, setPicture] = useState("")
     const [catId, setCatId] = useState("")
     const [categories, setCategories] = useState([])
     useEffect(() => db.Categories.listenAll(setCategories), [])
@@ -47,12 +46,11 @@ export default function ItemForm({ auctionId, setView, editObject }) {
 
     const valid = () =>
         name !== "" &&
-        description !== "" &&
-        picture !== ""
+        description !== ""
 
     const create = () => {
         // db.Users.createUserItem(userId, { name, description, picture })
-        db.Auctions.Items.addItem(auctionId, { name, description, picture, catId, sellerUserId: user.id })
+        db.Auctions.Items.addItem(auctionId, { name, description, catId, sellerUserId: user.id })
         setView(false)
     }
 
@@ -60,7 +58,6 @@ export default function ItemForm({ auctionId, setView, editObject }) {
         setId(object.id)
         setName(object.name)
         setDescription(object.description)
-        setPicture(object.picture)
         setCatId(object.catId)
     }
 
@@ -73,7 +70,7 @@ export default function ItemForm({ auctionId, setView, editObject }) {
         <GridItem xs={12} sm={12} md={4}>
             <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary" className={classes.cardHeader}>
-                    Image goes here
+                    Item Wizard
                 </CardHeader>
                 <CardBody>
                     <CustomInput
@@ -100,19 +97,6 @@ export default function ItemForm({ auctionId, setView, editObject }) {
                             type: "text",
                             multiline: true,
                             rows: 5
-                        }}
-                    />
-
-                    <CustomInput
-                        labelText="Picture"
-                        id="picture"
-                        formControlProps={{
-                            fullWidth: true
-                        }}
-                        inputProps={{
-                            onChange: event => setPicture(event.target.value),
-                            value: picture,
-                            type: "text"
                         }}
                     />
 
