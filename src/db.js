@@ -146,10 +146,10 @@ class Items extends DB {
         super('items')
         this.containing = containing
         this.Bids = new Bids(this.containing, this.collection)
+        this.Comments = new Comments(this.containing, this.collection)
     }
 
     reformat(doc) {
-        console.log(doc.ref)
         return { ...super.reformat(doc) }
     }
 
@@ -320,6 +320,69 @@ class Bugs extends DB {
 
     reformat(doc) {
         return { ...super.reformat(doc) }
+    }
+
+}
+
+class Comments extends DB {
+
+    constructor(topContaining, containing) {
+        super('comments');
+        this.topContaining = topContaining;
+        this.containing = containing;
+        this.Replies = new Replies(topContaining, containing, this.collection)
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    addComment = (auctionId, itemId, comment) => {
+        db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).add(comment)
+    }
+
+    removeComment = (auctionId, itemId, commentId) => {
+        db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).doc(commentId).delete()
+    }
+
+    listenToOneItemAllComments = (set, auctionId, itemId) => {
+        db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+}
+
+class Replies extends DB {
+
+    constructor(topContaining, subContaining, containing) {
+        super('replies')
+        this.topContaining = topContaining
+        this.subContaining = subContaining
+        this.containing = containing
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    findOneCommentAllReplies = async (auctionId, itemId, commentId) => {
+        const data = await db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).get()
+        return data.docs.map(this.reformat)
+    }
+
+    listenToOneCommentAllReplies = (set, auctionId, itemId, commentId) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToOneCommentOneReply = (set, auctionId, itemId, commentId, replyId) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).doc(replyId).onSnapshot(snap => set(this.reformat(snap)))
+    }
+
+    removeReply = (auctionId, itemId, commentId, replyId) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).doc(replyId).delete()
+    }
+
+    addReply = (auctionId, itemId, commentId, { id, ...rest }) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).add(rest)
     }
 
 }

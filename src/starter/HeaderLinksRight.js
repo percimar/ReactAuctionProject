@@ -23,7 +23,7 @@ export default function HeaderLinksRight() {
         &&
         <CustomDropdown
           hoverColor="black"
-          buttonText="Navigate"
+          buttonText={user.name}
           dropdownList={[
             user
             &&
@@ -100,7 +100,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/logout"
             >
-              Log Out {user.name}
+              Log Out
             </Button>
           ]
           }
