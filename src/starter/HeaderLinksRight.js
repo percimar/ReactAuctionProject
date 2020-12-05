@@ -66,7 +66,7 @@ export default function HeaderLinksRight() {
               color="transparent"
               className={classes.navLink}
               component={Link}
-              to="/profile"
+              to={`/Profile/${user.id}`}
             >
               Profile
           </Button>
@@ -148,7 +148,7 @@ export default function HeaderLinksRight() {
               color="transparent"
               className={classes.navLink}
               component={Link}
-              to="/profile"
+              to={`/Profile/${user.id}`}
             >
               Profile
           </Button>

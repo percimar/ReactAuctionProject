@@ -143,7 +143,7 @@ class Categories extends DB {
     }
 
     reformatOnlyId(doc) {
-        return {id: doc.id}
+        return { id: doc.id }
     }
 
     collectOne = async (set, catId) => {
@@ -311,7 +311,7 @@ class Users extends DB {
 
     findByRole = role =>
         this.findByField('role', role)
-    
+
     listenByRole = role => {
         db.collection(this.collection).where('role', '==', role).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
@@ -459,7 +459,7 @@ class Comments extends DB {
         db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
-    findOneItemAllComments = async(auctionId, itemId) => {
+    findOneItemAllComments = async (auctionId, itemId) => {
         let data = await db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).get()
         return data.docs.map(this.reformat)
     }

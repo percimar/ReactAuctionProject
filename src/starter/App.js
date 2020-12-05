@@ -109,9 +109,6 @@ function App() {
                 <Route path="/userauctions">
                   <UserAuctions />
                 </Route>
-                <Route path="/profile">
-                  <Profile />
-                </Route>
                 <Route path="/following">
                   <Following />
                 </Route>
