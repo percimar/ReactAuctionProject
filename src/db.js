@@ -21,6 +21,7 @@ class DB {
     }
 
     findByField = async (field, value) => {
+        console.log("value", value)
         const data = await db.collection(this.collection).where(field, '==', value).get()
         return data.docs.map(this.reformat)
     }
@@ -58,7 +59,7 @@ class DB {
         return db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
     }
 
-    
+
     // item has no id
     create = ({ id, ...rest }) =>
         db.collection(this.collection).add(rest)
@@ -369,6 +370,22 @@ class Bugs extends DB {
 
 }
 
+class Adverts extends DB {
+
+    constructor() {
+        super('adverts')
+    }
+
+    listenToAdsByItem = (set, itemId) => {
+        return db.collection(this.collection).where("itemId", "==", itemId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc) }
+    }
+
+}
+
 class Comments extends DB {
 
     constructor(topContaining, containing) {
@@ -432,10 +449,24 @@ class Replies extends DB {
 
 }
 
+class Logs extends DB {
+
+    constructor() {
+        super('logs')
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+}
+
 export default {
     Auctions: new Auctions(),
     Users: new Users(),
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Bugs: new Bugs()
+    Bugs: new Bugs(),
+    Adverts: new Adverts(),
+    Logs: new Logs()
 }

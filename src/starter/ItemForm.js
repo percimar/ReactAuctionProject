@@ -52,6 +52,14 @@ export default function ItemForm({ auctionId, setView, editObject }) {
     const create = () => {
         // db.Users.createUserItem(userId, { name, description, picture })
         db.Auctions.Items.addItem(auctionId, { name, description, catId, sellerUserId: user.id })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Items",
+            action: `Created item ${name}`
+        })
         setView(false)
     }
 
