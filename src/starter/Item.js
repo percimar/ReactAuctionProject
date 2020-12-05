@@ -134,7 +134,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
                     <>
                         <GridItem xs={12} sm={12} md={4} >
 
-                            <Card className={classes[cardAnimaton]} style={{ height: "420px", width: "400px", textAlign: "center", marginLeft: "15px" }}>
+                            <Card className={classes[cardAnimaton]} style={{ width: "400px", textAlign: "center", marginLeft: "15px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     <img src={picture} alt="item" style={{ width: '100px', height: '100px' }} />
                                 </CardHeader>
@@ -155,7 +155,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                     <br />
                                     <Primary>
                                         Category
-                    </Primary>
+                                    </Primary>
                                     <Info>
                                         {category && category.name}
                                     </Info>
@@ -200,7 +200,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                             <Button color="danger" size="sm" onClick={() => confirmDelete()}>
                                                 Remove
                                     </Button>
-                                            <Button color="primary" size="lg" onClick={handleExpandClick}>
+                                            <Button color="primary" size="sm" onClick={handleExpandClick}>
                                                 View Comments
                                     </Button>
                                         </CardFooter>
@@ -213,10 +213,11 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                             ? comments.map(comment =>
                                                 <Comment key={comment.id} auctionId={auctionId} itemId={id} {...comment} />)
                                             : <Info>No questions found, be the first to leave one!</Info>}
+                                        <hr />
                                         <TextField
                                             label="Ask a Question"
                                             multiline
-                                            rows={1}
+                                            rows={2}
                                             rowsMax={Number.MAX_SAFE_INTEGER}
                                             value={comment}
                                             onChange={(event) => setComment(event.target.value)}
