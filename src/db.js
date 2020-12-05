@@ -143,7 +143,7 @@ class Categories extends DB {
     }
 
     reformatOnlyId(doc) {
-        return {id: doc.id}
+        return { id: doc.id }
     }
 
     collectOne = async (set, catId) => {
@@ -306,11 +306,12 @@ class Users extends DB {
         super('users')
         this.Following = new Following(this.collection)
         this.Notifications = new Notifications(this.collection)
+        this.Reviews = new Reviews(this.collection)
     }
 
     findByRole = role =>
         this.findByField('role', role)
-    
+
     listenByRole = role => {
         db.collection(this.collection).where('role', '==', role).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
@@ -458,7 +459,7 @@ class Comments extends DB {
         db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
-    findOneItemAllComments = async(auctionId, itemId) => {
+    findOneItemAllComments = async (auctionId, itemId) => {
         let data = await db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).get()
         return data.docs.map(this.reformat)
     }
@@ -509,6 +510,26 @@ class Logs extends DB {
 
     reformat(doc) {
         return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+}
+
+class Reviews extends DB {
+
+    constructor(containing) {
+        super('reviews')
+        this.containing = containing
+    }
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    listenReviewsForUser = (set, userId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    addReview = (userId, { id, ...rest }) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).add(rest)
     }
 
 }

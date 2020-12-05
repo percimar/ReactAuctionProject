@@ -70,6 +70,9 @@ function App() {
           <Route path="/Result/Items/:AuctionId">
             <ResultItems />
           </Route>
+          <Route path="/Profile/:userId">
+            <Profile />
+          </Route>
           <Route path="/faqs">
             <Faqs />
           </Route>
@@ -105,9 +108,6 @@ function App() {
                 </Route>
                 <Route path="/userauctions">
                   <UserAuctions />
-                </Route>
-                <Route path="/profile">
-                  <Profile />
                 </Route>
                 <Route path="/following">
                   <Following />
