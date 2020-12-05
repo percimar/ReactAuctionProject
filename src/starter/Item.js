@@ -88,7 +88,6 @@ export default function Item({ auctionId, id, name, description, picture, seller
         }
     }
 
-
     const attemptBid = () => {
         if (user) {
             setClassicModal(true)
@@ -109,8 +108,6 @@ export default function Item({ auctionId, id, name, description, picture, seller
 
     const [ad, setAd] = useState([])
     useEffect(() => db.Adverts.listenToAdsByItem(setAd, id), [])
-
-    console.log("ad:", ad)
 
     const [bids, setBids] = useState([])
     useEffect(() => db.Auctions.Items.Bids.listenToOneItemAllBids(auctionId, id, setBids), [id])
@@ -174,7 +171,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
             action: `Removed item id ${id}`
         })
     }
-
+    console.log("pic:", picture)
     return (
         <>
             {
@@ -250,17 +247,22 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                                 Remove
                                             </Button>
                                             {
-                                                ad.id == id ?
-                                                    <Button style={{ background: "orange" }} size="sm" onClick={() => confirmPromotion()}>
-                                                        Promote Item
-                                            </Button>
+                                                ad.length == 0 ?
+                                                    picture != undefined ?
+                                                        < Button style={{ background: "orange" }} size="sm" onClick={() => confirmPromotion()}>
+                                                            Promote
+                                                    </Button>
+                                                        :
+                                                        <Button style={{ background: "darkgray" }} size="sm" disabled >
+                                                            Picture Required
+                                                    </Button>
                                                     :
                                                     <Button style={{ background: "darkgray" }} size="sm" disabled >
                                                         Promoted Already
-                                            </Button>
+                                                    </Button>
                                             }
                                             <Button color="primary" size="sm" onClick={handleExpandClick}>
-                                                View Comments
+                                                Comments
                                             </Button>
                                         </CardFooter>
                                     </>
