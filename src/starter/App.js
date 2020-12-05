@@ -70,6 +70,9 @@ function App() {
           <Route path="/Result/Items/:AuctionId">
             <ResultItems />
           </Route>
+          <Route path="/Profile/:userId">
+            <Profile />
+          </Route>
           <Route path="/faqs">
             <Faqs />
           </Route>

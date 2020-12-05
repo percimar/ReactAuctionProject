@@ -2,7 +2,7 @@ import defaultAvatar from "../assets/img/defaultAvatar.png"
 import fb from '../fb'
 import "firebase/storage"
 import db from '../db'
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect, useParams } from "react";
 import UserContext from '../UserContext'
 import { makeStyles } from "@material-ui/core/styles";
 import classNames from "classnames";
@@ -11,6 +11,7 @@ import GridItem from "../components/Grid/GridItem.js";
 import Parallax from "../components/Parallax/Parallax.js";
 import Card from "../components/Card/Card.js";
 import CardBody from "../components/Card/CardBody.js";
+import CardHeader from "../components/Card/CardBody.js";
 import CardFooter from "../components/Card/CardFooter.js";
 import Footer from "../components/Footer/Footer.js";
 import styles from "../assets/jss/material-kit-react/views/profilePage.js";
@@ -25,9 +26,20 @@ const useStyles = makeStyles(styles);
 
 export default function Profile() {
 
-  const { user } = useContext(UserContext)
+  const { loggedInUser } = useContext(UserContext)
+
+  let { userId } = useParams();
+
+  const [user, setUser] = useState("");
+  useEffect(() => {
+    userId
+      ? db.Users.listenOne(setUser, userId)
+      : setUser(loggedInUser)
+  }, [userId])
 
   const [userAvatar, setUserAvatar] = useState(user.avatar)
+  const [reviews, setReviews] = useState([])
+  //useEffect(() => db.Users.Reviews.listenReviewsForUser(setReviews, userId), [])
 
   const classes = useStyles();
   // add user image 
@@ -63,32 +75,8 @@ export default function Profile() {
 
             </div>
             <div style={{ width: "30%" }}>
-              <GridContainer justify="space-evenly">
+              <GridContainer justify="center">
                 <GridItem xs={12} sm={12} md={6}>
-
-                  {/* <div className={classes.profile} >
-                    <div>
-                      <img src={user.avatar ? user.avatar : defaultAvatar} alt="..." className={classNames(
-                        classes.imgRaised,
-                        classes.imgFluid
-                      )}
-                      //style={{ width: 128, height: 128 }} 
-                      />
-                    </div>
-
-                    <div>
-                      <label htmlFor="upload-photo">
-                        <Button variant="outlined" color="default" component="span">
-                          Upload Avatar Photo
-                       </Button>
-                      </label>
-                    </div>
-
-                    <div className={classes.name}>
-                      <h3 className={classes.title}>{user.name}</h3>
-                      <h6>{user.role.toUpperCase()}</h6>
-                    </div>
-                  </div> */}
 
                   <Card style={{ width: "10rem" }} >
                     <div style={{ margin: "50" }}>
@@ -113,7 +101,6 @@ export default function Profile() {
                     </CardBody>
                   </Card>
                 </GridItem>
-
                 <GridItem xs={12} sm={12} md={6}>
                   <Card style={{ width: "35rem", height: "auto" }} >
                     <CardBody>
@@ -121,6 +108,19 @@ export default function Profile() {
                         <h5 className={classes.title}>Username: {user.name}</h5>
                         <h6>Role: {user.role.toUpperCase()}</h6>
                       </div>
+                    </CardBody>
+                  </Card>
+                  <Card style={{ textAlign: "center", width: "35rem", height: "auto" }} >
+                    <CardHeader className={classes.title}>
+                      Reviews
+                    </CardHeader>
+                    <CardBody>
+                      {/* <div style={{ textAlign: "center" }}>
+                        {reviews.length > 0
+                          ? reviews.map(review =>
+                            <Review key={review.id} userId={userId} {...review} />)
+                          : <Info>No reviews found, be the first to leave one!</Info>}
+                      </div> */}
                     </CardBody>
                   </Card>
                 </GridItem>

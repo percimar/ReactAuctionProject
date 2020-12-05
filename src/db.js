@@ -271,6 +271,7 @@ class Users extends DB {
         super('users')
         this.Following = new Following(this.collection)
         this.Notifications = new Notifications(this.collection)
+        this.Reviews = new Reviews(this.collection)
     }
 
     findByRole = role =>
@@ -440,6 +441,26 @@ class Logs extends DB {
 
     reformat(doc) {
         return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+}
+
+class Reviews extends DB {
+
+    constructor(containing) {
+        super('reviews')
+        this.containing = containing
+    }
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    listenReviewsForUser = (set, userId) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    addReview = (userId, { id, ...rest }) => {
+        return db.collection(this.containing).doc(userId).collection(this.collection).add(rest)
     }
 
 }
