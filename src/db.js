@@ -21,6 +21,7 @@ class DB {
     }
 
     findByField = async (field, value) => {
+        console.log("value", value)
         const data = await db.collection(this.collection).where(field, '==', value).get()
         return data.docs.map(this.reformat)
     }
@@ -323,6 +324,22 @@ class Bugs extends DB {
 
 }
 
+class Adverts extends DB {
+
+    constructor() {
+        super('adverts')
+    }
+
+    listenToAdsByItem = (set, itemId) => {
+        return db.collection(this.collection).where("itemId", "==", itemId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc) }
+    }
+
+}
+
 export default {
     Auctions: new Auctions(),
     Bids: new Bids(),
@@ -331,5 +348,6 @@ export default {
     Notifications: new Notifications(),
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Bugs: new Bugs()
+    Bugs: new Bugs(),
+    Adverts: new Adverts()
 }

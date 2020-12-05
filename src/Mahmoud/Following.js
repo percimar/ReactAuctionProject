@@ -25,7 +25,6 @@ export default function Following() {
 
     const [following, setFollowing] = useState([])
     useEffect(() => db.Users.Following.listenToOneUserAllFollowing(setFollowing, user.id), [user])
-    console.log(following)
     return (
         <>
             <Parallax filter image={image}>
