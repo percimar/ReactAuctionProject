@@ -16,7 +16,7 @@ import ResultItem from './ResultItem'
 import GridContainer from "../components/Grid/GridContainer.js";
 import UserContext from '../UserContext'
 import { useHistory, Link } from 'react-router-dom';
-import ItemForm from './ItemForm'
+import ItemForm from '../starter/ItemForm'
 
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
@@ -120,14 +120,14 @@ export default function ResultItems() {
                             </DialogTitle>
                             <DialogContent>
                             </DialogContent>
-                            <DialogContent
+                            {/* <DialogContent
                                 id="classic-modal-slide-description"
                                 className={classes.modalBody}
                             >
                                 This Auction has been closed by {user.name}
                                 <br />
                                 Click the button below to return to auctions page
-                            </DialogContent>
+                            </DialogContent> */}
                             <DialogActions className={classes.modalFooter}>
                                 <Button
                                     component={Link} to={`/`}

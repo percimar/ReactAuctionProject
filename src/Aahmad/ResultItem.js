@@ -11,7 +11,7 @@ import Primary from "../components/Typography/Primary.js";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import UserContext from '../UserContext'
-import ItemForm from './ItemForm'
+import ItemForm from '../starter/ItemForm'
 
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";

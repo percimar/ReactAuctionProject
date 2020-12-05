@@ -23,7 +23,7 @@ import Close from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 import CustomInput from "../components/CustomInput/CustomInput.js";
 import { useHistory, Link } from 'react-router-dom';
-import AuctionForm from './AuctionForm'
+import AuctionForm from '../starter/AuctionForm'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
