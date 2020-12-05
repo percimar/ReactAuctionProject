@@ -58,7 +58,7 @@ class DB {
         return db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
     }
 
-
+    
     // item has no id
     create = ({ id, ...rest }) =>
         db.collection(this.collection).add(rest)
@@ -109,6 +109,14 @@ class Auctions extends DB {
 
     listenToUnfinishedFiltered = (set, searchText) => {
         return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.filter(doc => doc.data().displayName.toLowerCase().includes(searchText.toLowerCase())).map(this.reformat)))
+    }
+
+    listenToFinished = set => {
+        return db.collection(this.collection).where('status', '==', 'Closed').onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToFinishedFiltered = (set, searchText) => {
+        return db.collection(this.collection).where('status', '==', 'Closed').onSnapshot(snap => set(snap.docs.filter(doc => doc.data().displayName.toLowerCase().includes(searchText.toLowerCase())).map(this.reformat)))
     }
 
     createAuctionBid = (auctionId, { id, ...rest }) =>

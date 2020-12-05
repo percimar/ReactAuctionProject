@@ -91,6 +91,15 @@ export default function HeaderLinksRight() {
             >
               Notifications
           </Button>,
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/results"
+            >
+              Results
+        </Button>,
             user
             &&
             <Button

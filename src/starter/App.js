@@ -16,11 +16,13 @@ import HeaderLinksRight from './HeaderLinksRight'
 import Header from "./Header";
 import Admin from "./Admin";
 import UserItems from "./UserItems";
+import ResultItems from "./ResultItems";
 import UserAuctions from "./UserAuctions";
 import Following from '../Mahmoud/Following'
 import Notifications from './Notifications'
 import Bugs from './Bugs'
 import About from './About'
+import Results from './Results'
 import UserContext from '../UserContext'
 
 function App() {
@@ -82,6 +84,9 @@ function App() {
                 <Route path="/Auction/Items/:AuctionId">
                   <AuctionItems />
                 </Route>
+                <Route path="/Result/Items/:AuctionId">
+                  <ResultItems />
+                </Route>
                 <Route path="/useritems">
                   <UserItems />
                 </Route>
@@ -109,6 +114,9 @@ function App() {
                 <Route path="/about">
                   <About />
                 </Route>
+                <Route path="/results">
+                  <Results />
+                </Route>
               </>
               :
               <>
@@ -124,8 +132,6 @@ function App() {
                 <Route path="/about">
                   <About />
                 </Route>
-
-
               </>
           }
         </Switch>
