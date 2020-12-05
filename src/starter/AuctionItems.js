@@ -41,7 +41,7 @@ export default function AuctionItems() {
 
     Transition.displayName = "Transition";
 
-    const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+    const [cardAnimaton, setCardAnimation] = useState("cardHidden");
     setTimeout(function () {
         setCardAnimation("");
     }, 700);
@@ -138,26 +138,6 @@ export default function AuctionItems() {
                         </GridContainer>
                         <GridContainer>
                             {
-                                user && user.role === 'admin' &&
-                                <>
-                                    <Button simple color="primary" size="lg" onClick={() => setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
-                                    {
-                                        !confirm ?
-                                            <Button color="danger" size="lg" onClick={() => openConfirm()}>Close Auction</Button>
-                                            :
-                                            <>
-                                                <Button color="transparent" size="sm" onClick={() => setConfirm(false)}> Back </Button>
-                                                <Button color="danger" size="lg" onClick={() => closeAuction()}>Confirm?</Button>
-                                            </>
-                                    }
-
-                                    <Button simple color="primary" size="lg">Show Pending Items</Button>
-                                </>
-                            }
-
-                        </GridContainer>
-                        <GridContainer>
-                            {
                                 addItem &&
                                 <ItemForm auctionId={AuctionId} setView={setAddItem} />
                             }
@@ -199,7 +179,7 @@ export default function AuctionItems() {
                                 id="classic-modal-slide-description"
                                 className={classes.modalBody}
                             >
-                                This Auction has been closed by {user.name}
+                                This Auction has been closed by {user?.name}
                                 <br />
                                 Click the button below to return to auctions page
                             </DialogContent>

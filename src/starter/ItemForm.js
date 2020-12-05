@@ -1,5 +1,8 @@
+import defaultCar from "../assets/img/defaultCar.jpg"
 import React, { useState, useContext, useEffect } from "react";
 import db from '../db'
+import fb from '../fb'
+import "firebase/storage"
 import GridItem from "../components/Grid/GridItem.js";
 import Button from "../components/CustomButtons/Button.js";
 import Card from "../components/Card/Card.js";
@@ -7,12 +10,14 @@ import CardBody from "../components/Card/CardBody.js";
 import CardHeader from "../components/Card/CardHeader.js";
 import CardFooter from "../components/Card/CardFooter.js";
 import CustomInput from "../components/CustomInput/CustomInput.js";
+import AddAPhotoIcon from '@material-ui/icons/AddAPhoto';
 import CustomDropdown from '../components/CustomDropdown/CustomDropdown'
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import UserContext from '../UserContext'
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
+import IconButton from '@material-ui/core/IconButton';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
@@ -20,11 +25,6 @@ import Select from '@material-ui/core/Select';
 const useStyles = makeStyles(styles);
 
 export default function ItemForm({ auctionId, setView, editObject }) {
-    if (editObject) {
-        // console.log("editObject:", editObject)
-        useEffect(() => prepareEdit(editObject), [])
-    }
-
     const { user } = useContext(UserContext)
 
     const [cardAnimaton, setCardAnimation] = useState("cardHidden");
@@ -36,6 +36,7 @@ export default function ItemForm({ auctionId, setView, editObject }) {
     const [id, setId] = useState('')
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
+    const [picture, setPicture] = useState("");
     const [catId, setCatId] = useState("")
     const [categories, setCategories] = useState([])
     useEffect(() => db.Categories.listenAll(setCategories), [])
@@ -58,19 +59,55 @@ export default function ItemForm({ auctionId, setView, editObject }) {
         setId(object.id)
         setName(object.name)
         setDescription(object.description)
+        if (object.picture) setPicture(object.picture)
         setCatId(object.catId)
     }
+
+    useEffect(() => {
+        if (editObject)
+            prepareEdit(editObject)
+    }, [])
 
     const edit = () => {
         db.Auctions.Items.updateItem(auctionId, { id, name, description, picture, catId, sellerUserId: user.id })
         setView(false)
     }
 
+    const uploadPicture = async event => {
+        const filenameRef = fb.storage().ref().child(`cars/${id}`)
+        if (editObject.picture) {
+            await filenameRef.delete();
+        }
+        const snapshot = await filenameRef.put(event.target.files[0])
+        setPicture(await snapshot.ref.getDownloadURL())
+    }
+
     return (
         <GridItem xs={12} sm={12} md={4}>
             <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary" className={classes.cardHeader}>
-                    Item Wizard
+                    <img src={picture ?? defaultCar} alt="item" style={{ width: '100px', height: '100px' }} />
+                    {
+                        id &&
+                        <>
+                            <input
+                                style={{ display: "none" }}
+                                accept="image/*"
+                                className={classes.input}
+                                id="upload-picture"
+                                name="upload-picture"
+                                type="file"
+                                onChange={uploadPicture}
+                            />
+                            <label htmlFor="upload-picture">
+                                <IconButton component="span">
+                                    <AddAPhotoIcon />
+                                </IconButton>
+                            </label>
+                        </>
+                    }
+
+
                 </CardHeader>
                 <CardBody>
                     <CustomInput
@@ -109,7 +146,7 @@ export default function ItemForm({ auctionId, setView, editObject }) {
                             value={catId}
                             onChange={event => setCatId(event.target.value)}
                         >
-                            {categories.map(category => <MenuItem id={category.id} value={category.id}>{category.name}</MenuItem>)}
+                            {categories.map(category => <MenuItem key={category.id} id={category.id} value={category.id}>{category.name}</MenuItem>)}
                         </Select>
                     </FormControl>
 
