@@ -92,7 +92,7 @@ export default function Bugs() {
                         {
                             user
                                 ?
-                                user.role !== "admin"
+                                user.role !== "admin" 
                                 &&
                                 <>
                                     <CardBody>

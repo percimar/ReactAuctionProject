@@ -82,7 +82,7 @@ export default function CategoriesView({set, setView}) {
               <GridItem xs={12} sm={12} md={8}>
                 <Button simple='true' color="primary" size="large" onClick={() => setView()}>View Auctions</Button>
                 {
-                  user && user.role === 'admin' &&
+                  user && user.role!='user' &&
                 <Button simple="true" color="primary" size="large" onClick={() => setAddCategory(!addCategory)}>{ !addCategory ? 'Add Category' : 'Close Form'}</Button>
                 }
               </GridItem>

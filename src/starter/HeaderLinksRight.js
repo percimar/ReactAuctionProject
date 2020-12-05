@@ -17,6 +17,28 @@ export default function HeaderLinksRight() {
   const { user } = useContext(UserContext)
 
   const classes = useStyles();
+
+  const [notifCount, setNotifCount] = useState(0)
+
+  const notificationsBar = () => {
+    db.Users.Notifications.listenToUnseenNotificationsCount(setNotifCount, user.id)
+    return (
+      <Button
+        style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+        color="transparent"
+        className={classes.navLink}
+        component={Link}
+        to="/notifications"
+      >
+        Notifications ({notifCount})
+      </Button>
+    )
+  }
+
+  const nameWithNotifications = () => {
+    return `${user.name} (${notifCount})`
+  }
+
   return (
 
     <>
@@ -25,11 +47,11 @@ export default function HeaderLinksRight() {
         &&
         <CustomDropdown
           hoverColor="black"
-          buttonText={user.name}
+          buttonText={nameWithNotifications()}
           dropdownList={[
             user
             &&
-            user.role === "user"
+            user.role != "admin"
             &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
@@ -43,7 +65,7 @@ export default function HeaderLinksRight() {
             ,
             user
             &&
-            user.role === "user"
+            user.role != "admin"
             &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
@@ -57,7 +79,7 @@ export default function HeaderLinksRight() {
             ,
             user
             &&
-            user.role === "user"
+            user.role != "admin"
             &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
@@ -71,7 +93,7 @@ export default function HeaderLinksRight() {
             ,
             user
             &&
-            user.role === "user"
+            user.role != "admin"
             &&
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
@@ -84,15 +106,16 @@ export default function HeaderLinksRight() {
           </Button>,
             user
             &&
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/notifications"
-            >
-              Notifications
-          </Button>,
+            notificationsBar(),
+            // <Button
+            //   style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+            //   color="transparent"
+            //   className={classes.navLink}
+            //   component={Link}
+            //   to="/notifications"
+            // >
+            //     Notifications
+            // </Button>,
             user
             &&
             <Button

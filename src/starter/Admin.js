@@ -1,21 +1,63 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import db from '../db'
+import UserContext from '../UserContext'
 import { makeStyles } from "@material-ui/core/styles";
 import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Button from "../components/CustomButtons/Button.js";
 import Card from "../components/Card/Card.js";
-import styles from "../assets/jss/material-kit-react/views/landingPageSections/teamStyle.js";
+import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
+import landingStyles from "../assets/jss/material-kit-react/views/landingPage"
 import image from "../assets/img/bg8.jpg";
 
+import IconButton from "@material-ui/core/IconButton";
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogActions from "@material-ui/core/DialogActions";
+import Close from "@material-ui/icons/Close";
+import Slide from "@material-ui/core/Slide";
+
+import List from '@material-ui/core/List';
+import ListItem from '@material-ui/core/ListItem';
+import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
+import ListItemText from '@material-ui/core/ListItemText';
+import ListItemAvatar from '@material-ui/core/ListItemAvatar';
+import Checkbox from '@material-ui/core/Checkbox';
+import Avatar from '@material-ui/core/Avatar';
+import UserListEntry from './UserListEntry'
+import classNames from "classnames";
+import Parallax from "../components/Parallax/Parallax.js";
+
 const useStyles = makeStyles(styles);
+const useLandingStyles = makeStyles(landingStyles)
+
+const Transition = React.forwardRef(function Transition(props, ref) {
+    return <Slide direction="down" ref={ref} {...props} />;
+});
+
+Transition.displayName = "Transition";
 
 export default function Admin() {
 
-    const classes = useStyles();
 
-    const [users, setUsers] = useState(0)
-    useEffect(() => db.Users.listenToCount(setUsers), [])
+    const { user } = useContext(UserContext)
+
+    const classes = useStyles();
+    const landingClasses = useLandingStyles();
+
+    const [usersCount, setUsersCount] = useState(0)
+    useEffect(() => db.Users.listenToCount(setUsersCount), [])
+
+    const [users, setUsers] = useState([])
+    useEffect(() => db.Users.listenAllNotAdmin(setUsers), [])
+    console.log(users)
+
+    const [classicModal, setClassicModal] = useState(false)
+
+    // const [selected, setSelected] = useState([])
+    // const [moderators, setModerators] = useState([])
+    // useEffect(() => db.Users.listenByRole(setModerators, 'role'), [users])
 
     const reset = async () => {
 
@@ -54,43 +96,142 @@ export default function Admin() {
         // get all users (if just reset, logout and login as existing user to generate user document in db)
         // add sample items, auctions, and bids for them
 
-        // const users = await db.Users.findByRole('user')
-        // await Promise.all(
-        //     users.map(
-        //         async user => {
-        //             const itemDoc = await db.Users.createUserItem(user.id, { name: 'Cat', description: 'Furry', picture: "" })
-        //             const auctionDoc = await db.Auctions.create({ sellerId: user.id, itemId: itemDoc.id, buyerId: "", start: new Date(), finish: new Date(), status: ""})
-        //             await db.Auctions.createAuctionBid(auctionDoc.id, { amount: 10, buyerId: user.id, when: new Date() })
-        //         }
-        //     )
-        // )
-        //add sample auctions
+        const users = await db.Users.findAllUsersNotAdmin()
+        await Promise.all(
+            users.map(
+                async user => {
+                    // const itemDoc = await db.Users.createUserItem(user.id, { name: 'Cat', description: 'Furry', picture: "" })
+                    // const auctionDoc = await db.Auctions.create({ sellerId: user.id, itemId: itemDoc.id, buyerId: "", start: new Date(), finish: new Date(), status: ""})
+                    await db.Auctions.createAuctionBid(auctionDoc.id, { amount: 10, buyerId: user.id, when: new Date() })
+                }
+            )
+        )
+        // add sample auctions
+        await Promise.all(
+            await db.Auctions.create({
+                displayName: 'Used Cars Auction',
+                start: new Date("December 10, 2020 12:00:00"),
+                finish: new Date("December 20, 2020 12:00:00"),
+                status: 'Ongoing'
+            }),
+            await db.Auctions.create({
+                displayName: "Therapist's Cars",
+                start: new Date("December 10, 2020 12:00:00"),
+                finish: new Date("December 20, 2020 12:00:00"),
+                status: 'Ongoing'
+            })
+        )
+
+        //add sample categories
+        await Promise.all(
+            await db.Categories.create({
+                name: 'Second Hand Cars',
+                description: 'These cars have seen use but have not accumulated enough mileage or wear and tear to justify being scrapped.'
+            })
+        )
+
+        //add sample items for each auction
+        let auctions = db.Auctions.findAll()
+        await Promise.all(
+            auctions.map(
+                async auction => {
+                    await db.Auctions.Items.addItem(auction.id, {
+                        name: 'Kia Picanto 2015',
+                        description: `Goes vroom vroom best car 2015 has like 4 wheels and automatic transmission 
+                        but not fully automatic like you still gotta put it in park or reverse and stuff but other than that 
+                        it's automatic oh and great a/c`,
+                        picture: `https://firebasestorage.googleapis.com/v0/b/cp3330-project-141af.appspot.com/
+                        o/cars%2FKzaXsUb0rEZnSdBYnhCZ?alt=media&token=280eb058-8dfc-4634-8470-8a2540697c28`,
+                        sellerUserId: user.id
+                    })
+                }
+            )
+        )
+
+        //add sample bids
+
+        //add sample comments 
+        await Promise.all(
+            users.map(
+                async user => {
+                    auctions.map(
+                        async auction => {
+                            let items = await db.Auctions.Items.findOneAuctionAllItems(auction.id)
+                            items.map(async item => {
+                                await db.Auctions.Items.Comments.addComment(auction.id, item.id, {
+                                    userId: user.id,
+                                    timestamp: new Date(),
+                                    comment: 'How fast does it go?'
+                                })
+                            })
+                        }
+                    )
+                }
+            )
+        )
+
+        //add sample replies
+        await Promise.all(
+            users.map(
+                auctions.map(
+                    async auction => {
+                        let items = await db.Auctions.Items.findOneAuctionAllItems(auction.id)
+                        items.map(async item => {
+                            let comments = await db.Auctions.Items.Comments.findOneItemAllComments()
+                            comments.map(comment => {
+                                db.Auctions.Items.Comments.Replies.addReply(auction.id, item.id, comment.id, {
+                                    reply: 'top speed 200km/h',
+                                    timestamp: new Date()
+                                })
+                            })
+                        })
+                    }
+                )
+            )
+        )
+    }
+
+    const [moderators, setModerators] = useState([])
+    console.log(moderators)
+
+    const addModerators = async () => {
+        // console.log()
     }
 
     return (
-        <div
-            className={classes.pageHeader}
-            style={{
-                backgroundImage: "url(" + image + ")",
-                backgroundSize: "cover",
-                backgroundPosition: "top center"
-            }}
-        >
-            <div className={classes.section}>
-                <h2 className={classes.title}>Admin Dashboard</h2>
-                <div>
+        <>
+            <div
+                className={classes.pageHeader}
+                style={{
+                    backgroundImage: "url(" + image + ")",
+                    backgroundSize: "cover",
+                    backgroundPosition: "top center",
+                }}
+            >
+                <div className={classes.section}>
+                    <h2 className={landingClasses.title}>Admin Dashboard</h2>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={4}>
-                            <Card plain>
+                            <Card>
                                 <h4 className={classes.cardTitle}>
                                     Total number users
                                     <br />
-                                    {users}
+                                    {usersCount}
                                 </h4>
+                            </Card>
+                            <Card>
+                                <List dense className={classes.root}>
+                                    <h3>Moderator Privileges</h3>
+                                    {
+                                        users.map(user => <UserListEntry key={user.id} array={moderators} set={setModerators} {...user} />
+                                        )
+                                    }
+
+                                </List>
                             </Card>
                         </GridItem>
                         <GridItem xs={12} sm={12} md={4}>
-                            <Card plain>
+                            <Card>
                                 <h4 className={classes.cardTitle}>
                                     Reset Database
                                     <br />
@@ -106,6 +247,60 @@ export default function Admin() {
                     </GridContainer>
                 </div>
             </div>
-        </div>
+
+
+            <Dialog
+                classes={{
+                    root: classes.center,
+                    paper: classes.modal
+                }}
+                open={classicModal}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setClassicModal(false)}
+                aria-labelledby="classic-modal-slide-title"
+                aria-describedby="classic-modal-slide-description"
+            >
+                <DialogTitle
+                    id="classic-modal-slide-title"
+                    disableTypography
+                    className={classes.modalHeader}
+                >
+
+                    <IconButton
+                        className={classes.modalCloseButton}
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        onClick={() => setClassicModal(false)}
+                    >
+                        <Close className={classes.modalClose} />
+                    </IconButton>
+
+                    Add Moderators
+                    {/* <h4 className={classes.modalTitle}>Delete Auction?</h4> */}
+                </DialogTitle>
+                <DialogContent>
+                </DialogContent>
+                <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                >
+                </DialogContent>
+                <DialogActions className={classes.modalFooter}>
+                    <Button
+                        onClick={() => addModerators(id)}
+                        color="danger"
+                        simple
+                    >
+                        Delete
+                        </Button>
+                    <Button color="transparent" simple onClick={() => setClassicModal(false)}>
+                        Cancel
+                        </Button>
+
+                </DialogActions>
+            </Dialog>
+        </>
     );
 }

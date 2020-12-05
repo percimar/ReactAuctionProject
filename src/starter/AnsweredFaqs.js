@@ -56,7 +56,7 @@ export default function AnsweredFaqs({ id, faq }) {
             {
                 user
                     ?
-                    user.role === "admin" || user.role === "moderator"
+                    user.role!='user'
                         ?
                         <div>
                             <Card className={classes[cardAnimaton]}>
