@@ -2,7 +2,7 @@ import defaultAvatar from "../assets/img/defaultAvatar.png"
 import fb from '../fb'
 import "firebase/storage"
 import db from '../db'
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import UserContext from '../UserContext'
 import { makeStyles } from "@material-ui/core/styles";
 import classNames from "classnames";
@@ -26,15 +26,21 @@ const useStyles = makeStyles(styles);
 export default function Profile() {
 
   const { user } = useContext(UserContext)
-  console.log(user.avatar)
+
+  const [userAvatar, setUserAvatar] = useState(user.avatar)
+
   const classes = useStyles();
   // add user image 
   const uploadAvatar = async event => {
     const filenameRef = fb.storage().ref().child(`avatars/${user.id}`)
+    if (user.avatar) {
+      await filenameRef.delete();
+    }
     const snapshot = await filenameRef.put(event.target.files[0])
     // put file url in user object and upload to db
     user.avatar = await snapshot.ref.getDownloadURL()
     await db.Users.update(user)
+    setUserAvatar(user.avatar)
   }
 
   return (
@@ -89,7 +95,7 @@ export default function Profile() {
                       <img
                         style={{ height: "", width: "100%", display: "block" }}
                         className={classes.imgCardTop}
-                        src={user.avatar ? user.avatar : defaultAvatar} alt="..." className={classNames(
+                        src={userAvatar ? userAvatar : defaultAvatar} alt="..." className={classNames(
                           classes.imgRaised,
                           classes.imgFluid
                         )}
@@ -112,8 +118,8 @@ export default function Profile() {
                   <Card style={{ width: "35rem", height: "auto" }} >
                     <CardBody>
                       <div style={{ textAlign: "center" }}>
-                          <h5 className={classes.title}>Username: {user.name}</h5>
-                          <h6>Role: {user.role.toUpperCase()}</h6>
+                        <h5 className={classes.title}>Username: {user.name}</h5>
+                        <h6>Role: {user.role.toUpperCase()}</h6>
                       </div>
                     </CardBody>
                   </Card>

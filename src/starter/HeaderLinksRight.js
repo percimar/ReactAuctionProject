@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { makeStyles } from "@material-ui/core/styles";
 import List from "@material-ui/core/List";
@@ -6,6 +6,8 @@ import ListItem from "@material-ui/core/ListItem";
 import Button from "../components/CustomButtons/Button.js";
 import styles from "../assets/jss/material-kit-react/components/headerLinksStyle.js";
 import UserContext from '../UserContext'
+import NotificationsBar from './NotificationsBar'
+import db from '../db'
 import CustomDropdown from 'components/CustomDropdown/CustomDropdown.js';
 
 const useStyles = makeStyles(styles);
@@ -23,7 +25,7 @@ export default function HeaderLinksRight() {
         &&
         <CustomDropdown
           hoverColor="black"
-          buttonText="Navigate"
+          buttonText={user.name}
           dropdownList={[
             user
             &&
@@ -109,7 +111,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/logout"
             >
-              Log Out {user.name}
+              Log Out
             </Button>
           ]
           }

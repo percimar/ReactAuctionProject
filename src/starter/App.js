@@ -63,6 +63,12 @@ function App() {
           <Route exact path="/">
             <LandingPage />
           </Route>
+          <Route path="/Auction/Items/:AuctionId">
+            <AuctionItems />
+          </Route>
+          <Route path="/Result/Items/:AuctionId">
+            <ResultItems />
+          </Route>
           {
             user
               ?
@@ -81,12 +87,6 @@ function App() {
                     :
                     ""
                 }
-                <Route path="/Auction/Items/:AuctionId">
-                  <AuctionItems />
-                </Route>
-                <Route path="/Result/Items/:AuctionId">
-                  <ResultItems />
-                </Route>
                 <Route path="/useritems">
                   <UserItems />
                 </Route>

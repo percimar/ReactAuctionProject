@@ -18,9 +18,12 @@ import Carousel from "react-slick";
 import LocationOn from "@material-ui/icons/LocationOn";
 import Card from "components/Card/Card.js";
 import CardBody from "components/Card/CardBody.js";
+import Notification from './Notification'
+import Button from '@material-ui/core/Button'
 import image1 from "assets/img/bg8.jpg";
 import image2 from "assets/img/bg8.jpg";
 import image3 from "assets/img/bg8.jpg";
+import { useHistory, Link } from "react-router-dom";
 const settings = {
     dots: true,
     infinite: true,
@@ -36,49 +39,71 @@ const useSecStyles = makeStyles(sectionStyles)
 export default function Notifications() {
 
     const { user } = useContext(UserContext)
-
+    const history = useHistory()
     const classes = useStyles();
     const secClasses = useSecStyles();
 
     const [notifications, setNotifications] = useState([])
     useEffect(() => db.Users.Notifications.listenToNotifications(setNotifications, user.id), [])
 
+    const [count, setNotifCount] = useState([])
+    useEffect(() => db.Users.Notifications.listenToUnseenNotificationsCount(setNotifCount, user.id), [])
+
+    const [color, setColor] = useState(false)
+
+    const mouseHover = (notif) => {
+        if(!notif.viewed){
+            db.Users.Notifications.markSeen(user.id, notif)
+        }
+        setColor(true)
+    }
+
+    const clear = (id) => {
+        db.Users.Notifications.clearNotification(user.id, id)
+    }
+
+    const clearAll = () => {
+        notifications.map(notification => notification.clear(notification.id))
+    }
+
+    const colorCard = (seen) => {
+        if (!seen) {
+            return '#a8ffbf'
+        }
+        if (color) {
+            return 'lightgray'
+        }
+    }
     return (
         < div >
             <Parallax small filter image={image}>
-                {/* <div className={classes.container}>
-          <GridContainer>
-            <GridItem xs={12} sm={12} md={6}>
-              <h1 className={classes.title}>Notifications</h1>
-            </GridItem>
-          </GridContainer>
-        </div> */}
             </Parallax>
 
             <div className={classNames(classes.main, classes.mainRaised)} >
                 <div className={classes.container}>
                     <GridContainer justify="center">
                         <GridItem>
-                            <h2 className={secClasses.title}>Notifications</h2>
+                            <h2 className={secClasses.title}>Notifications {count > 0 && `(${count} Unread)`}</h2>
+                        </GridItem>
+                        <GridItem>
+                        <Button onClick={() => clearAll()}>
+                            <h4>Clear All</h4>
+                        </Button>
                         </GridItem>
                     </GridContainer>
                     <GridContainer justify="center">
                         <GridItem>
                             {
-                                notifications.map(notification=>
-                                        <Card key={notification.id}>
-                                            <CardBody>
-                                                <h3 className={secClasses.title}> {notification.title}</h3>
-                                                <h3 className={secClasses.description}>
-                                                    {notification.description}
-                                                </h3>
-                                                <h3 className={secClasses.description}>
-                                                    {notification.timestamp.toString()}
-                                                </h3>
-                                            </CardBody>
-                                        </Card>
-            
-                                )
+                                notifications.length > 0 ?
+                                    notifications.map(notification =>
+                                        <Notification key={notification.id} {...notification}/>
+                                    )
+                                    :
+                                    <Card>
+                                        <CardBody>
+                                            <h3 className={secClasses.title}> No Notifications</h3>
+                                        </CardBody>
+                                    </Card>
                             }
 
 

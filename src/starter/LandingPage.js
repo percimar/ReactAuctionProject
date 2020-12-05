@@ -60,9 +60,9 @@ export default function LandingPage() {
                       className="slick-image"
                     />
                     <div className="slick-caption">
-                  
-                        <h2 />Ferrari 250 GTO Series II
-              
+                      <h4>
+                        Ferrari 250 GTO Series II
+                      </h4>
                     </div>
                   </div>
                   <div>
@@ -72,9 +72,9 @@ export default function LandingPage() {
                       className="slick-image"
                     />
                     <div className="slick-caption">
-                 
-                        <h2 />Mercedes-Benz 300SL
-             
+                      <h4>
+                        Mercedes-Benz 300SL
+                     </h4>
                     </div>
                   </div>
                   <div>
@@ -84,9 +84,9 @@ export default function LandingPage() {
                       className="slick-image"
                     />
                     <div className="slick-caption">
-                    
-                        <h2 />Lamborghini Miura
-            
+                      <h4>
+                        Lamborghini Miura
+                      </h4>
                     </div>
                   </div>
                 </Carousel>

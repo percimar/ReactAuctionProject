@@ -47,7 +47,6 @@ export default function Auction({ set, id, displayName, finish, start, status })
         return () => clearTimeout(clear)
     }, [])
 
-
     const classes = useStyles();
 
     const [classicModal, setClassicModal] = React.useState(false);
@@ -57,13 +56,8 @@ export default function Auction({ set, id, displayName, finish, start, status })
     const [view, setView] = useState('details')
 
     const [seller, setSeller] = useState({ name: "" })
-    // useEffect(() => {
-    //     if (user) {
-    //         return db.Users.listenOne(setSeller, sellerId)
-    //     }
-    // }, [sellerId, user])
 
-    // useEffect(() => db.Users.listenToUserItem(setItem, sellerId, itemId), [sellerId, itemId])    --defunct (remove or keep?)
+    useEffect(() => closeByDate(), [])
 
     const [items, setItems] = useState([])
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItems, id), [id])
@@ -72,41 +66,28 @@ export default function Auction({ set, id, displayName, finish, start, status })
     const [categories, setCategories] = useState([])
     useEffect(() => {
         setCategories([])
-        items.map(item => db.Categories.listenOne(setCategories, item.catId, categories))
+        items.map(item => db.Categories.collectOne(setCategories, item.catId, categories))
     }, [items])
 
-    // console.log(categories)
+    const [catNames, setCatNames] = useState([])
+    useEffect(() => {
+        setCatNames([])
+        categories.map(category => setCatNames(catNames => [...catNames, category.name]))
+    }, [categories])
 
-    //for display
-    // const [catNames, setCatNames] = useState([])
-    // useEffect(() => {
-    //     categories.map(item => !catNames.includes(item.name) && setCatNames(nameArray => [...nameArray, item.name]))
-    // }, [categories])
-
-
-    const [bids, setBids] = useState([])
-    // useEffect(() => db.Auctions.listenToAuctionBids(setBids, id), [id])
-
-    const [amount, setAmount] = useState(0)
-
-    const highestBid = () => Math.max(...bids.map(bid => bid.amount), 0)
-
-    const valid = () => amount > highestBid()
-
-    const bid = async () => {
-        await db.Auctions.createAuctionBid(id, { amount, buyerId: user.id, when: new Date() })
-        setClassicModal(false)
-    }
+    const [counter, setCounter] = useState(1000)
+    useEffect(() => {        
+        // console.log(date === finish)
+        const timer = 
+            new Date() < finish && setInterval(() => setCounter(Math.floor(Math.abs(finish-new Date())/1000-1), 1000));
+            return () => {
+                closeByDate()
+                clearInterval(timer)
+            }
+    }, [counter, finish])
 
     const history = useHistory()
 
-    const attemptBid = () => {
-        if (user) {
-            setClassicModal(true)
-        } else {
-            history.push("/login")
-        }
-    }
 
     const seeDetails = () => {
         setClassicModal(true)
@@ -128,12 +109,22 @@ export default function Auction({ set, id, displayName, finish, start, status })
         setDeleteModal(false)
     }
 
+    const drawNames = () => {
+        return [...new Set(catNames)]
+    }
 
+    const closeByDate = () => {
+        if(new Date >= finish) {
+            db.Auctions.update({id, displayName, finish, start, status:'Closed'})
+        }
+            
+    }
     return (
         <>
             {
                 !editForm ?
                     <>
+                    
                         <GridItem xs={12} sm={12} md={4}>
                             <Card className={classes[cardAnimaton]} style={{ height: "420px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
@@ -160,13 +151,15 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                         Categories
                                     </Primary>
                                     <Info>
-                                        {
-                                            // catNames.map(item => item).join(', ')
-                                            categories.length > 0 ?
-                                            categories.map(item => item.name).join(', ')
-                                            :
-                                            'No Categories'
-                                        }
+                                        {catNames.length > 0 ? drawNames().join(', ') : 'No Items Added'}
+                                    </Info>
+                                    <br />
+                                    <Primary>
+                                        Time left
+                                    </Primary>
+                                    <Info>
+                                        {/* {counter} */}
+                                        {~~(counter/3600)}h {~~((counter%3600)/60)}m {counter >=0 ? ~~counter%60 : 0}s
                                     </Info>
                                     <br />
                                     <Success>
@@ -174,10 +167,6 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     </Success>
                                 </CardBody>
                                 <CardFooter className={classes.cardFooter}>
-
-                                    {/* <Button color="primary" size="sm" onClick={showItems}>
-                                Show Items
-                                </Button> */}
                                     <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
                                     {
                                         user && user.role == 'admin' &&
@@ -246,7 +235,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                         </Dialog>
                     </>
                     :
-                    <AuctionForm editObject={{ id, displayName, finish, start }} open={setEditForm} />
+                    <AuctionForm editObject={{ id, displayName, finish, start }} open={setEditForm}/>
             }
         </>
 
