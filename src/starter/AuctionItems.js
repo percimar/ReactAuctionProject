@@ -175,7 +175,6 @@ export default function AuctionItems() {
                                     paper: classes.modal
                                 }}
                                 open={classicModal}
-                                TransitionComponent={Transition}
                                 keepMounted
                                 disableBackdropClick
                                 onClose={() => setClassicModal(false)}
@@ -196,14 +195,6 @@ export default function AuctionItems() {
                                 >
                                     This Auction has been closed by an admin or moderator
                             <br />
-                                Click the button below to return to auctions page
-                            </DialogContent>
-                                <DialogContent
-                                    id="classic-modal-slide-description"
-                                    className={classes.modalBody}
-                                >
-                                    This Auction has been closed by {user?.name}
-                                    <br />
                                 Click the button below to return to auctions page
                             </DialogContent>
                                 <DialogActions className={classes.modalFooter}>

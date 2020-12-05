@@ -166,6 +166,13 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     <Success>
                                         Accepting Item Submissions
                                     </Success>
+                                    {
+                                        items.length &&
+                                        <Danger>
+                                        Auction has items. You must close auction first to delete.
+                                        </Danger>
+                                    }
+                                    
                                 </CardBody>
                                 <CardFooter className={classes.cardFooter}>
                                     <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
@@ -175,7 +182,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                         <Button color="primary" size="sm" onClick={() => editAuction()}>
                                             Edit
                                         </Button>
-                                         <Button color="primary" size="sm" onClick={() => confirmDelete(id)}>
+                                         <Button color="primary" size="sm" disabled={items.length > 0} onClick={() => confirmDelete(id)}>
                                          X
                                         </Button>
                                         </>

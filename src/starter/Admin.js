@@ -48,6 +48,8 @@ export default function Admin() {
 
     const [classicModal, setClassicModal] = useState(false)
 
+    // const [testPrice, setTestPrice] = useState(1)
+
     // const [selected, setSelected] = useState([])
     // const [moderators, setModerators] = useState([])
     // useEffect(() => db.Users.listenByRole(setModerators, 'role'), [users])
@@ -59,28 +61,80 @@ export default function Admin() {
         await Promise.all(
             auctions.map(
                 async auction => {
-                    const bids = await db.Auctions.findAuctionBids(auction.id)
+                    let items = db.Auctions.Items.findOneAuctionAllItems(auction.id)
                     await Promise.all(
-                        bids.map(bid => db.Auctions.removeAuctionBid(auction.id, bid.id))
+                        items.map(
+                            item => {
+                                db.Auctions.Items.removeOneItem(auction.id, item.id)
+                            }
+                        )
                     )
-                    await db.Auctions.remove(auction.id)
                 }
             )
         )
 
-        // delete all users except admin
-        const users = await db.Users.findByRole('user')
+        //delete all adverts
+        const adverts = await db.Adverts.findAll()
         await Promise.all(
-            users.map(
-                async user => {
-                    const items = await db.Users.findUserItems(user.id)
-                    await Promise.all(
-                        items.map(item => db.Users.removeUserItem(user.id, item.id))
-                    )
-                    await db.Users.remove(user.id)
-                }
+            adverts.map(
+                advert => db.Adverts.remove(advert.id)
             )
         )
+
+        //delete all bugs
+        const bugs = await db.Bugs.findAll()
+        await Promise.all(
+            bugs.map(
+                bug => db.Bugs.remove(bug.id)
+            )
+        )
+
+        //delete all categories
+        const categories = await db.Categories.findAll()
+        await Promise.all(
+            categories.map(
+                category => db.Category.remove(category.id)
+            )
+        )
+
+        //delete all faqs
+        const faqs = await db.FAQs.findAll()
+        await Promise.all(
+            faqs.map(
+                faq => db.FAQs.remove(faq.id)
+            )
+        )
+
+        //delete all logs
+        const logs = await db.Logs.findAll()
+        await Promise.all(
+            logs.map(
+                log => db.Logs.remove(log.id)
+            )
+        )
+
+        // const auctions = await db.Auctions.findAll()
+        // await Promise.all(
+        //     auctions.map(
+        //         async auction => {
+        //             const bids = await db.Auctions.findAuctionBids(auction.id)
+        //             await Promise.all(
+        //                 bids.map(bid => db.Auctions.removeAuctionBid(auction.id, bid.id))
+        //             )
+        //             await db.Auctions.remove(auction.id)
+        //         }
+        //     )
+        // )
+
+        // delete all users except admin
+        // const users = await db.Users.findByRole('user')
+        // await Promise.all(
+        //     users.map(
+        //         async user => {
+        //             await db.Users.remove(user.id)
+        //         }
+        //     )
+        // )
 
     }
 
@@ -89,16 +143,17 @@ export default function Admin() {
         // get all users (if just reset, logout and login as existing user to generate user document in db)
         // add sample items, auctions, and bids for them
 
-        const users = await db.Users.findAllUsersNotAdmin()
-        await Promise.all(
-            users.map(
-                async user => {
-                    // const itemDoc = await db.Users.createUserItem(user.id, { name: 'Cat', description: 'Furry', picture: "" })
-                    // const auctionDoc = await db.Auctions.create({ sellerId: user.id, itemId: itemDoc.id, buyerId: "", start: new Date(), finish: new Date(), status: ""})
-                    await db.Auctions.createAuctionBid(auctionDoc.id, { amount: 10, buyerId: user.id, when: new Date() })
-                }
-            )
-        )
+        // const users = await db.Users.findAllUsersNotAdmin()
+        // await Promise.all(
+        //     users.map(
+        //         async user => {
+        //             // const itemDoc = await db.Users.createUserItem(user.id, { name: 'Cat', description: 'Furry', picture: "" })
+        //             // const auctionDoc = await db.Auctions.create({ sellerId: user.id, itemId: itemDoc.id, buyerId: "", start: new Date(), finish: new Date(), status: ""})
+        //             await db.Auctions.createAuctionBid(auctionDoc.id, { amount: 10, buyerId: user.id, when: new Date() })
+        //         }
+        //     )
+        // )
+
         // add sample auctions
         await Promise.all(
             await db.Auctions.create({
@@ -141,8 +196,6 @@ export default function Admin() {
             )
         )
 
-        //add sample bids
-
         //add sample comments 
         await Promise.all(
             users.map(
@@ -150,13 +203,16 @@ export default function Admin() {
                     auctions.map(
                         async auction => {
                             let items = await db.Auctions.Items.findOneAuctionAllItems(auction.id)
-                            items.map(async item => {
-                                await db.Auctions.Items.Comments.addComment(auction.id, item.id, {
-                                    userId: user.id,
-                                    timestamp: new Date(),
-                                    comment: 'How fast does it go?'
+                            await Promise.all(
+                                items.map(async item => {
+                                    await db.Auctions.Items.Comments.addComment(auction.id, item.id, {
+                                        userId: user.id,
+                                        timestamp: new Date(),
+                                        comment: 'How fast does it go?'
+                                    })
                                 })
-                            })
+                            )
+
                         }
                     )
                 }
@@ -182,6 +238,18 @@ export default function Admin() {
                 )
             )
         )
+
+        //add sample bug
+        await Promise.all(
+            await db.Bugs.create({
+                bug: 'Test Bug',
+                reporterUserId: user.id,
+                severity: 'low',
+                status: 'pending'
+            })
+        )
+
+    //end is here
     }
 
     const [moderators, setModerators] = useState([])
