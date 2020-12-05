@@ -17,14 +17,11 @@ import Parallax from "../components/Parallax/Parallax.js";
 import Card from "../components/Card/Card.js";
 import CardBody from "../components/Card/CardBody.js";
 import CardHeader from "../components/Card/CardBody.js";
-import CardFooter from "../components/Card/CardFooter.js";
 import Footer from "../components/Footer/Footer.js";
 import styles from "../assets/jss/material-kit-react/views/profilePage.js";
 import image from "../assets/img/bg8.jpg";
-import PhotoCamera from "@material-ui/icons/PhotoCamera";
 import { Button } from "@material-ui/core";
-import InfoArea from "../components/InfoArea/InfoArea.js";
-import Info from "@material-ui/icons/Info";
+import Info from "../components/Typography/Info.js";
 import Review from '../Asmar/Review'
 import ThumbUpIcon from '@material-ui/icons/ThumbUp';
 import ThumbDownIcon from '@material-ui/icons/ThumbDown';
