@@ -78,7 +78,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/following"
             >
-              Following
+              Favorite List
           </Button>,
             user
             &&

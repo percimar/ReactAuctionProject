@@ -29,11 +29,12 @@ import CustomInput from "../components/CustomInput/CustomInput.js";
 import Parallax from "../components/Parallax/Parallax.js";
 import image from "../assets/img/bg8.jpg";
 import classNames from "classnames";
-
-
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 const useStyles = makeStyles(styles);
 
 export default function AuctionItems() {
+    console.log("AUCTION ITEMS")
 
     const Transition = React.forwardRef(function Transition(props, ref) {
         return <Slide direction="down" ref={ref} {...props} />;
@@ -72,6 +73,16 @@ export default function AuctionItems() {
         setConfirmModal(false)
         db.Auctions.update({ id: AuctionId, status: "Closed" })
         setClassicModal(true)
+    }
+
+    const [Followedauction, setFollowing] = useState(null)
+    useEffect(() => db.Users.Following.listenToFollowingByAuction(setFollowing, user.id, AuctionId))
+
+    const addfollow = () => {
+        db.Users.Following.addFollowing(user.id, { auctionId: AuctionId, notifications: false })
+    }
+    const removefollow = () => {
+        db.Users.Following.removeOneFollowing(user.id, Followedauction[0].id)
     }
 
     return (
@@ -218,6 +229,19 @@ export default function AuctionItems() {
                         &nbsp;&nbsp;&nbsp;
                         Back to Auctions
                     </Button>
+                    {
+                        Followedauction == null || Followedauction.length == 0 ?
+                            <>
+                                <Button simple size="lg" color="primary" onClick={() => addfollow()}>
+                                    <FavoriteBorderIcon />
+                                    Favourite Auction
+                            </Button></>
+                            :
+                            <Button simple color="primary" size="lg" onClick={() => removefollow()}>
+                                <FavoriteIcon />
+                                Remove from Favourite
+                            </Button>
+                    }
                 </div>
 
 

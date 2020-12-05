@@ -9,6 +9,7 @@ import Parallax from "../components/Parallax/Parallax.js";
 import GridContainer from "../components/Grid/GridContainer.js";
 import FollowingItem from './FollowingItem'
 import image from "../assets/img/bg8.jpg";
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles(styles);
 
@@ -24,8 +25,7 @@ export default function Following() {
 
     const [following, setFollowing] = useState([])
     useEffect(() => db.Users.Following.listenToOneUserAllFollowing(setFollowing, user.id), [user])
-    console.log("Following List:", following)
-
+    console.log(following)
     return (
         <>
             <Parallax filter image={image}>
@@ -39,8 +39,11 @@ export default function Following() {
             </Parallax>
             <GridContainer>
                 {
-                    following.map(oneFollow =>
-                        <FollowingItem key={oneFollow.auctionId} id={oneFollow.auctionId} />)
+                    following.length != 0 ?
+                        following.map(oneFollow =>
+                            <FollowingItem key={oneFollow.auctionId} id={oneFollow.auctionId} />)
+                        :
+                            <h1>No following list</h1>
                 }
             </GridContainer>
         </>
