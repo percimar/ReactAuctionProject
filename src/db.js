@@ -149,7 +149,6 @@ class Items extends DB {
     }
 
     reformat(doc) {
-        console.log(doc.ref)
         return { ...super.reformat(doc) }
     }
 
