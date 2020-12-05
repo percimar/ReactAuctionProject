@@ -58,7 +58,7 @@ class DB {
         return db.collection(this.collection).doc(id).onSnapshot(snap => set(this.reformat(snap)))
     }
 
-
+    
     // item has no id
     create = ({ id, ...rest }) =>
         db.collection(this.collection).add(rest)
@@ -160,6 +160,10 @@ class Items extends DB {
 
     listenToOneAuctionAllItems = (set, auctionId) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToItemsByUser = (set, auctionId, itemId, userId) => {
+        return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).where("sellerId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
 
     // findCategories = async (auctionId, itemId) => {

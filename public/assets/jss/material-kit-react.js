@@ -69,13 +69,15 @@ const defaultFont = {
   lineHeight: "1.5em"
 };
 
-const primaryColor = "#9c27b0";
+// const primaryColor = "#9c27b0";
+const primaryColor = "#274026";
 const warningColor = "#ff9800";
 const dangerColor = "#f44336";
 const successColor = "#4caf50";
 const infoColor = "#00acc1";
 const roseColor = "#e91e63";
-const grayColor = "#999999";
+const grayColor = "#274026";
+// const grayColor = "#999999";
 
 const primaryBoxShadow = {
   boxShadow:
@@ -124,7 +126,7 @@ const infoCardHeader = {
 };
 const primaryCardHeader = {
   color: "#fff",
-  background: "linear-gradient(60deg, #ab47bc, #8e24aa)",
+  background: "linear-gradient(60deg, #274026, #274026)",
   ...primaryBoxShadow
 };
 const roseCardHeader = {

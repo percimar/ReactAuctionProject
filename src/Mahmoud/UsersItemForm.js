@@ -10,14 +10,13 @@ import CustomInput from "../components/CustomInput/CustomInput.js";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import UserContext from '../UserContext'
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
 
 const useStyles = makeStyles(styles);
 
-export default function ItemForm({ auctionId, categoryId, setView, editObject }) {
-    if (editObject) {
-        console.log("editObject:", editObject)
-        useEffect(() => prepareEdit(editObject), [])
-    }
+export default function UsersItemForm() {
 
     const { user } = useContext(UserContext)
 
@@ -27,35 +26,28 @@ export default function ItemForm({ auctionId, categoryId, setView, editObject })
     }, 700);
     const classes = useStyles();
 
-    const [id, setId] = useState('')
+    const [auctions, setAuctions] = useState([])
+    useEffect(() => db.Auctions.listenToUnfinished(setAuctions), [])
+
+    const [categories, setCategories] = useState([])
+    useEffect(() => db.Categories.listenAll(setCategories), [])
+
     const [name, setName] = useState("")
     const [description, setDescription] = useState("")
+    const [auction, setAuction] = useState([])
+    const [category, setCategory] = useState([])
     const [picture, setPicture] = useState("")
 
     const valid = () =>
-        name !== "" &&
+    name !== "" &&
         description !== "" &&
+        auction !== "" &&
+        category !== "" &&
         picture !== ""
 
     const create = () => {
-        // db.Users.createUserItem(userId, { name, description, picture })
-        db.Auctions.Items.addItem(auctionId, { name, description, picture, catId: categoryId, sellerUserId: user.id })
-        setView(false)
+        db.Auctions.Items.addItem(auction, { name, description, picture, catId: category, sellerUserId: user.id })
     }
-
-    const prepareEdit = (object) => {
-        setId(object.id)
-        setName(object.name)
-        setDescription(object.description)
-        setPicture(object.picture)
-    }
-
-    const edit = () => {
-        db.Auctions.Items.updateItem(auctionId, { id, name, description, picture, catId: categoryId, sellerUserId: user.id })
-        setView(false)
-    }
-
-
 
     return (
         <GridItem xs={12} sm={12} md={4}>
@@ -90,6 +82,42 @@ export default function ItemForm({ auctionId, categoryId, setView, editObject })
                             rows: 5
                         }}
                     />
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="auctionselection-label">Available Auctions</InputLabel>
+                        <Select
+                            native
+                            style={{ width: '400px', height: '50px' }}
+                            labelId="auctionselection-label"
+                            id="auctionselection"
+                            value={auction.displayName}
+                            onChange={event => setAuction(event.target.value)}
+                        >
+                            <option aria-label="None" value="" />
+                            {
+                                auctions.map(item =>
+                                    <option key={item.id} value={item.id} onClick={() => console.log("onclick for auction")} >{`${item.displayName}`} </option>
+                                )
+                            }
+                        </Select>
+                    </FormControl>
+
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="categoryselection-label">Available Categories</InputLabel>
+                        <Select
+                            native
+                            style={{ width: '400px', height: '50px' }}
+                            labelId="categoryselection-label"
+                            id="categoryselection"
+                            value={category.name}
+                            onChange={event => setCategory(event.target.value)}>
+                            <option aria-label="None" value="" />
+                            {
+                                categories.map(item =>
+                                    < option key={item.id} value={item.id} onClick={() => console.log("onclick for category")} >{`${item.name}`} </option>
+                                )
+                            }
+                        </Select>
+                    </FormControl>
 
                     <CustomInput
                         labelText="Picture"
@@ -106,23 +134,13 @@ export default function ItemForm({ auctionId, categoryId, setView, editObject })
                 </CardBody>
                 <CardFooter className={classes.cardFooter}>
                     {
-                        !editObject ?
-                            <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
-                                Add Item
+                        <Button simple color="primary" size="lg" disabled={!valid()} onClick={create}>
+                            Add Item
                         </Button>
-                            :
-                            <>
-                                <Button simple color="primary" size="lg" disabled={!valid()} onClick={edit}>
-                                    Save Changes
-                        </Button>
-                                <Button simple color="primary" size="lg" onClick={() => open(false)}>
-                                    Cancel
-                        </Button>
-                            </>
                     }
 
                 </CardFooter>
             </Card>
-        </GridItem>
+        </GridItem >
     )
 }

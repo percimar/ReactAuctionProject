@@ -8,6 +8,7 @@ import db from '../db'
 import Parallax from "../components/Parallax/Parallax.js";
 import GridContainer from "../components/Grid/GridContainer.js";
 import FollowingItem from './FollowingItem'
+import image from "../assets/img/bg8.jpg";
 
 const useStyles = makeStyles(styles);
 
@@ -26,8 +27,8 @@ export default function Following() {
     console.log("Following List:", following)
 
     return (
-        <div className={classes.section}>
-            <Parallax filter image={"assets/img/landing-bg.jpg"}>
+        <>
+            <Parallax filter image={image}>
                 <div className={classes.container}>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={4}>
@@ -42,6 +43,6 @@ export default function Following() {
                         <FollowingItem key={oneFollow.auctionId} id={oneFollow.auctionId} />)
                 }
             </GridContainer>
-        </div>
+        </>
     )
 }

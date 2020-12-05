@@ -38,7 +38,7 @@ Transition.displayName = "Transition";
 
 const useStyles = makeStyles(styles);
 
-export default function Item({ auctionId, id, name, description, picture }) {
+export default function Item({ auctionId, id, name, description, picture, sellerUserId, catId }) {
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
@@ -90,6 +90,9 @@ export default function Item({ auctionId, id, name, description, picture }) {
     // }, [id])
     // console.log(highestBidQuery)
 
+    const [category, setCategory] = useState([])
+    useEffect(() => db.Categories.listenOne(setCategory, catId), [])
+
     const [bids, setBids] = useState([])
     useEffect(() => db.Auctions.Items.Bids.listenToOneItemAllBids(auctionId, id, setBids), [id])
     // console.log(bids)
@@ -103,8 +106,6 @@ export default function Item({ auctionId, id, name, description, picture }) {
     const [editForm, setEditForm] = useState(false)
 
     const [amount, setAmount] = useState(0)
-
-
 
     const highestBid = () => {
         return Math.max(...bids.map(bid => bid.amount), 0)
@@ -132,30 +133,37 @@ export default function Item({ auctionId, id, name, description, picture }) {
             {
                 !editForm ?
                     <>
-                        <GridItem xs={12} sm={12} md={4}>
+                        <GridItem xs={12} sm={12} md={4} >
 
-                            <Card className={classes[cardAnimaton]}>
+                            <Card className={classes[cardAnimaton]} style={{ height: "420px", width: "400px", textAlign: "center", marginLeft: "15px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
-                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} />
+                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px' }} />
                                 </CardHeader>
                                 <CardBody>
                                     <Primary>
                                         Name
-                    </Primary>
+                                    </Primary>
                                     <Info>
                                         {name}
                                     </Info>
                                     <br />
                                     <Primary>
                                         Description
-                    </Primary>
+                                    </Primary>
                                     <Info>
                                         {description}
                                     </Info>
                                     <br />
                                     <Primary>
+                                        Category
+                                    </Primary>
+                                    <Info>
+                                        {category[0] ? category[0].name : "getting name of category..."}
+                                    </Info>
+                                    <br />
+                                    <Primary>
                                         Highest Bid
-                    </Primary>
+                                    </Primary>
                                     <Info>
                                         {highestBid()}
                                     </Info>
@@ -165,24 +173,26 @@ export default function Item({ auctionId, id, name, description, picture }) {
                                             <br />
                                             <Primary>
                                                 Bids so far
-                                </Primary>
+                                            </Primary>
                                             <Info>
                                                 {bids.length}
                                             </Info>
                                         </>
                                     }
                                 </CardBody>
-                                <CardFooter className={classes.cardFooter}>
-                                    {/*show bid if auction did not finish + item is available for bids*/}
-                                    <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
-                                        Bid
-                                    </Button>
-                                    <Button color="primary" size="lg" onClick={handleExpandClick}>
-                                        View Comments
-                                    </Button>
-                                </CardFooter>
                                 {
-                                    user && user.role == 'admin' &&
+                                    user && user.id != sellerUserId && auctionId &&
+                                    <CardFooter className={classes.cardFooter}>
+                                        <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
+                                            Bid
+                                        </Button>
+                                        <Button color="primary" size="lg" onClick={handleExpandClick}>
+                                            View Comments
+                                    </Button>
+                                    </CardFooter>
+                                }
+                                {
+                                    user && (user.id == sellerUserId || user.role == 'admin') && auctionId &&
                                     <>
                                         <CardFooter className={classes.cardFooter}>
                                             <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
@@ -190,6 +200,9 @@ export default function Item({ auctionId, id, name, description, picture }) {
                                     </Button>
                                             <Button color="danger" size="sm" onClick={() => confirmDelete()}>
                                                 Remove
+                                    </Button>
+                                            <Button color="primary" size="lg" onClick={handleExpandClick}>
+                                                View Comments
                                     </Button>
                                         </CardFooter>
                                     </>
@@ -229,7 +242,7 @@ export default function Item({ auctionId, id, name, description, picture }) {
                     </>
                     :
                     <>
-                        <ItemForm auctionId={auctionId} setView={setEditForm} editObject={{ id, name, description, picture }} />
+                        <ItemForm auctionId={auctionId} categoryId={catId} setView={setEditForm} editObject={{ id, name, description, picture }} />
                     </>
             }
             <Dialog
