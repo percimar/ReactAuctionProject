@@ -16,12 +16,15 @@ import HeaderLinksRight from './HeaderLinksRight'
 import Header from "./Header";
 import Admin from "./Admin";
 import UserItems from "./UserItems";
+import ResultItems from "./ResultItems";
 import UserAuctions from "./UserAuctions";
 import Following from '../Mahmoud/Following'
 import Notifications from './Notifications'
 import Bugs from './Bugs'
 import About from './About'
+import Results from './Results'
 import UserContext from '../UserContext'
+import Logs from '../Asmar/Logs'
 
 function App() {
 
@@ -61,6 +64,21 @@ function App() {
           <Route exact path="/">
             <LandingPage />
           </Route>
+          <Route path="/Auction/Items/:AuctionId">
+            <AuctionItems />
+          </Route>
+          <Route path="/Result/Items/:AuctionId">
+            <ResultItems />
+          </Route>
+          <Route path="/faqs">
+            <Faqs />
+          </Route>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/results">
+            <Results />
+          </Route>
           {
             user
               ?
@@ -72,6 +90,9 @@ function App() {
                       <Route path="/admin">
                         <Admin />
                       </Route>
+                      <Route path="/logs">
+                        <Logs />
+                      </Route>
                       {/* <Route path="/faqs">
                         <Faqs />
                       </Route> */}
@@ -79,9 +100,6 @@ function App() {
                     :
                     ""
                 }
-                <Route path="/Auction/Items/:AuctionId">
-                  <AuctionItems />
-                </Route>
                 <Route path="/useritems">
                   <UserItems />
                 </Route>
@@ -100,14 +118,11 @@ function App() {
                 <Route path="/logout">
                   <Logout />
                 </Route>
-                <Route path="/faqs">
-                  <Faqs />
-                </Route>
                 <Route path="/bugs">
                   <Bugs />
                 </Route>
-                <Route path="/about">
-                  <About />
+                <Route path="/results">
+                  <Results />
                 </Route>
               </>
               :
@@ -118,14 +133,6 @@ function App() {
                 <Route path="/login">
                   <Login />
                 </Route>
-                <Route path="/faqs">
-                  <Faqs />
-                </Route>
-                <Route path="/about">
-                  <About />
-                </Route>
-
-
               </>
           }
         </Switch>

@@ -42,7 +42,7 @@ export default function AuctionItems() {
 
     Transition.displayName = "Transition";
 
-    const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+    const [cardAnimaton, setCardAnimation] = useState("cardHidden");
     setTimeout(function () {
         setCardAnimation("");
     }, 700);
@@ -54,26 +54,39 @@ export default function AuctionItems() {
     const [items, setItem] = useState([])
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItem, AuctionId), [AuctionId])
 
+    const [auction, setAuction] = useState(null)
+    useEffect(() => {
+        db.Auctions.listenOne(setAuction, AuctionId)
+    }, [])
 
     const [addItem, setAddItem] = useState(false)
 
     const [editItem, setEditItem] = useState(false)
 
     const [classicModal, setClassicModal] = useState(false)
+    useEffect(() => {
+        auction && auction.status == 'Closed' && setClassicModal(true)
+    }, [auction])
 
     const [confirmModal, setConfirmModal] = useState(false)
 
     const [confirm, setConfirm] = useState(false)
 
-    const openConfirm = (e) => {
+    const openConfirm = () => {
         setConfirm(true)
     }
 
+    // if(auction && auction.status == 'Closed') {
+    //     setClassicModal(true)
+    // } 
+
     const closeAuction = () => {
         setConfirmModal(false)
-        db.Auctions.update({ id: AuctionId, status: "Closed" })
+        db.Auctions.update({ id: AuctionId, displayName: auction.displayName, start: auction.start, finish: auction.finish, status: "Closed" })
+        notifyWinners()
         setClassicModal(true)
     }
+
 
     const [Followedauction, setFollowing] = useState(null)
     useEffect(() => db.Users.Following.listenToFollowingByAuction(setFollowing, user.id, AuctionId))
@@ -85,9 +98,25 @@ export default function AuctionItems() {
         db.Users.Following.removeOneFollowing(user.id, Followedauction[0].id)
     }
 
+    const notifyWinners = async () => {
+        items.map(async (item) => {
+            let bids = await db.Auctions.Items.Bids.findAllBids(AuctionId, item.id)
+            if (bids.length > 0) {
+                let highest = Math.max(...bids.map(bid => bid.amount), 0)
+                let winningBid = await db.Auctions.Items.Bids.findByAmount(AuctionId, item.id, highest)
+                db.Users.Notifications.sendNotification(winningBid[0].bidderUserId,
+                    {
+                        title: 'You have won an item!',
+                        description: `You have won the ${item.name} from the ${auction.displayName}. Decide how to receive your item`
+                    })
+            }
+        })
+
+    }
+
     return (
 
-        < div >
+        <div>
             <Parallax filter image={image}>
             </Parallax>
             <div className={classNames(classes.main, classes.mainRaised)} >
@@ -153,7 +182,15 @@ export default function AuctionItems() {
                                 id="classic-modal-slide-description"
                                 className={classes.modalBody}
                             >
-                                This Auction has been closed by {user.name}
+                                This Auction has been closed by admin
+                            <br />
+                                Click the button below to return to auctions page
+                            </DialogContent>
+                            <DialogContent
+                                id="classic-modal-slide-description"
+                                className={classes.modalBody}
+                            >
+                                This Auction has been closed by {user?.name}
                                 <br />
                                 Click the button below to return to auctions page
                             </DialogContent>
@@ -243,12 +280,8 @@ export default function AuctionItems() {
                             </Button>
                     }
                 </div>
-
-
-
             </div>
-        </div>
-
+        </div >
 
     )
 }

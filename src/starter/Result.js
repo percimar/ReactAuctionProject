@@ -1,5 +1,3 @@
-//Carlos: Added categories
-
 import React, { useState, useEffect, useContext } from "react";
 import UserContext from '../UserContext'
 import GridItem from "../components/Grid/GridItem.js";
@@ -35,7 +33,7 @@ Transition.displayName = "Transition";
 
 const useStyles = makeStyles(styles);
 
-export default function Auction({ set, id, displayName, finish, start, status }) {
+export default function Result({ set, id, displayName, finish, start, status }) {
 
     const { user } = useContext(UserContext)
 
@@ -47,6 +45,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
         return () => clearTimeout(clear)
     }, [])
 
+
     const classes = useStyles();
 
     const [classicModal, setClassicModal] = React.useState(false);
@@ -57,8 +56,6 @@ export default function Auction({ set, id, displayName, finish, start, status })
 
     const [seller, setSeller] = useState({ name: "" })
 
-    useEffect(() => closeByDate(), [])
-
     const [items, setItems] = useState([])
     useEffect(() => db.Auctions.Items.listenToOneAuctionAllItems(setItems, id), [id])
 
@@ -66,66 +63,27 @@ export default function Auction({ set, id, displayName, finish, start, status })
     const [categories, setCategories] = useState([])
     useEffect(() => {
         setCategories([])
-        items.map(item => db.Categories.collectOne(setCategories, item.catId, categories))
+        items.map(item => db.Categories.listenOne(setCategories, item.catId, categories))
     }, [items])
 
-    const [catNames, setCatNames] = useState([])
-    useEffect(() => {
-        setCatNames([])
-        categories.map(category => setCatNames(catNames => [...catNames, category.name]))
-    }, [categories])
-
-    const [counter, setCounter] = useState(1000)
-    useEffect(() => {        
-        // console.log(date === finish)
-        const timer = 
-            new Date() < finish && setInterval(() => setCounter(Math.floor(Math.abs(finish-new Date())/1000-1), 1000));
-            return () => {
-                closeByDate()
-                clearInterval(timer)
-            }
-    }, [counter, finish])
-
     const history = useHistory()
-
+    const [editForm, setEditForm] = useState(false)
 
     const seeDetails = () => {
         setClassicModal(true)
-    }
-
-    const [editForm, setEditForm] = useState(false)
-
-    const editAuction = () => {
-        setEditForm(!editForm)
     }
 
     const confirmDelete = () => {
         setDeleteModal(true)
     }
 
-    const deleteAuction = (id) => {
-        // add map that removes items in auction
-        db.Auctions.remove(id)
-        setDeleteModal(false)
-    }
-
-    const drawNames = () => {
-        return [...new Set(catNames)]
-    }
-
-    const closeByDate = () => {
-        if(new Date >= finish) {
-            db.Auctions.update({id, displayName, finish, start, status:'Closed'})
-        }
-            
-    }
     return (
         <>
             {
                 !editForm ?
                     <>
-                    
-                        <GridItem xs={12} sm={12} md={4}>
+
+                        <GridItem xs={12} sm={12} md={4}  style={{ height: "420px", width: "400px", textAlign: "center" , marginLeft: "15px"}}>
                             <Card className={classes[cardAnimaton]} style={{ height: "420px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     {displayName}
@@ -133,7 +91,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                 <CardBody>
                                     <Primary>
                                         Start
-                            </Primary>
+                                        </Primary>
                                     <Info>
                                         {start.toDateString()} <br />
                                         {start.toTimeString().substring(0, 8)}
@@ -141,7 +99,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     <br />
                                     <Primary>
                                         Finish
-                            </Primary>
+                                        </Primary>
                                     <Info>
                                         {finish.toDateString()} <br />
                                         {finish.toTimeString().substring(0, 8)}
@@ -151,32 +109,24 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                         Categories
                                     </Primary>
                                     <Info>
-                                        {catNames.length > 0 ? drawNames().join(', ') : 'No Items Added'}
+                                        {
+                                            // catNames.map(item => item).join(', ')
+                                            categories.length > 0 ?
+                                                categories.map(item => item.name).join(', ')
+                                                :
+                                                'No Categories'
+                                        }
                                     </Info>
                                     <br />
-                                    <Primary>
-                                        Time left
-                                    </Primary>
-                                    <Info>
-                                        {/* {counter} */}
-                                        {~~(counter/3600)}h {~~((counter%3600)/60)}m {counter >=0 ? ~~counter%60 : 0}s
-                                    </Info>
-                                    <br />
-                                    <Success>
-                                        Accepting Item Submissions
-                                    </Success>
                                 </CardBody>
                                 <CardFooter className={classes.cardFooter}>
-                                    <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
+                                    <Button size="sm" color="primary" component={Link} to={`/result/items/${id}`}>Show Items</Button>
                                     {
                                         user && user.role == 'admin' &&
                                         <>
-                                        <Button color="primary" size="sm" onClick={() => editAuction()}>
-                                            Edit
-                                        </Button>
-                                         <Button color="primary" size="sm" onClick={() => confirmDelete(id)}>
-                                         X
-                                        </Button>
+                                            <Button color="primary" size="sm" onClick={() => confirmDelete(id)}>
+                                                X
+                                            </Button>
                                         </>
                                     }
                                 </CardFooter>
@@ -209,7 +159,6 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                 >
                                     <Close className={classes.modalClose} />
                                 </IconButton>
-                                {/* <h4 className={classes.modalTitle}>Delete Auction?</h4> */}
                             </DialogTitle>
                             <DialogContent>
                             </DialogContent>
@@ -226,16 +175,17 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                     simple
                                 >
                                     Delete
-                        </Button>
+                                    </Button>
                                 <Button color="transparent" simple onClick={() => setDeleteModal(false)}>
                                     Cancel
-                        </Button>
+                                    </Button>
 
                             </DialogActions>
                         </Dialog>
+
                     </>
                     :
-                    <AuctionForm editObject={{ id, displayName, finish, start }} open={setEditForm}/>
+                    ""
             }
         </>
 

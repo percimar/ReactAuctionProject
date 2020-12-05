@@ -9,6 +9,7 @@ import CardHeader from "../components/Card/CardHeader.js";
 import CardFooter from "../components/Card/CardFooter.js";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
+import CustomInput from "../components/CustomInput/CustomInput.js";
 import InputLabel from '@material-ui/core/InputLabel';
 import MenuItem from '@material-ui/core/MenuItem';
 import FormControl from '@material-ui/core/FormControl';
@@ -23,7 +24,7 @@ export default function CategoryForm({ editObject, open }) {
     if (editObject) {
         useEffect(() => prepareEdit(editObject), [])
     }
-    
+
     const { user } = useContext(UserContext)
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
@@ -41,9 +42,17 @@ export default function CategoryForm({ editObject, open }) {
 
     const create = () => {
         db.Categories.create({ name, description })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Categories",
+            action: `Created category ${name}`
+        })
         open(false)
     }
-        
+
     const prepareEdit = (object) => {
         setItemId(object.id)
         setName(object.name)
@@ -51,9 +60,16 @@ export default function CategoryForm({ editObject, open }) {
     }
 
     const update = () => {
-        db.Categories.update({id: itemId, name, description})
+        db.Categories.update({ id: itemId, name, description })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Categories",
+            action: `Updated category ${name}`
+        })
         open(false)
-        console.log('updated')
     }
 
     return (
@@ -62,23 +78,49 @@ export default function CategoryForm({ editObject, open }) {
                 <CardHeader color="primary" className={classes.cardHeader}>
                 </CardHeader>
                 <CardBody>
-                    <TextField onChange={event => setName(event.target.value)} label='Name' value={name}>Category</TextField>
-                    <TextField onChange={event => setDescription(event.target.value)} label='Description' value={description}>Description</TextField>
+                    <CustomInput
+                        labelText="Name"
+                        id="name"
+                        formControlProps={{
+                            fullWidth: true
+                        }}
+                        inputProps={{
+                            onChange: event => setName(event.target.value),
+                            value: name,
+                            type: "text"
+                        }}
+                    />
+                    <CustomInput
+                        labelText="Description"
+                        id="description"
+                        formControlProps={{
+                            fullWidth: true
+                        }}
+                        inputProps={{
+                            onChange: event => setDescription(event.target.value),
+                            value: description,
+                            type: "text",
+                            multiline: true,
+                            rows: 5
+                        }}
+                    />
+                    {/* <TextField onChange={event => setName(event.target.value)} label='Name' value={name}>Category</TextField>
+                    <TextField onChange={event => setDescription(event.target.value)} label='Description' value={description}>Description</TextField> */}
                 </CardBody>
                 <CardFooter>
                     {
                         !editObject ?
-                            <Button color="primary" size="sm" disabled={!valid()} onClick={create}>
+                            <Button color="primary" size="lg" disabled={!valid()} onClick={create}>
                                 Add Category
                     </Button>
                             :
                             <>
-                            <Button color="primary" size="sm" onClick={update}>
-                                Save Changes
+                                <Button color="primary" size="lg" onClick={update}>
+                                    Save Changes
                             </Button>
-                            <br/>
-                            <Button color="primary" size="sm" onClick={() => open(false)}>
-                                Cancel
+                                <br />
+                                <Button color="primary" size="lg" onClick={() => open(false)}>
+                                    Cancel
                             </Button>
                             </>
                     }

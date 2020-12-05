@@ -52,9 +52,28 @@ export default function Faqs() {
 
     const create = async () => {
         await db.FAQs.create({ askerUserId: user.id, question: question, answer: "", answererUserId: "" })
+        await db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "FAQs",
+            action: `Asked question ${question}`
+        })
+        await sendNotifications()
         setQuestion("")
     }
 
+    const sendNotifications = async () => {
+        const admins = await db.Users.findByRole('admin')
+        admins.map(admin => {
+            db.Users.Notifications.sendNotification(admin.id, {
+                title: 'A question has been submitted',
+                description: 'A new question has been submitted to FAQs, click here to redirect to the FAQs page.',
+                link: '/faqs'
+            })
+        })
+    }
 
     return (
         // <GridItem xs={12} sm={12} md={4}>

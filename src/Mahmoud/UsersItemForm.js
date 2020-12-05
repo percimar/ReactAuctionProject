@@ -20,7 +20,7 @@ export default function UsersItemForm() {
 
     const { user } = useContext(UserContext)
 
-    const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+    const [cardAnimaton, setCardAnimation] = useState("cardHidden");
     setTimeout(function () {
         setCardAnimation("");
     }, 700);
@@ -36,24 +36,30 @@ export default function UsersItemForm() {
     const [description, setDescription] = useState("")
     const [auction, setAuction] = useState([])
     const [category, setCategory] = useState([])
-    const [picture, setPicture] = useState("")
 
     const valid = () =>
-    name !== "" &&
+        name !== "" &&
         description !== "" &&
         auction !== "" &&
-        category !== "" &&
-        picture !== ""
+        category !== ""
 
     const create = () => {
-        db.Auctions.Items.addItem(auction, { name, description, picture, catId: category, sellerUserId: user.id })
+        db.Auctions.Items.addItem(auction, { name, description, catId: category, sellerUserId: user.id })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Items",
+            action: `Created Item ${name}`
+        })
     }
 
     return (
         <GridItem xs={12} sm={12} md={4}>
             <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary" className={classes.cardHeader}>
-                    Image goes here
+                    Item Creation Form
                 </CardHeader>
                 <CardBody>
                     <CustomInput
@@ -119,18 +125,6 @@ export default function UsersItemForm() {
                         </Select>
                     </FormControl>
 
-                    <CustomInput
-                        labelText="Picture"
-                        id="picture"
-                        formControlProps={{
-                            fullWidth: true
-                        }}
-                        inputProps={{
-                            onChange: event => setPicture(event.target.value),
-                            value: picture,
-                            type: "text"
-                        }}
-                    />
                 </CardBody>
                 <CardFooter className={classes.cardFooter}>
                     {

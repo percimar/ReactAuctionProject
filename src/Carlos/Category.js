@@ -66,7 +66,6 @@ export default function Category({ set, category, id, description, name }) {
         // add map that removes items in auction
         db.Categories.remove(id)
         setDeleteModal(false)
-        console.log('deleted ' + id)
     }
 
 

@@ -57,8 +57,28 @@ export default function Bugs() {
 
     const create = async () => {
         await db.Bugs.create({ reporterUserId: user.id, bug: bugReport, severity: selectedEnabled, status: "pending" })
+        await db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Bugs",
+            action: `Reported Bug ${bugReport}`
+        })
+        await sendNotifications()
         setBugReport("")
     }
+
+    const sendNotifications = async () => {
+        const admins = await db.Users.findByRole('admin')
+        admins.map(admin => {
+            db.Users.Notifications.sendNotification(admin.id, {
+                title: 'A bug has been reported',
+                description: 'A new bug has been reported. Click here to redirect to the bugs page.'
+            })
+        })
+    }
+
 
 
     return (
