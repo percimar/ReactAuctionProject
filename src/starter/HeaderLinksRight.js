@@ -49,7 +49,7 @@ export default function HeaderLinksRight() {
         &&
         <CustomDropdown
           hoverColor="black"
-          buttonText={user.name}
+          buttonText={nameWithNotifications()}
           dropdownList={[
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
@@ -80,15 +80,7 @@ export default function HeaderLinksRight() {
             >
               Following
           </Button>,
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/notifications"
-            >
-              Notifications
-          </Button>,
+            notificationsBar(),
             <Button
               style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
               color="transparent"

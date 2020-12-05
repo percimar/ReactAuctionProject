@@ -127,6 +127,7 @@ class Auctions extends DB {
     listenByCategory = (set, array) => {
         return db.collection(this.collection).where(fb.firestore.FieldPath.documentId(), 'in', array).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
+
     // findByCategory = async (array) => {
     //     let data = await db.collection(this.collection).where(fb.firestore.FieldPath.documentId(), 'in', array).get()
     //     return data.docs.map(this.reformat)
@@ -188,6 +189,10 @@ class Items extends DB {
     listenToOneAuctionAllItems = (set, auctionId) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
     }
+
+    // listenToOneAuctionItemCount = (set, auctionId) => {
+    //     return db.collection(this.collection).doc(auctionId).collection(this.collection).onSnapshot(snap => set(snap.docs.length))
+    // }
 
     // findCategories = async (auctionId, itemId) => {
     //     const cat = await db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId).get()
