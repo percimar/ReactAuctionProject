@@ -16,19 +16,31 @@ export default function NotificationsBar() {
 
   const classes = useStyles();
 
-  const [count, setNotifCount] = useState([])
+  const [count, setNotifCount] = useState(0)
   useEffect(() => db.Users.Notifications.listenToUnseenNotificationsCount(setNotifCount, user.id), [])
 
+  // return (
+  //       <ListItem className={classes.listItem}>
+  //         <Button
+  //           color="transparent"
+  //           className={classes.navLink}
+  //           component={Link}
+  //           to="/notifications"
+  //         >
+  //           My Notifications ({count})
+  //         </Button>
+  //       </ListItem>
+  // );
   return (
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/notifications"
-          >
-            My Notifications ({count})
-          </Button>
-        </ListItem>
+    <Button
+      style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+      color="transparent"
+      className={classes.navLink}
+      component={Link}
+      to="/notifications"
+    >
+      Notifications ({count})
+      
+    </Button>
   );
 }

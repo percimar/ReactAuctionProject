@@ -54,6 +54,8 @@ export default function Category({ set, category, id, description, name }) {
 
     const [editForm, setEditForm] = useState(false)
 
+    const [deleting, setDeleting] = useState(false)
+
     const editCategory = () => {
         setEditForm(!editForm)
     }
@@ -62,8 +64,16 @@ export default function Category({ set, category, id, description, name }) {
         setDeleteModal(true)
     }
 
-    const deleteCategory = (id) => {
+    const deleteCategory = async (id) => {
+        //disable buttons during deleting process
+        setDeleting(true)
         // add map that removes items in auction
+        let auctions = await db.Auctions.findAll()
+        auctions.map(async (auction) => {
+            let items = await db.Auctions.Items.findByCategory(auction.id, id)
+            items.map(async item => await db.Auctions.Items.updateItem(auction.id, {...item, catId: ''}))
+        })
+        //remove item and close modal
         db.Categories.remove(id)
         setDeleteModal(false)
     }
@@ -100,7 +110,7 @@ export default function Category({ set, category, id, description, name }) {
                             </Button>
                                     <br />
                                     {
-                                        user && user.role == 'admin' &&
+                                        user && user.role!='user' &&
                                         <>
                                             <Button color="primary" size="sm" onClick={() => editCategory(id)}>
                                                 Edit
@@ -119,6 +129,7 @@ export default function Category({ set, category, id, description, name }) {
                                 root: classes.center,
                                 paper: classes.modal
                             }}
+                            disableBackdropClick={deleting}
                             open={deleteModal}
                             TransitionComponent={Transition}
                             keepMounted
@@ -137,6 +148,7 @@ export default function Category({ set, category, id, description, name }) {
                                     aria-label="Close"
                                     color="inherit"
                                     onClick={() => setDeleteModal(false)}
+                                    disabled={deleting}
                                 >
                                     <Close className={classes.modalClose} />
                                 </IconButton>
@@ -148,7 +160,8 @@ export default function Category({ set, category, id, description, name }) {
                                 id="classic-modal-slide-description"
                                 className={classes.modalBody}
                             >
-                                Delete {name}?
+                                Delete {name}? <br/>
+                                All items with this category will have no category
                         {/* <CustomInput
                             labelText="Amount"
                             id="amount"
@@ -165,12 +178,13 @@ export default function Category({ set, category, id, description, name }) {
                             <DialogActions className={classes.modalFooter}>
                                 <Button
                                     onClick={() => deleteCategory(id)}
+                                    disabled={deleting}
                                     color="danger"
                                     simple
                                 >
                                     Delete
                         </Button>
-                                <Button color="transparent" simple onClick={() => setDeleteModal(false)}>
+                                <Button color="transparent" simple disabled={deleting} onClick={() => setDeleteModal(false)}>
                                     Cancel
                         </Button>
 

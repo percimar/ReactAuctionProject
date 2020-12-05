@@ -105,7 +105,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
     // console.log(highestBidQuery)
 
     const [category, setCategory] = useState([])
-    useEffect(() => db.Categories.listenOne(setCategory, catId), [])
+    useEffect(() => catId && db.Categories.listenOne(setCategory, catId), [catId])
 
     const [ad, setAd] = useState([])
     useEffect(() => db.Adverts.listenToAdsByItem(setAd, id), [])
@@ -182,8 +182,8 @@ export default function Item({ auctionId, id, name, description, picture, seller
                     <>
                         <GridItem xs={12} sm={12} md={4} >
 
-
-                            <Card className={classes[cardAnimaton]} style={{ width: "400px", textAlign: "center", marginLeft: "15px" }}>
+                            {/* <Card className={classes[cardAnimaton]} style={{ height: "420px", width: "400px", textAlign: "center", marginLeft: "15px" }}> */}
+                            <Card className={classes[cardAnimaton]} style={{ textAlign: "center", marginLeft: "15px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     <img src={picture ?? defaultCar} alt="item" style={{ width: '100px', height: '100px' }} />
                                 </CardHeader>
@@ -206,7 +206,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                         Category
                                     </Primary>
                                     <Info>
-                                        {category && category.name}
+                                        {catId ? category.name : 'No Category'}
                                     </Info>
                                     <br />
                                     <Primary>
@@ -243,10 +243,10 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                     user && (user.id == sellerUserId || user.role == 'admin') && auctionId &&
                                     <>
                                         <CardFooter className={classes.cardFooter}>
-                                            <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
+                                            <Button color="primary" size="lg" onClick={() => setEditForm(true)}>
                                                 Edit
                                             </Button>
-                                            <Button color="danger" size="sm" onClick={() => confirmDelete()}>
+                                            <Button color="danger" size="lg" onClick={() => confirmDelete()}>
                                                 Remove
                                             </Button>
                                             {

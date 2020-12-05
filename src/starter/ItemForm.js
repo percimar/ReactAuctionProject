@@ -21,6 +21,7 @@ import IconButton from '@material-ui/core/IconButton';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
+import Primary from "../components/Typography/Primary.js";
 
 const useStyles = makeStyles(styles);
 
@@ -145,16 +146,29 @@ export default function ItemForm({ auctionId, setView, editObject }) {
                         }}
                     />
 
+                    <CustomInput
+                        labelText="Picture"
+                        id="picture"
+                        formControlProps={{
+                            fullWidth: true
+                        }}
+                        inputProps={{
+                            onChange: event => setPicture(event.target.value),
+                            value: picture,
+                            type: "text"
+                        }}
+                    />
+                    <Primary>Category</Primary>
                     <FormControl fullWidth margin="normal" variant="outlined" className={classes.formControl}>
-                        <InputLabel id="demo-simple-select-filled-label">Category</InputLabel>
-                        <br />
                         <Select
+                            displayEmpty
                             labelId="demo-simple-select-filled-label"
                             id="demo-simple-select-filled"
                             value={catId}
                             onChange={event => setCatId(event.target.value)}
                         >
-                            {categories.map(category => <MenuItem key={category.id} id={category.id} value={category.id}>{category.name}</MenuItem>)}
+                            <MenuItem key='none' value=''>No Category</MenuItem>
+                            {categories.map(category => <MenuItem key={category.id} value={category.id}>{category.name}</MenuItem>)}
                         </Select>
                     </FormControl>
 
@@ -178,7 +192,7 @@ export default function ItemForm({ auctionId, setView, editObject }) {
                     }
 
                 </CardFooter>
-            </Card>
+            </Card >
         </GridItem >
     )
 }

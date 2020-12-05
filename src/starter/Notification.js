@@ -47,7 +47,7 @@ export default function Notification({ id, title, description, timestamp, link, 
 
     const mouseHover = () => {
         if (!viewed) {
-            db.Users.Notifications.markSeen(user.id, { id, title, description, timestamp, link, viewed })
+            db.Users.Notifications.markSeen(user.id, { id, title, description, timestamp, link: link? link:'', viewed })
         }
         setColor(true)
     }
@@ -60,7 +60,7 @@ export default function Notification({ id, title, description, timestamp, link, 
         if (!seen) {
             return '#ffe08a'
         }
-        if (color) {
+        if (color && link) {
             return '#ededed'
         }
     }
@@ -73,7 +73,7 @@ export default function Notification({ id, title, description, timestamp, link, 
         >
             <CardBody>
                 <Button onClick={clear}>Clear</Button>
-                <div onClick={() => history.push(link)}>
+                <div onClick={() => link? history.push(link) : ''}>
                     <h3 className={secClasses.title}> {title}</h3>
                     <h3 className={secClasses.description}>
                         {description}
