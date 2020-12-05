@@ -24,6 +24,7 @@ import Bugs from './Bugs'
 import About from './About'
 import Results from './Results'
 import UserContext from '../UserContext'
+import Logs from '../Asmar/Logs'
 
 function App() {
 
@@ -69,6 +70,12 @@ function App() {
           <Route path="/Result/Items/:AuctionId">
             <ResultItems />
           </Route>
+          <Route path="/faqs">
+            <Faqs />
+          </Route>
+          <Route path="/about">
+            <About />
+          </Route>
           {
             user
               ?
@@ -79,6 +86,9 @@ function App() {
                     <>
                       <Route path="/admin">
                         <Admin />
+                      </Route>
+                      <Route path="/logs">
+                        <Logs />
                       </Route>
                       {/* <Route path="/faqs">
                         <Faqs />
@@ -105,14 +115,8 @@ function App() {
                 <Route path="/logout">
                   <Logout />
                 </Route>
-                <Route path="/faqs">
-                  <Faqs />
-                </Route>
                 <Route path="/bugs">
                   <Bugs />
-                </Route>
-                <Route path="/about">
-                  <About />
                 </Route>
                 <Route path="/results">
                   <Results />
@@ -125,12 +129,6 @@ function App() {
                 </Route>
                 <Route path="/login">
                   <Login />
-                </Route>
-                <Route path="/faqs">
-                  <Faqs />
-                </Route>
-                <Route path="/about">
-                  <About />
                 </Route>
               </>
           }
