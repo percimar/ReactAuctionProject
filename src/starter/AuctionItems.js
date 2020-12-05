@@ -138,26 +138,6 @@ export default function AuctionItems() {
                         </GridContainer>
                         <GridContainer>
                             {
-                                user && user.role === 'admin' &&
-                                <>
-                                    <Button simple color="primary" size="lg" onClick={() => setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
-                                    {
-                                        !confirm ?
-                                            <Button color="danger" size="lg" onClick={() => openConfirm()}>Close Auction</Button>
-                                            :
-                                            <>
-                                                <Button color="transparent" size="sm" onClick={() => setConfirm(false)}> Back </Button>
-                                                <Button color="danger" size="lg" onClick={() => closeAuction()}>Confirm?</Button>
-                                            </>
-                                    }
-
-                                    <Button simple color="primary" size="lg">Show Pending Items</Button>
-                                </>
-                            }
-
-                        </GridContainer>
-                        <GridContainer>
-                            {
                                 addItem &&
                                 <ItemForm auctionId={AuctionId} setView={setAddItem} />
                             }
