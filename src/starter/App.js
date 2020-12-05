@@ -132,6 +132,9 @@ function App() {
                 <Route path="/about">
                   <About />
                 </Route>
+                <Route path="/results">
+                  <Results />
+                </Route>
               </>
           }
         </Switch>
