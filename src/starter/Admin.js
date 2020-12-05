@@ -9,6 +9,7 @@ import Card from "../components/Card/Card.js";
 import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
 import landingStyles from "../assets/jss/material-kit-react/views/landingPage"
 import image from "../assets/img/bg8.jpg";
+import Parallax from "../components/Parallax/Parallax.js";
 
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
@@ -200,55 +201,52 @@ export default function Admin() {
 
     return (
         <>
-            <div
-                className={classes.pageHeader}
-                style={{
-                    backgroundImage: "url(" + image + ")",
-                    backgroundSize: "cover",
-                    backgroundPosition: "top center",
-                }}
-            >
-                <div className={classes.section}>
-                    <h2 className={landingClasses.title}>Admin Dashboard</h2>
+            <Parallax filter image={image}>
+                <div className={classes.container}>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={4}>
-                            <Card>
-                                <h4 className={classes.cardTitle}>
-                                    Total number users
-                                    <br />
-                                    {usersCount}
-                                </h4>
-                            </Card>
-                            <Card>
-                                <List dense className={classes.root}>
-                                    <h3>Moderator Privileges</h3>
-                                    {
-                                        users.map(user => <UserListEntry key={user.id} array={moderators} set={setModerators} {...user} />
-                                        )
-                                    }
-
-                                </List>
-                            </Card>
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={4}>
-                            <Card>
-                                <h4 className={classes.cardTitle}>
-                                    Reset Database
-                                    <br />
-                                    <Button onClick={reset}>Go</Button>
-                                </h4>
-                                <h4 className={classes.cardTitle}>
-                                    Add Sample Data
-                                    <br />
-                                    <Button onClick={addSampleData}>Go</Button>
-                                </h4>
-                            </Card>
+                            <h1 className={classes.title}>Admin Dashboard</h1>
                         </GridItem>
                     </GridContainer>
                 </div>
-            </div>
-
-
+            </Parallax>
+            <div className={classes.section} style={{ textAlign: "center" }}>
+                <h2 className={landingClasses.title}>Admin Dashboard</h2>
+                <GridContainer>
+                    <GridItem xs={12} sm={12} md={4}>
+                        <Card>
+                            <h4 className={classes.cardTitle}>
+                                Total number users
+                                    <br />
+                                {usersCount}
+                            </h4>
+                        </Card>
+                        <Card>
+                            <List dense className={classes.root}>
+                                <h3>Moderator Privileges</h3>
+                                {
+                                    users.map(user => <UserListEntry key={user.id} array={moderators} set={setModerators} {...user} />
+                                    )
+                                }
+                            </List>
+                        </Card>
+                    </GridItem>
+                    <GridItem xs={12} sm={12} md={4}>
+                        <Card plain>
+                            <h4 className={classes.cardTitle} style={{ color: "black" }}>
+                                Reset Database
+                                    <br />
+                                <Button onClick={reset}>Go</Button>
+                            </h4>
+                            <h4 className={classes.cardTitle} style={{ color: "black" }}>
+                                Add Sample Data
+                                    <br />
+                                <Button onClick={addSampleData}>Go</Button>
+                            </h4>
+                        </Card>
+                    </GridItem>
+                </GridContainer>
+            </div >
             <Dialog
                 classes={{
                     root: classes.center,
@@ -277,8 +275,8 @@ export default function Admin() {
                         <Close className={classes.modalClose} />
                     </IconButton>
 
-                    Add Moderators
-                    {/* <h4 className={classes.modalTitle}>Delete Auction?</h4> */}
+                        Add Moderators
+                        {/* <h4 className={classes.modalTitle}>Delete Auction?</h4> */}
                 </DialogTitle>
                 <DialogContent>
                 </DialogContent>
@@ -294,10 +292,10 @@ export default function Admin() {
                         simple
                     >
                         Delete
-                        </Button>
+                            </Button>
                     <Button color="transparent" simple onClick={() => setClassicModal(false)}>
                         Cancel
-                        </Button>
+                            </Button>
 
                 </DialogActions>
             </Dialog>

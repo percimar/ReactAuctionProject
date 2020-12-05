@@ -34,11 +34,12 @@ import CustomInput from "../components/CustomInput/CustomInput.js";
 import Parallax from "../components/Parallax/Parallax.js";
 import image from "../assets/img/bg8.jpg";
 import classNames from "classnames";
-
-
+import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 const useStyles = makeStyles(styles);
 
 export default function AuctionItems() {
+    console.log("AUCTION ITEMS")
 
     const Transition = React.forwardRef(function Transition(props, ref) {
         return <Slide direction="down" ref={ref} {...props} />;
@@ -46,7 +47,7 @@ export default function AuctionItems() {
 
     Transition.displayName = "Transition";
 
-    const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
+    const [cardAnimaton, setCardAnimation] = useState("cardHidden");
     setTimeout(function () {
         setCardAnimation("");
     }, 700);
@@ -82,7 +83,7 @@ export default function AuctionItems() {
 
     const [confirm, setConfirm] = useState(false)
 
-    
+
 
     const openConfirm = () => {
         setConfirm(true)
@@ -97,6 +98,17 @@ export default function AuctionItems() {
         db.Auctions.update({ id: AuctionId, displayName: auction.displayName, start: auction.start, finish: auction.finish, status: "Closed" })
         notifyWinners()
         setClassicModal(true)
+    }
+
+
+    const [Followedauction, setFollowing] = useState(null)
+    useEffect(() => db.Users.Following.listenToFollowingByAuction(setFollowing, user.id, AuctionId))
+
+    const addfollow = () => {
+        db.Users.Following.addFollowing(user.id, { auctionId: AuctionId, notifications: false })
+    }
+    const removefollow = () => {
+        db.Users.Following.removeOneFollowing(user.id, Followedauction[0].id)
     }
 
     const notifyWinners = async () => {
@@ -115,7 +127,6 @@ export default function AuctionItems() {
 
     }
 
-
     return (
 
         <div>
@@ -131,7 +142,7 @@ export default function AuctionItems() {
                                 </GridItem>
                                 <GridItem xs={12} sm={12} md={8}>
                                     {
-                                        user && user.role!='user' &&
+                                        user && user.role != 'user' &&
                                         <>
                                             <Button simple color="primary" size="lg" onClick={() => setAddItem(!addItem)}>{!addItem ? 'Add Item' : 'Close Form'}</Button>
                                             {
@@ -187,6 +198,14 @@ export default function AuctionItems() {
                             <br />
                                 Click the button below to return to auctions page
                             </DialogContent>
+                                <DialogContent
+                                    id="classic-modal-slide-description"
+                                    className={classes.modalBody}
+                                >
+                                    This Auction has been closed by {user?.name}
+                                    <br />
+                                Click the button below to return to auctions page
+                            </DialogContent>
                                 <DialogActions className={classes.modalFooter}>
                                     <Button
                                         component={Link} to={`/`}
@@ -194,59 +213,9 @@ export default function AuctionItems() {
                                         simple
                                     >
                                         Return to auctions
-                        </Button>
+                                    </Button>
                                 </DialogActions>
                             </Dialog>
-
-                            {/* <Dialog
-                        classes={{
-                            root: classes.center,
-                            paper: classes.modal
-                        }}
-                        open={confirmModal}
-                        TransitionComponent={Transition}
-                        keepMounted
-                        onClose={() => setConfirmModal(false)}
-                        aria-labelledby="confirm-modal-slide-title"
-                        aria-describedby="confirm-modal-slide-description"
-                    >
-                        <DialogTitle
-                            id="confirm-modal-slide-title"
-                            disableTypography
-                            className={classes.modalHeader}
-                        >
-                            <IconButton
-                                className={classes.modalCloseButton}
-                                key="close"
-                                aria-label="Close"
-                                color="inherit"
-                                onClick={() => setConfirmModal(false)}
-                            >
-                                <Close className={classes.modalClose} />
-                            </IconButton>
-                        </DialogTitle>
-                        <DialogContent>
-                        </DialogContent>
-                        <DialogContent
-                            id="confirm-modal-slide-description"
-                            className={classes.modalBody}
-                        >
-                            Close this auction?
-                            </DialogContent>
-                        <DialogActions className={classes.modalFooter}>
-                            <Button
-                                onClick={() => closeAuction()}
-                                color="danger"
-                                simple
-                            >
-                                Close Auction
-                        </Button>
-                            <Button color="transparent" simple onClick={() => setConfirmModal(false)}>
-                                Cancel
-                        </Button>
-
-                        </DialogActions>
-                    </Dialog> */}
 
                         </div>
                     }
@@ -256,10 +225,23 @@ export default function AuctionItems() {
                     <Button size="lg" color="primary" component={Link} to={`/`} >
                         <i className="material-icons">
                             west
-                            </i>
-                            &nbsp;&nbsp;&nbsp;
-                            Back to Auctions
-                        </Button>
+                        </i>
+                        &nbsp;&nbsp;&nbsp;
+                        Back to Auctions
+                    </Button>
+                    {
+                        Followedauction == null || Followedauction.length == 0 ?
+                            <>
+                                <Button simple size="lg" color="primary" onClick={() => addfollow()}>
+                                    <FavoriteBorderIcon />
+                                    Favourite Auction
+                            </Button></>
+                            :
+                            <Button simple color="primary" size="lg" onClick={() => removefollow()}>
+                                <FavoriteIcon />
+                                Remove from Favourite
+                            </Button>
+                    }
                 </div>
             </div>
         </div >

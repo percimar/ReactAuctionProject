@@ -8,7 +8,7 @@ import Register from './Register'
 import Login from './Login'
 import Logout from './Logout'
 import Profile from './Profile'
-import Faqs from './Faqs'
+import Faqs from '../Aahmad/Faqs'
 import LandingPage from './LandingPage'
 import AuctionItems from './AuctionItems'
 import HeaderLinksLeft from './HeaderLinksLeft'
@@ -16,12 +16,15 @@ import HeaderLinksRight from './HeaderLinksRight'
 import Header from "./Header";
 import Admin from "./Admin";
 import UserItems from "./UserItems";
+import ResultItems from "../Aahmad/ResultItems";
 import UserAuctions from "./UserAuctions";
 import Following from '../Mahmoud/Following'
 import Notifications from './Notifications'
-import Bugs from './Bugs'
-import About from './About'
+import Bugs from '../Aahmad/Bugs'
+import About from '../Aahmad/About'
+import Results from '../Aahmad/Results'
 import UserContext from '../UserContext'
+import Logs from '../Asmar/Logs'
 
 function App() {
 
@@ -64,6 +67,18 @@ function App() {
           <Route path="/Auction/Items/:AuctionId">
             <AuctionItems />
           </Route>
+          <Route path="/Result/Items/:AuctionId">
+            <ResultItems />
+          </Route>
+          <Route path="/faqs">
+            <Faqs />
+          </Route>
+          <Route path="/about">
+            <About />
+          </Route>
+          <Route path="/results">
+            <Results />
+          </Route>
           {
             user
               ?
@@ -74,6 +89,9 @@ function App() {
                     <>
                       <Route path="/admin">
                         <Admin />
+                      </Route>
+                      <Route path="/logs">
+                        <Logs />
                       </Route>
                       {/* <Route path="/faqs">
                         <Faqs />
@@ -100,14 +118,11 @@ function App() {
                 <Route path="/logout">
                   <Logout />
                 </Route>
-                <Route path="/faqs">
-                  <Faqs />
-                </Route>
                 <Route path="/bugs">
                   <Bugs />
                 </Route>
-                <Route path="/about">
-                  <About />
+                <Route path="/results">
+                  <Results />
                 </Route>
               </>
               :
@@ -117,12 +132,6 @@ function App() {
                 </Route>
                 <Route path="/login">
                   <Login />
-                </Route>
-                <Route path="/faqs">
-                  <Faqs />
-                </Route>
-                <Route path="/about">
-                  <About />
                 </Route>
               </>
           }

@@ -45,6 +45,77 @@ export default function HeaderLinksRight() {
       {
         user
         &&
+        user.role === "user"
+        &&
+        <CustomDropdown
+          hoverColor="black"
+          buttonText={user.name}
+          dropdownList={[
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/useritems"
+            >
+              My Items
+          </Button>
+            ,
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/profile"
+            >
+              Profile
+          </Button>
+            ,
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/following"
+            >
+              Following
+          </Button>,
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/notifications"
+            >
+              Notifications
+          </Button>,
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/results"
+            >
+              Results
+        </Button>,
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/logout"
+            >
+              Log Out
+            </Button>
+          ]
+          }
+        />
+      }
+      {
+        user
+        &&
+        (user.role === "admin" || user.role === "moderator")
+        &&
         <CustomDropdown
           hoverColor="black"
           buttonText={nameWithNotifications()}
@@ -74,7 +145,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/userauctions"
             >
-              My Auctions
+              Auctions
           </Button>
             ,
             user
@@ -102,7 +173,7 @@ export default function HeaderLinksRight() {
               component={Link}
               to="/following"
             >
-              Following
+              Favorite List
           </Button>,
             user
             &&
@@ -123,6 +194,15 @@ export default function HeaderLinksRight() {
               color="transparent"
               className={classes.navLink}
               component={Link}
+              to="/results"
+            >
+              Results
+        </Button>,
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
               to="/logout"
             >
               Log Out
@@ -131,7 +211,6 @@ export default function HeaderLinksRight() {
           }
         />
       }
-
 
 
       <List className={classes.list}>
@@ -160,6 +239,20 @@ export default function HeaderLinksRight() {
               to="/login"
             >
               Login
+        </Button>
+          </ListItem>
+        }
+        {
+          !user
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/results"
+            >
+              Results
         </Button>
           </ListItem>
         }

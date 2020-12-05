@@ -21,6 +21,7 @@ class DB {
     }
 
     findByField = async (field, value) => {
+        console.log("value", value)
         const data = await db.collection(this.collection).where(field, '==', value).get()
         return data.docs.map(this.reformat)
     }
@@ -111,6 +112,14 @@ class Auctions extends DB {
         return db.collection(this.collection).where('status', '==', 'Ongoing').onSnapshot(snap => set(snap.docs.filter(doc => doc.data().displayName.toLowerCase().includes(searchText.toLowerCase())).map(this.reformat)))
     }
 
+    listenToFinished = set => {
+        return db.collection(this.collection).where('status', '==', 'Closed').onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToFinishedFiltered = (set, searchText) => {
+        return db.collection(this.collection).where('status', '==', 'Closed').onSnapshot(snap => set(snap.docs.filter(doc => doc.data().displayName.toLowerCase().includes(searchText.toLowerCase())).map(this.reformat)))
+    }
+
     createAuctionBid = (auctionId, { id, ...rest }) =>
         db.collection(this.collection).doc(auctionId).collection(Bids).add(rest)
 
@@ -195,6 +204,7 @@ class Items extends DB {
     }
 
     updateItem = (auctionId, { id, ...rest }) => {
+        console.log("auctionId", auctionId, "this id", id, rest)
         return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(id).set(rest)
     }
 
@@ -252,6 +262,7 @@ class Items extends DB {
     // listenToCategory = (set, auctionId, itemId) => {
     //     return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(itemId)
     // }
+
 }
 
 
@@ -406,6 +417,22 @@ class Bugs extends DB {
 
 }
 
+class Adverts extends DB {
+
+    constructor() {
+        super('adverts')
+    }
+
+    listenToAdsByItem = (set, itemId) => {
+        return db.collection(this.collection).where("itemId", "==", itemId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc) }
+    }
+
+}
+
 class Comments extends DB {
 
     constructor(topContaining, containing) {
@@ -468,19 +495,30 @@ class Replies extends DB {
         return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).doc(replyId).delete()
     }
 
-    addReply = (auctionId, itemId, commentId, { id, ...rest }) => {
+    addReply = (auctionId, itemId, commentId, { ...rest }) => {
         return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).add(rest)
+    }
+
+}
+
+class Logs extends DB {
+
+    constructor() {
+        super('logs')
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
     }
 
 }
 
 export default {
     Auctions: new Auctions(),
-    Bids: new Bids(),
     Users: new Users(),
-    Following,
-    Notifications: new Notifications(),
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Bugs: new Bugs()
+    Bugs: new Bugs(),
+    Adverts: new Adverts(),
+    Logs: new Logs()
 }

@@ -12,7 +12,7 @@ import styles from "../assets/jss/material-kit-react/views/landingPageSections/p
 const useStyles = makeStyles(styles);
 
 export default function AuctionDetails({ set, id }) {
-
+console.log("AUCTION DETAILS")
   const { user } = useContext(UserContext)
 
   const classes = useStyles();

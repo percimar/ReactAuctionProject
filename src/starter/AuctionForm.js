@@ -19,8 +19,7 @@ import Datetime from "react-datetime";
 
 const useStyles = makeStyles(styles);
 
-
-export default function AuctionForm({editObject, open}) {
+export default function AuctionForm({ editObject, open }) {
 
     if (editObject) {
         useEffect(() => prepareEdit(editObject), [])
@@ -50,6 +49,14 @@ export default function AuctionForm({editObject, open}) {
     const create = () => {
         open(false)
         db.Auctions.create({ displayName: title, start, finish, status: "Ongoing" })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Auctions",
+            action: `Created auction ${title}`
+        })
         setTitle('')
         setStart(new Date())
         setFinish(new Date())
@@ -63,7 +70,15 @@ export default function AuctionForm({editObject, open}) {
     }
 
     const update = () => {
-        db.Auctions.update({id: itemId, displayName: title, start, finish, status: "Ongoing"})
+        db.Auctions.update({ id: itemId, displayName: title, start, finish, status: "Ongoing" })
+        db.Logs.create({
+            timestamp: new Date(),
+            user: user.id,
+            username: user.name,
+            userroles: user.role,
+            collection: "Auctions",
+            action: `Updated auction ${title}`
+        })
         open(false)
     }
 
@@ -71,7 +86,7 @@ export default function AuctionForm({editObject, open}) {
         <GridItem xs={12} sm={12} md={4}>
             <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary" className={classes.cardHeader}>
-                    <TextField style={{backgroundColor: 'white'}} onChange={event => setTitle(event.target.value)} label='Name' value={title}>Auction Name</TextField>
+                    <TextField style={{ backgroundColor: 'white' }} onChange={event => setTitle(event.target.value)} label='Name' value={title}>Auction Name</TextField>
                 </CardHeader>
                 <CardBody>
                     {/* <FormControl>
@@ -112,8 +127,8 @@ export default function AuctionForm({editObject, open}) {
                         {!editObject ? 'Add Auction' : 'Save Changes'}
                     </Button>
                     {
-                        editObject && 
-                        <Button color="primary" size="sm" onClick={() => open(false)}>    
+                        editObject &&
+                        <Button color="primary" size="sm" onClick={() => open(false)}>
                             Close
                         </Button>
                     }
