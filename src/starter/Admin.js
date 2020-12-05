@@ -5,8 +5,9 @@ import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Button from "../components/CustomButtons/Button.js";
 import Card from "../components/Card/Card.js";
-import styles from "../assets/jss/material-kit-react/views/landingPageSections/teamStyle.js";
+import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import image from "../assets/img/bg8.jpg";
+import Parallax from "../components/Parallax/Parallax.js";
 
 const useStyles = makeStyles(styles);
 
@@ -68,44 +69,48 @@ export default function Admin() {
     }
 
     return (
-        <div
-            className={classes.pageHeader}
-            style={{
-                backgroundImage: "url(" + image + ")",
-                backgroundSize: "cover",
-                backgroundPosition: "top center"
-            }}
-        >
-            <div className={classes.section}>
-                <h2 className={classes.title}>Admin Dashboard</h2>
-                <div>
+        <>
+            <Parallax filter image={image}>
+                <div className={classes.container}>
                     <GridContainer>
                         <GridItem xs={12} sm={12} md={4}>
-                            <Card plain>
-                                <h4 className={classes.cardTitle}>
-                                    Total number users
-                                    <br />
-                                    {users}
-                                </h4>
-                            </Card>
-                        </GridItem>
-                        <GridItem xs={12} sm={12} md={4}>
-                            <Card plain>
-                                <h4 className={classes.cardTitle}>
-                                    Reset Database
-                                    <br />
-                                    <Button onClick={reset}>Go</Button>
-                                </h4>
-                                <h4 className={classes.cardTitle}>
-                                    Add Sample Data
-                                    <br />
-                                    <Button onClick={addSampleData}>Go</Button>
-                                </h4>
-                            </Card>
+                            <h1 className={classes.title}>Admin Dashboard</h1>
                         </GridItem>
                     </GridContainer>
                 </div>
+            </Parallax>
+            <div className={classes.section} style={{ textAlign: "center" }}>
+                {/* <h2 className={classes.title}>Admin Dashboard</h2> */}
+                <div>
+                    <Card>
+                        <GridContainer>
+                            <GridItem xs={12} sm={12} md={4}>
+                                <Card plain>
+                                    <h4 className={classes.cardTitle} style={{ color: "black" }}>
+                                        Total number users
+                                    <br />
+                                        {users}
+                                    </h4>
+                                </Card>
+                            </GridItem>
+                            <GridItem xs={12} sm={12} md={4}>
+                                <Card plain>
+                                    <h4 className={classes.cardTitle} style={{ color: "black" }}>
+                                        Reset Database
+                                    <br />
+                                        <Button onClick={reset}>Go</Button>
+                                    </h4>
+                                    <h4 className={classes.cardTitle} style={{ color: "black" }}>
+                                        Add Sample Data
+                                    <br />
+                                        <Button onClick={addSampleData}>Go</Button>
+                                    </h4>
+                                </Card>
+                            </GridItem>
+                        </GridContainer>
+                    </Card>
+                </div>
             </div>
-        </div>
+        </>
     );
 }
