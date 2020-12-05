@@ -30,10 +30,10 @@ import Parallax from "../components/Parallax/Parallax.js";
 const useStyles = makeStyles(styles);
 const useLandingStyles = makeStyles(landingStyles)
 
-export default function Admin({id, name, role, avatar}) {
+export default function Admin({ id, name, role, avatar }) {
 
     const grant = () => {
-        db.Users.update({id, name, role: 'moderator', avatar })
+        db.Users.update({ id, name, role: 'moderator', avatar: avatar ? avatar : '' })
         db.Users.Notifications.sendNotification(id, {
             title: 'You are now a moderator!',
             description: 'You have been given moderator privileges by admin'
@@ -41,7 +41,7 @@ export default function Admin({id, name, role, avatar}) {
     }
 
     const revoke = () => {
-        db.Users.update({id, name, role: 'user', avatar: avatar? avatar : '' })
+        db.Users.update({ id, name, role: 'user', avatar: avatar ? avatar : '' })
         db.Users.Notifications.sendNotification(id, {
             title: 'You are no longer a moderator',
             description: 'Your moderator privileges has been revoked by admin'
@@ -59,8 +59,8 @@ export default function Admin({id, name, role, avatar}) {
                 </ListItemAvatar>
                 <ListItemText id='label' primary={`${name} (${role})`} />
                 <ListItemSecondaryAction>
-                    <Button size='sm' color='success' disabled={role=='moderator'} onClick={grant}>Grant</Button>
-                    <Button size='sm' color='danger' disabled={role=='user'} onClick={revoke}>Revoke</Button>
+                    <Button size='sm' color='success' disabled={role == 'moderator'} onClick={grant}>Grant</Button>
+                    <Button size='sm' color='danger' disabled={role == 'user'} onClick={revoke}>Revoke</Button>
                     {/* <Checkbox
                         edge="end"
                         onChange={() => setChecked(!checked)}

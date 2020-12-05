@@ -94,15 +94,6 @@ export default function HeaderLinksRight() {
               color="transparent"
               className={classes.navLink}
               component={Link}
-              to="/results"
-            >
-              Results
-        </Button>,
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
               to="/logout"
             >
               Log Out
@@ -194,15 +185,6 @@ export default function HeaderLinksRight() {
               color="transparent"
               className={classes.navLink}
               component={Link}
-              to="/results"
-            >
-              Results
-        </Button>,
-            <Button
-              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
               to="/logout"
             >
               Log Out
@@ -239,20 +221,6 @@ export default function HeaderLinksRight() {
               to="/login"
             >
               Login
-        </Button>
-          </ListItem>
-        }
-        {
-          !user
-          &&
-          <ListItem className={classes.listItem}>
-            <Button
-              color="transparent"
-              className={classes.navLink}
-              component={Link}
-              to="/results"
-            >
-              Results
         </Button>
           </ListItem>
         }

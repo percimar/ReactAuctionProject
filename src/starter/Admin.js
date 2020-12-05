@@ -6,7 +6,7 @@ import GridContainer from "../components/Grid/GridContainer.js";
 import GridItem from "../components/Grid/GridItem.js";
 import Button from "../components/CustomButtons/Button.js";
 import Card from "../components/Card/Card.js";
-import styles from "../assets/jss/material-kit-react/views/landingPageSections/productStyle.js";
+import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import landingStyles from "../assets/jss/material-kit-react/views/landingPage"
 import image from "../assets/img/bg8.jpg";
 import Parallax from "../components/Parallax/Parallax.js";
@@ -20,15 +20,7 @@ import Close from "@material-ui/icons/Close";
 import Slide from "@material-ui/core/Slide";
 
 import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Checkbox from '@material-ui/core/Checkbox';
-import Avatar from '@material-ui/core/Avatar';
 import UserListEntry from './UserListEntry'
-import classNames from "classnames";
-import Parallax from "../components/Parallax/Parallax.js";
 
 const useStyles = makeStyles(styles);
 const useLandingStyles = makeStyles(landingStyles)
@@ -211,16 +203,8 @@ export default function Admin() {
                 </div>
             </Parallax>
             <div className={classes.section} style={{ textAlign: "center" }}>
-                <h2 className={landingClasses.title}>Admin Dashboard</h2>
-                <GridContainer>
+                <GridContainer justify="center">
                     <GridItem xs={12} sm={12} md={4}>
-                        <Card>
-                            <h4 className={classes.cardTitle}>
-                                Total number users
-                                    <br />
-                                {usersCount}
-                            </h4>
-                        </Card>
                         <Card>
                             <List dense className={classes.root}>
                                 <h3>Moderator Privileges</h3>
@@ -232,7 +216,7 @@ export default function Admin() {
                         </Card>
                     </GridItem>
                     <GridItem xs={12} sm={12} md={4}>
-                        <Card plain>
+                        <Card>
                             <h4 className={classes.cardTitle} style={{ color: "black" }}>
                                 Reset Database
                                     <br />
@@ -242,6 +226,13 @@ export default function Admin() {
                                 Add Sample Data
                                     <br />
                                 <Button onClick={addSampleData}>Go</Button>
+                            </h4>
+                        </Card>
+                        <Card>
+                            <h4 className={classes.cardTitle}>
+                                Total number users
+                                    <br />
+                                {usersCount}
                             </h4>
                         </Card>
                     </GridItem>
