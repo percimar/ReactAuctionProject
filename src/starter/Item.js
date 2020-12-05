@@ -25,7 +25,12 @@ import Close from "@material-ui/icons/Close";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Slide from "@material-ui/core/Slide";
 import CustomInput from "../components/CustomInput/CustomInput.js";
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
+import Select from '@material-ui/core/Select';
+import Datetime from "react-datetime";
 import { useHistory, Link } from 'react-router-dom';
+
 
 import db from '../db'
 import Comment from '../Asmar/Comment'
@@ -100,7 +105,12 @@ export default function Item({ auctionId, id, name, description, picture, seller
     // console.log(highestBidQuery)
 
     const [category, setCategory] = useState([])
-    useEffect(() => db.Categories.listenOne(setCategory, catId), [])
+    useEffect(() => catId && db.Categories.listenOne(setCategory, catId), [catId])
+
+    const [ad, setAd] = useState([])
+    useEffect(() => db.Adverts.listenToAdsByItem(setAd, id), [])
+
+    console.log("ad:", ad)
 
     const [bids, setBids] = useState([])
     useEffect(() => db.Auctions.Items.Bids.listenToOneItemAllBids(auctionId, id, setBids), [id])
@@ -111,14 +121,19 @@ export default function Item({ auctionId, id, name, description, picture, seller
 
     const [classicModal, setClassicModal] = useState(false)
 
+    const [promoteModal, setPromoteModal] = useState(false)
+
     const [editForm, setEditForm] = useState(false)
 
     const [amount, setAmount] = useState(0)
 
+
+    const [finish, setFinish] = useState(new Date())
+    const [type, setType] = useState("")
+
     const highestBid = () => {
         return Math.max(...bids.map(bid => bid.amount), 0)
     }
-
 
     const classes = useStyles();
 
@@ -139,6 +154,14 @@ export default function Item({ auctionId, id, name, description, picture, seller
         setDeleteModal(true)
     }
 
+    const confirmPromotion = () => {
+        setPromoteModal(true)
+    }
+
+    const addPromotion = () => {
+        setPromoteModal(false)
+        db.Adverts.create({ adType: type, duration: finish, itemId: id, userId: user.id })
+    }
     const remove = () => {
         setDeleteModal(false)
         db.Auctions.Items.removeOneItem(auctionId, id)
@@ -159,7 +182,8 @@ export default function Item({ auctionId, id, name, description, picture, seller
                     <>
                         <GridItem xs={12} sm={12} md={4} >
 
-                            <Card className={classes[cardAnimaton]} style={{ width: "400px", textAlign: "center", marginLeft: "15px" }}>
+                            {/* <Card className={classes[cardAnimaton]} style={{ height: "420px", width: "400px", textAlign: "center", marginLeft: "15px" }}> */}
+                            <Card className={classes[cardAnimaton]} style={{ textAlign: "center", marginLeft: "15px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     <img src={picture ?? defaultCar} alt="item" style={{ width: '100px', height: '100px' }} />
                                 </CardHeader>
@@ -182,7 +206,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                         Category
                                     </Primary>
                                     <Info>
-                                        {category && category.name}
+                                        {catId ? category.name : 'No Category'}
                                     </Info>
                                     <br />
                                     <Primary>
@@ -219,12 +243,22 @@ export default function Item({ auctionId, id, name, description, picture, seller
                                     user && (user.id == sellerUserId || user.role == 'admin') && auctionId &&
                                     <>
                                         <CardFooter className={classes.cardFooter}>
-                                            <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
+                                            <Button color="primary" size="lg" onClick={() => setEditForm(true)}>
                                                 Edit
                                             </Button>
-                                            <Button color="danger" size="sm" onClick={() => confirmDelete()}>
+                                            <Button color="danger" size="lg" onClick={() => confirmDelete()}>
                                                 Remove
                                             </Button>
+                                            {
+                                                ad.length == 0 ?
+                                                    <Button style={{ background: "orange" }} size="sm" onClick={() => confirmPromotion()}>
+                                                        Promote Item
+                                            </Button>
+                                                    :
+                                                    <Button style={{ background: "darkgray" }} size="sm" disabled >
+                                                        Promoted Already
+                                            </Button>
+                                            }
                                             <Button color="primary" size="sm" onClick={handleExpandClick}>
                                                 View Comments
                                             </Button>
@@ -382,6 +416,96 @@ export default function Item({ auctionId, id, name, description, picture, seller
 
                 </DialogActions>
             </Dialog>
+
+            <Dialog
+                classes={{
+                    root: classes.center,
+                    paper: classes.modal
+                }}
+                open={promoteModal}
+                TransitionComponent={Transition}
+                keepMounted
+                onClose={() => setPromoteModal(false)}
+                aria-labelledby="promote-modal-slide-title"
+                aria-describedby="promote-modal-slide-description"
+            >
+                <DialogTitle
+                    id="promote-modal-slide-title"
+                    disableTypography
+                    className={classes.modalHeader}
+                >
+                    <IconButton
+                        className={classes.modalCloseButton}
+                        key="close"
+                        aria-label="Close"
+                        color="inherit"
+                        onClick={() => setPromoteModal(false)}
+                    >
+                        <Close className={classes.modalClose} />
+                    </IconButton>
+                </DialogTitle>
+
+                <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                >
+                    Promoting {name}
+                    <FormControl className={classes.formControl}>
+                        <InputLabel id="AdvertisementType-label">Available Advertisement Type</InputLabel>
+                        <Select
+                            native
+                            style={{ width: '400px', height: '50px' }}
+                            labelId="AdvertisementType-label"
+                            id="AdvertisementType"
+                            value={type}
+                            onChange={event => setType(event.target.value)}
+                        >
+                            <option aria-label="None" value="" />
+                            <option value="Banner">
+                                Banner
+                            </option>
+                            <option value="Sidebar">
+                                Side Bar
+                        </option>
+                        </Select>
+                    </FormControl>
+
+                </DialogContent>
+
+                <DialogContent
+                    id="classic-modal-slide-description"
+                    className={classes.modalBody}
+                    style={{ height: "400px" }}
+                >
+                    <InputLabel id="auctionselection-label">Advertise Duration</InputLabel>
+                    <FormControl className={classes.formControl}>
+                        <Datetime
+                            value={finish}
+                            onChange={date => setFinish(date.toDate())}
+                            inputProps={{
+                                placeholder: "Finish Auction"
+                            }}
+                        ></Datetime>
+                    </FormControl>
+                </DialogContent>
+
+
+                <DialogActions className={classes.modalFooter}>
+                    <Button
+                        onClick={() => addPromotion()}
+                        color="danger"
+                        simple
+                    >
+                        Confirm
+                        </Button>
+                    <Button color="transparent" simple onClick={() => setPromoteModal(false)}>
+                        Cancel
+                        </Button>
+
+                </DialogActions>
+
+            </Dialog>
+
         </>
 
     )

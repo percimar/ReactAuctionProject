@@ -66,7 +66,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
     const [categories, setCategories] = useState([])
     useEffect(() => {
         setCategories([])
-        items.map(item => db.Categories.collectOne(setCategories, item.catId, categories))
+        items.map(item => item.catId && db.Categories.collectOne(setCategories, item.catId, categories))
     }, [items])
 
     const [catNames, setCatNames] = useState([])
@@ -75,7 +75,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
         categories.map(category => setCatNames(catNames => [...catNames, category.name]))
     }, [categories])
 
-    const [counter, setCounter] = useState(1000)
+    const [counter, setCounter] = useState(0)
     useEffect(() => {        
         // console.log(date === finish)
         const timer = 
@@ -126,7 +126,8 @@ export default function Auction({ set, id, displayName, finish, start, status })
                     <>
                     
                         <GridItem xs={12} sm={12} md={4}>
-                            <Card className={classes[cardAnimaton]} style={{ height: "420px" }}>
+                            {/* <Card className={classes[cardAnimaton]} style={{ height: "420px" }}> */}
+                            <Card className={classes[cardAnimaton]}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     {displayName}
                                 </CardHeader>
@@ -151,7 +152,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                         Categories
                                     </Primary>
                                     <Info>
-                                        {catNames.length > 0 ? drawNames().join(', ') : 'No Items Added'}
+                                        {catNames.length > 0 ? drawNames().join(', ') : 'No Categories'}
                                     </Info>
                                     <br />
                                     <Primary>
@@ -169,7 +170,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                                 <CardFooter className={classes.cardFooter}>
                                     <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>Show Items</Button>
                                     {
-                                        user && user.role == 'admin' &&
+                                        user && user.role!='user' &&
                                         <>
                                         <Button color="primary" size="sm" onClick={() => editAuction()}>
                                             Edit

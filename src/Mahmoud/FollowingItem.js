@@ -12,7 +12,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import UserContext from '../UserContext'
 import db from '../db'
-import AuctionDetails from '../Carlos/AuctionDetails'
+import { useHistory, Link } from 'react-router-dom';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 
 const useStyles = makeStyles(styles);
 
@@ -26,8 +27,19 @@ export default function Following({ id }) {
 
     const { user } = useContext(UserContext)
 
+    console.log("ID", id)
+
     const [Followedauction, setFollowedAuction] = useState("")
     useEffect(() => db.Auctions.listenOne(setFollowedAuction, id), [user])
+    console.log("Followedauction:", Followedauction)
+
+
+    const [following, setFollowing] = useState("")
+    useEffect(() => db.Users.Following.listenToFollowingByAuction(setFollowing, user.id, id), [user])
+
+    const removefollow = () => {
+        db.Users.Following.removeOneFollowing(user.id, following[0].id)
+    }
 
     return (
         <>
@@ -52,7 +64,11 @@ export default function Following({ id }) {
                         <br />
                     </CardBody>
                     <CardFooter className={classes.cardFooter}>
-                        <Button simple color="primary" size="lg" onClick={() => <AuctionDetails id={id} />}>See Auction Details</Button>
+                        <Button size="sm" color="primary" component={Link} to={`/auction/items/${id}`}>See Auction Details</Button>
+                        <Button simple color="primary" size="lg" onClick={() => removefollow()}>
+                            <FavoriteIcon />
+                                Remove from Favourite
+                            </Button>
                     </CardFooter>
                 </Card>
             </GridItem>

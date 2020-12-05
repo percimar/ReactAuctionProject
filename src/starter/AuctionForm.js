@@ -16,6 +16,7 @@ import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField'
 import Datetime from "react-datetime";
 
+
 const useStyles = makeStyles(styles);
 
 export default function AuctionForm({ editObject, open }) {
@@ -85,7 +86,7 @@ export default function AuctionForm({ editObject, open }) {
         <GridItem xs={12} sm={12} md={4}>
             <Card className={classes[cardAnimaton]}>
                 <CardHeader color="primary" className={classes.cardHeader}>
-                    <TextField onChange={event => setTitle(event.target.value)} label='Name' value={title}>Auction Name</TextField>
+                    <TextField style={{ backgroundColor: 'white' }} onChange={event => setTitle(event.target.value)} label='Name' value={title}>Auction Name</TextField>
                 </CardHeader>
                 <CardBody>
                     {/* <FormControl>
