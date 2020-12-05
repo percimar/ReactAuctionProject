@@ -139,6 +139,9 @@ class Categories extends DB {
         return db.collection(this.collection).doc(catId).onSnapshot(snap => set(categories =>
             [...categories, this.reformat(snap)]))
     }
+
+    listenOne = (set, catId) =>
+        db.collection(this.collection).doc(catId).onSnapshot(snap => set(this.reformat(snap)))
 }
 
 class Items extends DB {
@@ -147,6 +150,7 @@ class Items extends DB {
         super('items')
         this.containing = containing
         this.Bids = new Bids(this.containing, this.collection)
+        this.Comments = new Comments(this.containing, this.collection)
     }
 
     reformat(doc) {
@@ -172,10 +176,11 @@ class Items extends DB {
     }
 
     addItem = (auctionId, { id, ...rest }) => {
+        if (!auctionId) { throw new ReferenceError("pass auctionId to addItem") }
         return db.collection(this.containing).doc(auctionId).collection(this.collection).add(rest)
     }
 
-    updateItem = (auctionId, {id, ...rest}) => {
+    updateItem = (auctionId, { id, ...rest }) => {
         return db.collection(this.containing).doc(auctionId).collection(this.collection).doc(id).set(rest)
     }
 
@@ -191,6 +196,13 @@ class Items extends DB {
     //     }
     // }
 
+    listenToAllItems = (set) => {
+        return db.collectionGroup(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToAllItemsByUser = (set, userId) => {
+        return db.collectionGroup(this.collection).where("sellerUserId", "==", userId).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
 
     // listenWithCategory = (set, array, catId, auctionId) => {
     //     const ref = db.collection('auctions').doc(auctionId).collection('items').where('catId', '==', 'X54I5YSOuNkcWuimFrzc')
@@ -235,7 +247,7 @@ class Bids extends DB {
         const data = await db.collection(this.topContainer).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).where('amount', '==', amount).get()
         return data.docs.map(this.reformat)
     }
- 
+
     // findHighest = async (auctionId, itemId, set) => {
     //     // db.collection(this.topContainer).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).orderBy('amount').limit(1).onSnapshot(snap => set(this.reformat(snap)))
     //     db.collection(this.topContainer).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).orderBy('amount').limit(1).onSnapshot(snap => set(snap.docs.map(this.reformat)))
@@ -254,23 +266,11 @@ class Users extends DB {
     findByRole = role =>
         this.findByField('role', role)
 
-    findUserItems = (userId) =>
-        this.findSubAll(userId, Items)
-
     removeUserItem = (userId, itemId) =>
         db.collection(this.collection).doc(userId).collection(Items).doc(itemId).delete()
 
-    listenToUserItem = (set, userId, itemId) =>
-        this.listenSubOne(set, userId, Items, itemId)
-
-    listenToUserItems = (set, userId) =>
-        this.listenSubAll(set, userId, Items)
-
     listenToCount = set =>
         db.collection(this.collection).onSnapshot(snap => set(snap.docs.length))
-
-    createUserItem = (userId, { id, ...rest }) =>
-        db.collection(this.collection).doc(userId).collection(Items).add(rest)
 
 }
 
@@ -292,16 +292,16 @@ class Notifications extends DB {
         return db.collection(this.containing).doc(userId).collection(this.collection).where('viewed', '==', false).onSnapshot(snap => set(snap.docs.length))
     }
 
-    sendNotification = (userId, {...notification}) => {
-        db.collection(this.containing).doc(userId).collection(this.collection).add({...notification, viewed: false, timestamp: new Date()})
+    sendNotification = (userId, { ...notification }) => {
+        db.collection(this.containing).doc(userId).collection(this.collection).add({ ...notification, viewed: false, timestamp: new Date() })
     }
 
     clearNotification = (userId, notifId) => {
         db.collection(this.containing).doc(userId).collection(this.collection).doc(notifId).delete()
     }
 
-    markSeen = (userId, {id, viewed, ...rest}) => {
-        db.collection(this.containing).doc(userId).collection(this.collection).doc(id).update({...rest, viewed: true})
+    markSeen = (userId, { id, viewed, ...rest }) => {
+        db.collection(this.containing).doc(userId).collection(this.collection).doc(id).update({ ...rest, viewed: true })
     }
 
 }
@@ -354,7 +354,70 @@ class Bugs extends DB {
     }
 
     reformat(doc) {
-        return {...super.reformat(doc)}
+        return { ...super.reformat(doc) }
+    }
+
+}
+
+class Comments extends DB {
+
+    constructor(topContaining, containing) {
+        super('comments');
+        this.topContaining = topContaining;
+        this.containing = containing;
+        this.Replies = new Replies(topContaining, containing, this.collection)
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    addComment = (auctionId, itemId, comment) => {
+        db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).add(comment)
+    }
+
+    removeComment = (auctionId, itemId, commentId) => {
+        db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).doc(commentId).delete()
+    }
+
+    listenToOneItemAllComments = (set, auctionId, itemId) => {
+        db.collection(this.topContaining).doc(auctionId).collection(this.containing).doc(itemId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+}
+
+class Replies extends DB {
+
+    constructor(topContaining, subContaining, containing) {
+        super('replies')
+        this.topContaining = topContaining
+        this.subContaining = subContaining
+        this.containing = containing
+    }
+
+    reformat(doc) {
+        return { ...super.reformat(doc), timestamp: doc.data().timestamp.toDate() }
+    }
+
+    findOneCommentAllReplies = async (auctionId, itemId, commentId) => {
+        const data = await db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).get()
+        return data.docs.map(this.reformat)
+    }
+
+    listenToOneCommentAllReplies = (set, auctionId, itemId, commentId) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).onSnapshot(snap => set(snap.docs.map(this.reformat)))
+    }
+
+    listenToOneCommentOneReply = (set, auctionId, itemId, commentId, replyId) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).doc(replyId).onSnapshot(snap => set(this.reformat(snap)))
+    }
+
+    removeReply = (auctionId, itemId, commentId, replyId) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).doc(replyId).delete()
+    }
+
+    addReply = (auctionId, itemId, commentId, { id, ...rest }) => {
+        return db.collection(this.topContaining).doc(auctionId).collection(this.subContaining).doc(itemId).collection(this.containing).doc(commentId).collection(this.collection).add(rest)
     }
 
 }
@@ -364,9 +427,8 @@ export default {
     Bids: new Bids(),
     Users: new Users(),
     Following,
-    Notifications: new Notifications(), 
+    Notifications: new Notifications(),
     FAQs: new FAQs(),
     Categories: new Categories(),
-    Items: new Items(),
     Bugs: new Bugs()
 }

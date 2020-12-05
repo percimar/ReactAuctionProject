@@ -20,6 +20,7 @@ import UserAuctions from "./UserAuctions";
 import Following from '../Mahmoud/Following'
 import Notifications from './Notifications'
 import Bugs from './Bugs'
+import About from './About'
 import UserContext from '../UserContext'
 
 function App() {
@@ -105,6 +106,9 @@ function App() {
                 <Route path="/bugs">
                   <Bugs />
                 </Route>
+                <Route path="/about">
+                  <About />
+                </Route>
               </>
               :
               <>
@@ -116,6 +120,9 @@ function App() {
                 </Route>
                 <Route path="/faqs">
                   <Faqs />
+                </Route>
+                <Route path="/about">
+                  <About />
                 </Route>
               </>
           }

@@ -28,7 +28,7 @@ export default function HeaderLinksLeft() {
         </Button>
       </ListItem>
 
-      {user
+      {/* {user
         &&
         <ListItem className={classes.listItem}>
           <Button
@@ -40,7 +40,7 @@ export default function HeaderLinksLeft() {
             Report a Bug
         </Button>
         </ListItem>
-      }
+      } */}
       
       {
         user &&

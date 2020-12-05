@@ -12,19 +12,23 @@ import { makeStyles } from "@material-ui/core/styles";
 import styles from "../assets/jss/material-kit-react/views/loginPage.js";
 import UserContext from '../UserContext'
 import ItemForm from './ItemForm'
-
+import Collapse from '@material-ui/core/Collapse';
+import TextField from '@material-ui/core/TextField';
+import CardContent from '@material-ui/core/CardContent';
+import SendIcon from '@material-ui/icons/Send';
 import IconButton from "@material-ui/core/IconButton";
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogActions from "@material-ui/core/DialogActions";
 import Close from "@material-ui/icons/Close";
+import InputAdornment from "@material-ui/core/InputAdornment";
 import Slide from "@material-ui/core/Slide";
 import CustomInput from "../components/CustomInput/CustomInput.js";
 import { useHistory, Link } from 'react-router-dom';
 
 import db from '../db'
-
+import Comment from '../Asmar/Comment'
 
 const Transition = React.forwardRef(function Transition(props, ref) {
     return <Slide direction="down" ref={ref} {...props} />;
@@ -34,7 +38,7 @@ Transition.displayName = "Transition";
 
 const useStyles = makeStyles(styles);
 
-export default function Item({ auctionId, id, name, description, picture, catId }) {
+export default function Item({ auctionId, id, name, description, picture, sellerUserId, catId }) {
 
     const [cardAnimaton, setCardAnimation] = React.useState("cardHidden");
     setTimeout(function () {
@@ -45,6 +49,32 @@ export default function Item({ auctionId, id, name, description, picture, catId 
 
     const history = useHistory()
 
+    const [comments, setComments] = useState([]);
+    useEffect(() => db.Auctions.Items.Comments.listenToOneItemAllComments(setComments, auctionId, id), [])
+
+    // useEffect(() => comments.map(comment => {
+    //     const getData = async () => {
+    //         return {
+    //             replies: await db.Auctions.Items.Comments.Replies.findOneCommentAllReplies(auctionId, id, comment.id),
+    //             ...comment
+    //         };
+    //     }
+    //     return getData();
+    // }), [comments])
+
+    const [expanded, setExpanded] = useState(false);
+
+    const handleExpandClick = () => {
+        setExpanded(!expanded);
+    };
+
+    const [comment, setComment] = useState("");
+
+    const addComment = () => {
+        db.Auctions.Items.Comments.addComment(auctionId, id, { userId: user.id, timestamp: new Date(), comment })
+        setComment(""); //clear TextField
+    }
+
     const attemptBid = () => {
         if (user) {
             setClassicModal(true)
@@ -53,6 +83,15 @@ export default function Item({ auctionId, id, name, description, picture, catId 
         }
     }
 
+    // const [highestBidQuery, setHighestBid] = useState([])
+    // useEffect(() => {
+    //     db.Auctions.Items.Bids.findHighest(auctionId, id, setHighestBid)
+    //     setHighestBid(highestBidQuery[0])
+    // }, [id])
+    // console.log(highestBidQuery)
+
+    const [category, setCategory] = useState([])
+    useEffect(() => db.Categories.listenOne(setCategory, catId), [])
 
     const [bids, setBids] = useState([])
     useEffect(() => db.Auctions.Items.Bids.listenToOneItemAllBids(auctionId, id, setBids), [id])
@@ -66,10 +105,6 @@ export default function Item({ auctionId, id, name, description, picture, catId 
     const [editForm, setEditForm] = useState(false)
 
     const [amount, setAmount] = useState(0)
-
-    const [category, setCategory] = useState(null)
-    useEffect(() => db.Categories.listenOne(setCategory, catId), [catId])
-
 
     const highestBid = () => {
         return Math.max(...bids.map(bid => bid.amount), 0)
@@ -97,22 +132,23 @@ export default function Item({ auctionId, id, name, description, picture, catId 
             {
                 !editForm ?
                     <>
-                        <GridItem xs={12} sm={12} md={4}>
-                            <Card className={classes[cardAnimaton]}>
+                        <GridItem xs={12} sm={12} md={4} >
+
+                            <Card className={classes[cardAnimaton]} style={{ height: "420px", width: "400px", textAlign: "center", marginLeft: "15px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
-                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px ' }} />
+                                    <img src={picture} alt="item" style={{ width: '100px', height: '100px' }} />
                                 </CardHeader>
                                 <CardBody>
                                     <Primary>
                                         Name
-                    </Primary>
+                                    </Primary>
                                     <Info>
                                         {name}
                                     </Info>
                                     <br />
                                     <Primary>
                                         Description
-                    </Primary>
+                                    </Primary>
                                     <Info>
                                         {description}
                                     </Info>
@@ -126,7 +162,7 @@ export default function Item({ auctionId, id, name, description, picture, catId 
                                     <br />
                                     <Primary>
                                         Highest Bid
-                    </Primary>
+                                    </Primary>
                                     <Info>
                                         {highestBid()}
                                     </Info>
@@ -136,26 +172,26 @@ export default function Item({ auctionId, id, name, description, picture, catId 
                                             <br />
                                             <Primary>
                                                 Bids so far
-                                </Primary>
+                                            </Primary>
                                             <Info>
                                                 {bids.length}
                                             </Info>
                                         </>
                                     }
                                 </CardBody>
-                                <CardFooter className={classes.cardFooter}>
-                                    {/*show bid if auction did not finish + item is available for bids*/}
-                                    {
-                                        <>
-                                            <Button color="primary" size="lg" onClick={attemptBid}>
-                                                Bid
-                                        </Button>
-                                        </>
-                                    }
-
-                                </CardFooter>
                                 {
-                                    user && user.role == 'admin' &&
+                                    user && user.id != sellerUserId && auctionId &&
+                                    <CardFooter className={classes.cardFooter}>
+                                        <Button color="primary" size="lg" onClick={() => setClassicModal(true)}>
+                                            Bid
+                                        </Button>
+                                        <Button color="primary" size="lg" onClick={handleExpandClick}>
+                                            View Comments
+                                    </Button>
+                                    </CardFooter>
+                                }
+                                {
+                                    user && (user.id == sellerUserId || user.role == 'admin') && auctionId &&
                                     <>
                                         <CardFooter className={classes.cardFooter}>
                                             <Button color="primary" size="sm" onClick={() => setEditForm(true)}>
@@ -164,9 +200,39 @@ export default function Item({ auctionId, id, name, description, picture, catId 
                                             <Button color="danger" size="sm" onClick={() => confirmDelete()}>
                                                 Remove
                                     </Button>
+                                            <Button color="primary" size="lg" onClick={handleExpandClick}>
+                                                View Comments
+                                    </Button>
                                         </CardFooter>
                                     </>
                                 }
+
+                                <Collapse in={expanded} timeout="auto" unmountOnExit>
+                                    <CardContent>
+                                        {comments.length > 0
+                                            ? comments.map(comment =>
+                                                <Comment key={comment.id} auctionId={auctionId} itemId={id} {...comment} />)
+                                            : <Info>No questions found, be the first to leave one!</Info>}
+                                        <TextField
+                                            label="Ask a Question"
+                                            multiline
+                                            rows={1}
+                                            rowsMax={Number.MAX_SAFE_INTEGER}
+                                            value={comment}
+                                            onChange={(event) => setComment(event.target.value)}
+                                            InputProps={{
+                                                endAdornment: (
+                                                    <InputAdornment>
+                                                        <IconButton color="primary" onClick={addComment}>
+                                                            <SendIcon />
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                )
+                                            }}
+                                        />
+
+                                    </CardContent>
+                                </Collapse>
                             </Card>
 
                         </GridItem>

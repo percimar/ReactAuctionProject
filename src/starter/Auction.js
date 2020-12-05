@@ -126,7 +126,7 @@ export default function Auction({ set, id, displayName, finish, start, status })
                     <>
                     
                         <GridItem xs={12} sm={12} md={4}>
-                            <Card className={classes[cardAnimaton]}>
+                            <Card className={classes[cardAnimaton]} style={{ height: "420px" }}>
                                 <CardHeader color="primary" className={classes.cardHeader}>
                                     {displayName}
                                 </CardHeader>

@@ -8,6 +8,7 @@ import styles from "../assets/jss/material-kit-react/components/headerLinksStyle
 import UserContext from '../UserContext'
 import NotificationsBar from './NotificationsBar'
 import db from '../db'
+import CustomDropdown from 'components/CustomDropdown/CustomDropdown.js';
 
 const useStyles = makeStyles(styles);
 
@@ -17,120 +18,224 @@ export default function HeaderLinksRight() {
 
   const classes = useStyles();
   return (
-    <List className={classes.list}>
+
+    <>
       {
-        !user
+        user
         &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/register"
-          >
-            Register
-        </Button>
-        </ListItem>
-      }
-      {
-        !user
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/login"
-          >
-            Login
-        </Button>
-        </ListItem>
+        <CustomDropdown
+          hoverColor="black"
+          buttonText={user.name}
+          dropdownList={[
+            user
+            &&
+            user.role === "user"
+            &&
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/useritems"
+            >
+              My Items
+          </Button>
+            ,
+            user
+            &&
+            user.role === "user"
+            &&
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/userauctions"
+            >
+              My Auctions
+          </Button>
+            ,
+            user
+            &&
+            user.role === "user"
+            &&
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/profile"
+            >
+              Profile
+          </Button>
+            ,
+            user
+            &&
+            user.role === "user"
+            &&
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/following"
+            >
+              Following
+          </Button>,
+            user
+            &&
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/notifications"
+            >
+              Notifications
+          </Button>,
+            user
+            &&
+            <Button
+              style={{ maxWidth: '180px', maxHeight: '30px', minWidth: '180px', minHeight: '30px', textAlign: "center" }}
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/logout"
+            >
+              Log Out
+            </Button>
+          ]
+          }
+        />
       }
 
-      {
-        user
-        &&
-        user.role === "user"
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/useritems"
-          >
-            My Items
-          </Button>
-        </ListItem>
-      }
-      {
-        user
-        &&
-        user.role === "user"
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/userauctions"
-          >
-            My Auctions
-          </Button>
-        </ListItem>
-      }
-      {
-        user
-        &&
-        user.role === "user"
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/profile"
-          >
-            My Profile
-          </Button>
-        </ListItem>
-      }
-      {
-        user
-        &&
-        user.role === "user"
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/following"
-          >
-            My Following
-          </Button>
-        </ListItem>
-      }
-      {
-        user
-        &&
-        <NotificationsBar/>
-      }
-      {
-        user
-        &&
-        <ListItem className={classes.listItem}>
-          <Button
-            color="transparent"
-            className={classes.navLink}
-            component={Link}
-            to="/logout"
-          >
-            Logout {user.name}
-          </Button>
-        </ListItem>
-      }
 
-    </List >
+
+      <List className={classes.list}>
+        {
+          !user
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/register"
+            >
+              Register
+        </Button>
+          </ListItem>
+        }
+        {
+          !user
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/login"
+            >
+              Login
+        </Button>
+          </ListItem>
+        }
+
+        {/* {
+          user
+          &&
+          user.role === "user"
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/useritems"
+            >
+              My Items
+          </Button>
+          </ListItem>
+        }
+        {
+          user
+          &&
+          user.role === "user"
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/userauctions"
+            >
+              My Auctions
+          </Button>
+          </ListItem>
+        }
+        {
+          user
+          &&
+          user.role === "user"
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/profile"
+            >
+              My Profile
+          </Button>
+          </ListItem>
+        }
+        {
+          user
+          &&
+          user.role === "user"
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/following"
+            >
+              My Following
+          </Button>
+          </ListItem>
+        }
+        {
+          user
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/notifications"
+            >
+              My Notifications
+          </Button>
+          </ListItem>
+        }
+        {
+          user
+          &&
+          <ListItem className={classes.listItem}>
+            <Button
+              color="transparent"
+              className={classes.navLink}
+              component={Link}
+              to="/logout"
+            >
+              Logout {user.name}
+            </Button>
+          </ListItem>
+        } */}
+
+      </List >
+
+    </>
   );
 }
