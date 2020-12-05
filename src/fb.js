@@ -3,14 +3,15 @@ import "firebase/auth"
 import 'firebase/firestore'
 
 const firebaseConfig = {
-    apiKey: "AIzaSyBmsJgU3_CVrfdDuti1DaYQqat0wFMRw0U",
-    authDomain: "cp3330-project-141af.firebaseapp.com",
-    databaseURL: "https://cp3330-project-141af.firebaseio.com",
-    projectId: "cp3330-project-141af",
-    storageBucket: "cp3330-project-141af.appspot.com",
-    messagingSenderId: "421978077842",
-    appId: "1:421978077842:web:6c8a53a31c2c3f7b9b844b",
-    measurementId: "G-NC3Y5FZHFW"
+    apiKey: "AIzaSyBjjxFWiPvV-u1iCQzzlXxGO1_I9isByhM",
+    authDomain: "cp3330-ed06b.firebaseapp.com",
+    databaseURL: "https://cp3330-ed06b.firebaseio.com",
+    projectId: "cp3330-ed06b",
+    storageBucket: "cp3330-ed06b.appspot.com",
+    messagingSenderId: "781543877165",
+    appId: "1:781543877165:web:6ae8454c5e57a9063e26a4",
+    measurementId: "G-00ZXZPLEV2"
+
 };
 
 firebase.initializeApp(firebaseConfig)

@@ -157,7 +157,7 @@ export default function Item({ auctionId, id, name, description, picture, seller
 
     const addPromotion = () => {
         setPromoteModal(false)
-        db.Adverts.create({ adType: type, duration: finish, itemId: id, userId: user.id })
+        db.Adverts.create({ adType: type, duration: finish, itemId: id, userId: user.id, auctionId: auctionId })
     }
     const remove = () => {
         setDeleteModal(false)

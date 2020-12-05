@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import { makeStyles } from "@material-ui/core/styles";
 import Footer from "../components/Footer/Footer.js";
@@ -8,6 +8,8 @@ import Parallax from "../components/Parallax/Parallax.js";
 import styles from "../assets/jss/material-kit-react/views/landingPage.js";
 import Auctions from "./Auctions.js";
 import image from "../assets/img/bg8.jpg";
+import db from '../db'
+import Ad from '../Mahmoud/Ad'
 
 
 import Carousel from "react-slick";
@@ -30,6 +32,11 @@ const useStyles = makeStyles(styles);
 export default function LandingPage() {
   const classes = useStyles();
 
+  const [ads, setAds] = useState([])
+  useEffect(() => db.Adverts.listenAll(setAds), [])
+
+  console.log("landing page ads:", ads)
+
   return (
     < div >
       <Parallax filter image={image}>
@@ -46,7 +53,6 @@ export default function LandingPage() {
       </Parallax>
 
       <div className={classNames(classes.main, classes.mainRaised)} >
-
 
         <div style={{ marginLeft: "25%" }} >
           <GridContainer>
@@ -65,6 +71,18 @@ export default function LandingPage() {
                       </h4>
                     </div>
                   </div>
+
+
+                  {
+                    ads ?
+                      ads.map(ad =>
+                        <Ad key={ad.id} id={ad.itemId} />
+                      )
+                      :
+                      ""
+                  }
+
+
                   <div>
                     <img
                       src={image2}
@@ -77,6 +95,11 @@ export default function LandingPage() {
                      </h4>
                     </div>
                   </div>
+
+
+
+
+
                   <div>
                     <img
                       src={image3}
@@ -89,6 +112,9 @@ export default function LandingPage() {
                       </h4>
                     </div>
                   </div>
+
+
+
                 </Carousel>
               </Card>
             </GridItem>
